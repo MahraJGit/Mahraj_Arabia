@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Mail, MapPin, MessageCircle } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
+import { Logo } from "@/components/layout/logo";
 import { site } from "@/content/site";
 
 const exploreLinks = [
@@ -10,7 +11,7 @@ const exploreLinks = [
   { label: "Projects", href: "/projects" },
   { label: "Industries", href: "/industries" },
   { label: "Reviews", href: "/reviews" },
-  { label: "Blog", href: "/blog" },
+  { label: "Blogs", href: "/blog" },
 ];
 
 const companyLinks = [
@@ -57,15 +58,10 @@ export function SiteFooter() {
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
             <div>
-              <Link
-                href="/"
-                className="font-heading text-2xl font-bold text-white transition-opacity hover:opacity-80"
-              >
-                Mahraj <span className="text-brand">Arabia</span>
-              </Link>
+              <Logo onDark />
               <p className="mt-4 max-w-xs text-sm leading-relaxed">
-                Practical modular buildings, portable facilities and custom steel
-                fabrication for projects across Saudi Arabia.
+                Modular, portable, fencing and steel solutions for construction,
+                events and industrial sites across Saudi Arabia.
               </p>
               <div className="mt-6 flex gap-3">
                 {site.social.map((item) => {

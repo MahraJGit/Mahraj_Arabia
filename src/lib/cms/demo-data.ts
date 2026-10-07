@@ -16,7 +16,7 @@ export function getDemoOverviewData() {
         published,
         comingSoon: Math.max(0, services.length - published),
       },
-      posts: { total: 3, published: 3, drafts: 0 },
+      posts: { total: 5, published: 5, drafts: 0 },
       categories: { total: 3 },
       media: { total: 12 },
     },
@@ -178,7 +178,7 @@ export function getDemoPosts() {
       author: "By Mahraj Arabia Team",
       featured: true,
       status: "published" as PublishStatus,
-      publishedAt: "2026-02-12",
+      publishedAt: "2026-05-14",
       updatedAt: now,
       coverUrl: "/images/projects/global-tech-hq.jpg",
     },
@@ -190,21 +190,45 @@ export function getDemoPosts() {
       author: "By Mahraj Arabia Team",
       featured: true,
       status: "published" as PublishStatus,
-      publishedAt: "2026-02-18",
+      publishedAt: "2026-06-02",
       updatedAt: now,
       coverUrl: "/images/advantage-installation.jpg",
     },
     {
       id: "demo-post-3",
-      title: "Choosing a Parking Shade System",
-      slug: "choosing-a-parking-shade-system",
-      categoryTitle: "Parking Shades",
+      title: "Police Barriers for Events and Road Control",
+      slug: "police-barriers-for-events-and-road-control",
+      categoryTitle: "Fencing & Barriers",
+      author: "By Mahraj Arabia Team",
+      featured: true,
+      status: "published" as PublishStatus,
+      publishedAt: "2026-07-08",
+      updatedAt: now,
+      coverUrl: "/images/advantage-installation.jpg",
+    },
+    {
+      id: "demo-post-4",
+      title: "Heras Fence vs Corrugated Fence: Which Fits Your Site?",
+      slug: "heras-fence-vs-corrugated-fence",
+      categoryTitle: "Fencing & Barriers",
       author: "By Mahraj Arabia Team",
       featured: false,
       status: "published" as PublishStatus,
-      publishedAt: "2026-03-01",
+      publishedAt: "2026-07-22",
       updatedAt: now,
       coverUrl: "/images/services/landscaping-outdoor-industry.png",
+    },
+    {
+      id: "demo-post-5",
+      title: "From Brief to Installation: How Mahraj Arabia Delivers",
+      slug: "from-brief-to-installation-mahraj-arabia",
+      categoryTitle: "Project Planning",
+      author: "By Mahraj Arabia Team",
+      featured: false,
+      status: "published" as PublishStatus,
+      publishedAt: "2026-08-18",
+      updatedAt: now,
+      coverUrl: "/images/about/about-hero.png",
     },
   ];
 }
@@ -215,14 +239,21 @@ export function getDemoPost(id: string) {
   const categoryId =
     post.id === "demo-post-2"
       ? "demo-cat-2"
-      : post.id === "demo-post-3"
-        ? "demo-cat-3"
+      : post.id === "demo-post-3" || post.id === "demo-post-4"
+        ? "demo-cat-fencing"
         : "demo-cat-1";
   return {
     id: post.id,
     title: post.title,
     slug: post.slug,
-    excerpt: post.title,
+    excerpt:
+      post.id === "demo-post-3"
+        ? "When heavy-duty steel police barriers are the right choice for perimeter control in Saudi Arabia."
+        : post.id === "demo-post-4"
+          ? "A practical comparison of temporary mesh panels and corrugated steel hoarding for Saudi projects."
+          : post.id === "demo-post-5"
+            ? "Our working route from first requirement through fabrication, delivery and site handover."
+            : post.title,
     content: null as unknown,
     coverImage: "",
     coverUrl: post.coverUrl,
@@ -264,7 +295,7 @@ export function getDemoCategories() {
       title: "Project Planning",
       slug: "project-planning",
       subtitle: "Briefs, logistics and installation",
-      postCount: 1,
+      postCount: 2,
       updatedAt: now,
       imageUrl: "/images/advantage-installation.jpg",
     },
@@ -278,11 +309,11 @@ export function getDemoCategories() {
       imageUrl: "/images/projects/global-tech-hq.jpg",
     },
     {
-      id: "demo-cat-3",
-      title: "Parking Shades",
-      slug: "parking-shades",
-      subtitle: "Span, access and finishes",
-      postCount: 1,
+      id: "demo-cat-fencing",
+      title: "Fencing & Barriers",
+      slug: "fencing-barriers",
+      subtitle: "Police barriers, Heras and corrugated fencing",
+      postCount: 2,
       updatedAt: now,
       imageUrl: "/images/services/landscaping-outdoor-industry.png",
     },

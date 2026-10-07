@@ -18,8 +18,8 @@ export function FeaturedCaseStudies() {
       <SectionHeading
         align="center"
         eyebrow="Case Studies"
-        title="From Concept to Completion"
-        description="See how our modular, portable and steel capabilities support real project requirements."
+        title="From concept to completion"
+        description="See how our modular, portable, fencing and steel capabilities support real project requirements."
       />
 
       <Stagger className="mt-10 grid gap-5 md:grid-cols-3">

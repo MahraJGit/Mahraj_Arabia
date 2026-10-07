@@ -1,3 +1,10 @@
+import {
+  getArabiaFeaturedPosts,
+  getArabiaPostBySlug,
+  getArabiaPostSlugs,
+  getArabiaPostsList,
+  getArabiaRelatedPosts,
+} from "@/content/arabia-posts";
 import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { collectUploadIds } from "@/lib/cms/lexical";
@@ -104,7 +111,7 @@ export function toBlogCard(
     author: post.author || "By Mahraj Engineering Team",
     authorImage: authorImage.url,
     authorImageAlt: authorImage.alt || post.author || "Article author",
-    category: post.category?.title ?? "Insights",
+    category: post.category?.title ?? "Blogs",
     categorySlug: post.category?.slug ?? "",
     href: `/blog/${post.slug}`,
   };
@@ -143,7 +150,7 @@ function toPublicPost(
             title:
               typeof doc.category.title === "string"
                 ? doc.category.title
-                : "Insights",
+                : "Blogs",
             slug:
               typeof doc.category.slug === "string" ? doc.category.slug : "",
           }
@@ -214,7 +221,7 @@ export async function getPosts({
     if (categorySlug) {
       const categoryId = await findCategoryIdBySlug(categorySlug);
       if (!categoryId) {
-        return { docs: [] as BlogCard[], page, totalPages: 0, totalDocs: 0 };
+        return getArabiaPostsList({ page, limit, categorySlug, search });
       }
       filter.category = asObjectId(categoryId);
     }
@@ -242,16 +249,20 @@ export async function getPosts({
       loadCategoryMap(docs.map((doc) => toId(doc.category))),
     ]);
 
+    if (totalDocs === 0) {
+      return getArabiaPostsList({ page, limit, categorySlug, search });
+    }
+
     return {
       docs: docs.map((doc) =>
         toBlogCard(toPublicPost(doc, media, categories.get(toId(doc.category))))
       ),
       page,
-      totalPages: totalDocs === 0 ? 0 : Math.ceil(totalDocs / limit),
+      totalPages: Math.ceil(totalDocs / limit),
       totalDocs,
     };
   } catch {
-    return { docs: [] as BlogCard[], page, totalPages: 0, totalDocs: 0 };
+    return getArabiaPostsList({ page, limit, categorySlug, search });
   }
 }
 
@@ -268,11 +279,13 @@ export async function getFeaturedPosts(limit = 3) {
       loadCategoryMap(docs.map((doc) => toId(doc.category))),
     ]);
 
+    if (docs.length === 0) return getArabiaFeaturedPosts(limit);
+
     return docs.map((doc) =>
       toBlogCard(toPublicPost(doc, media, categories.get(toId(doc.category))))
     );
   } catch {
-    return [] as BlogCard[];
+    return getArabiaFeaturedPosts(limit);
   }
 }
 
@@ -302,11 +315,15 @@ export async function getRelatedPosts(
       loadCategoryMap(docs.map((doc) => toId(doc.category))),
     ]);
 
+    if (docs.length === 0) {
+      return getArabiaRelatedPosts(categorySlug, excludeId, limit);
+    }
+
     return docs.map((doc) =>
       toBlogCard(toPublicPost(doc, media, categories.get(toId(doc.category))))
     );
   } catch {
-    return [] as BlogCard[];
+    return getArabiaRelatedPosts(categorySlug, excludeId, limit);
   }
 }
 
@@ -317,7 +334,7 @@ export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
     const doc = (await Post.findOne({ ...published, slug }).lean()) as
       | LeanDoc
       | null;
-    if (!doc) return null;
+    if (!doc) return getArabiaPostBySlug(slug);
 
     const [media, categories] = await Promise.all([
       loadMediaMap(collectPostMediaIds([doc])),
@@ -326,7 +343,7 @@ export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
 
     return toPublicPost(doc, media, categories.get(toId(doc.category)) ?? null);
   } catch {
-    return null;
+    return getArabiaPostBySlug(slug);
   }
 }
 
@@ -334,11 +351,12 @@ export async function getPostSlugs() {
   try {
     const { Post } = await getModels();
     const docs = await Post.find(published).select("slug").lean();
-    return docs
+    const slugs = docs
       .map((doc) => (typeof doc.slug === "string" ? doc.slug : ""))
       .filter(Boolean);
+    return slugs.length > 0 ? slugs : getArabiaPostSlugs();
   } catch {
-    return [] as string[];
+    return getArabiaPostSlugs();
   }
 }
 

@@ -1,14 +1,13 @@
-export const DEFAULT_PROCESS_TITLE = "Steps commercial project process";
+export const DEFAULT_PROCESS_TITLE = "From requirements to installation.";
 
 export const DEFAULT_PROCESS_DESCRIPTION =
-  "Excellence delivered for the region’s top-tier business destinations.";
+  "Our experienced team develops practical designs, delivers quality fabrication and coordinates reliable installation tailored to each project.";
 
 export const DEFAULT_PROCESS_STEPS = [
   "Understand",
-  "Assess",
-  "Recommend",
-  "Coordinate",
-  "Delivery",
+  "Configure",
+  "Fabricate",
+  "Install",
 ];
 
 export function readProcessSteps(value: unknown) {

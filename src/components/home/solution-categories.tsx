@@ -8,15 +8,15 @@ import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { getServices } from "@/lib/public/services";
 
-export async function FlooringCategories() {
-  const services = (await getServices()).slice(0, 6);
+export async function SolutionCategories() {
+  const services = await getServices();
 
   return (
-    <Section tone="alt">
+    <Section id="solutions" tone="alt">
       <SectionHeading
-        eyebrow="Our Core Services"
-        title="Solutions for every project requirement."
-        description="Porta cabins, modular facilities and steel fabrication—planned around your site, your team and your project timeline."
+        eyebrow="Our Solutions"
+        title="A connected range of solutions."
+        description="Modular spaces, portable facilities, fencing and steel fabrication—planned around your site, your team and your project timeline."
       />
 
       <Stagger className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -51,7 +51,7 @@ export async function FlooringCategories() {
 
       <div className="mt-12 flex justify-center">
         <Button asChild variant="brandOutline" size="xl">
-          <Link href="/services">View All Categories</Link>
+          <Link href="/services">View All Solutions</Link>
         </Button>
       </div>
     </Section>

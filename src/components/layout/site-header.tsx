@@ -71,7 +71,7 @@ export function SiteHeader({
       <TopBar />
       <div className="relative border-b border-border">
         <Container className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
-          <Logo />
+          <Logo priority />
 
           <NavigationMenu
             viewport={false}

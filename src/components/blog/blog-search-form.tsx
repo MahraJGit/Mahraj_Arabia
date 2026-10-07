@@ -52,7 +52,7 @@ export function BlogSearchForm({
     <form
       role="search"
       onSubmit={onSubmit}
-      className="mx-auto mt-8 flex w-full max-w-3xl items-center gap-3 rounded-full border border-white/20 bg-black/45 p-2 backdrop-blur-sm"
+      className="mt-2 flex w-full max-w-xl items-center gap-2 border border-border bg-background p-1.5"
     >
       <input
         type="search"
@@ -69,11 +69,11 @@ export function BlogSearchForm({
         }}
         placeholder={blogPage.hero.searchPlaceholder}
         aria-label="Search blog"
-        className="min-w-0 flex-1 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/80 sm:text-base"
+        className="min-w-0 flex-1 bg-transparent px-4 text-sm text-ink outline-none placeholder:text-body sm:text-base"
       />
       <button
         type="submit"
-        className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white text-brand transition-colors hover:bg-brand hover:text-white"
+        className="inline-flex size-11 shrink-0 items-center justify-center bg-brand text-white transition-colors hover:bg-brand-dark"
         aria-label="Search blog"
       >
         <Search className="size-5" />

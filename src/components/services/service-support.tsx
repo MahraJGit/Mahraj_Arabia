@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   Building2,
   CheckCircle2,
-  ChevronRight,
   FileCheck2,
   Handshake,
   Ruler,
@@ -31,9 +30,9 @@ export function ServiceAdvisory() {
         <div>
           <h2 className="text-3xl font-semibold sm:text-4xl">Expert Advisory</h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-body sm:text-base">
-            Our technical team provides detailed subfloor analysis, specification
-            support, material guidance, and installation recommendations for
-            every project.
+            Our technical team supports layout planning, specification guidance,
+            fabrication options and installation recommendations for every
+            project.
           </p>
           <ul className="mt-8 grid gap-4 sm:grid-cols-3">
             {advisors.map((advisor) => (
@@ -180,16 +179,16 @@ export function TechnicalResources() {
         <div className="grid items-center gap-8 md:grid-cols-2">
           <div>
             <h2 className="text-3xl font-semibold text-white">
-              Subfloor Prep & Technical Standards
+              Site coordination & technical standards
             </h2>
             <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/75">
-              Moisture testing, levelling, repairs, adhesive selection, and
-              substrate preparation are planned as part of the complete system.
+              Access, utilities, foundation readiness and installation sequencing
+              are planned as part of every modular, portable and steel delivery.
             </p>
           </div>
           <Media
-            src="/images/services/rubber-gym-flooring.jpg"
-            alt="Technical site preparation"
+            src="/images/profile/modular-crane-install.png"
+            alt="Modular unit installation on site"
             className="aspect-16/7 rounded-md"
             sizes="(min-width: 768px) 45vw, 90vw"
           />
@@ -201,51 +200,75 @@ export function TechnicalResources() {
 
 const processIcons = [Building2, Ruler, FileCheck2, Handshake, Truck];
 
+const stepDescriptions: Record<string, string> = {
+  Understand: "Clarify the purpose, site and project requirements.",
+  Configure: "Shape a practical solution around the brief.",
+  Fabricate: "Deliver quality fabrication for the agreed scope.",
+  Install: "Coordinate reliable installation for the project.",
+};
+
 export function ServiceProcess({ service }: { service: ServiceDetailView }) {
   const title = service.processTitle.trim();
   const description = service.processDescription.trim();
-  const steps = service.processSteps.map((step) => step.label.trim()).filter(Boolean);
+  const steps = service.processSteps
+    .map((step) => step.label.trim())
+    .filter(Boolean);
   if (!title && !description && steps.length === 0) return null;
-
-  const columns =
-    steps.length >= 5
-      ? "sm:grid-cols-2 lg:grid-cols-5"
-      : steps.length === 4
-        ? "sm:grid-cols-2 lg:grid-cols-4"
-        : steps.length === 3
-          ? "sm:grid-cols-3"
-          : "sm:grid-cols-2";
 
   return (
     <Section>
-      {title ? (
-        <SectionHeading align="center" title={title} description={description || undefined} />
-      ) : description ? (
-        <p className="mx-auto max-w-3xl text-center text-base leading-relaxed text-body">
-          {description}
-        </p>
-      ) : null}
+      <div className="max-w-3xl">
+        {title ? (
+          <>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+              A connected process
+            </p>
+            <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+              {title}
+            </h2>
+          </>
+        ) : null}
+        {description ? (
+          <p
+            className={`text-base leading-relaxed text-body ${title ? "mt-4" : ""}`}
+          >
+            {description}
+          </p>
+        ) : null}
+      </div>
 
       {steps.length > 0 ? (
-        <ol className={`grid gap-8 ${title || description ? "mt-12" : ""} ${columns}`}>
-          {steps.map((label, index) => {
-            const Icon = processIcons[index % processIcons.length];
-            return (
-              <li key={`${label}-${index}`} className="relative flex flex-col items-center text-center">
-                <div className="flex size-20 items-center justify-center rounded-full bg-brand/10 text-brand">
-                  <Icon className="size-7" />
-                  <span className="ms-2 flex size-6 items-center justify-center rounded-full bg-brand text-[0.625rem] font-semibold text-white">
+        <div className="relative mt-12">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute top-[2.75rem] end-0 start-0 hidden h-px bg-brand/70 lg:block"
+          />
+          <ol className="relative grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((label, index) => {
+              const Icon = processIcons[index % processIcons.length];
+              const detail = stepDescriptions[label];
+              return (
+                <li
+                  key={`${label}-${index}`}
+                  className="bg-surface-alt px-5 py-6"
+                >
+                  <p className="text-sm font-semibold tracking-wide text-brand">
                     {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <p className="mt-4 text-sm font-semibold text-ink">{label}</p>
-                {index < steps.length - 1 ? (
-                  <ChevronRight className="absolute -end-5 top-8 hidden size-5 text-brand/50 lg:block" />
-                ) : null}
-              </li>
-            );
-          })}
-        </ol>
+                  </p>
+                  <h3 className="mt-3 flex items-center gap-2 text-base font-semibold text-ink">
+                    <Icon className="size-4 text-brand" />
+                    {label}
+                  </h3>
+                  {detail ? (
+                    <p className="mt-2 text-sm leading-relaxed text-body">
+                      {detail}
+                    </p>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       ) : null}
     </Section>
   );

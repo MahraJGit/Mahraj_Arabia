@@ -2,7 +2,6 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
-import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { regionalOffices, regionalOfficesIntro } from "@/content/contact";
 import { cn } from "@/lib/utils";
@@ -20,14 +19,20 @@ const buttonTextClass = {
 export function RegionalOffices() {
   return (
     <Section tone="alt">
-      <SectionHeading
-        align="center"
-        title={regionalOfficesIntro.title}
-        description={regionalOfficesIntro.description}
-      />
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Regional presence
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {regionalOfficesIntro.title}
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-body">
+          {regionalOfficesIntro.description}
+        </p>
+      </div>
 
-      <div className="mt-12 grid items-stretch gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
-        <div className="relative overflow-hidden rounded-md border border-border bg-background">
+      <div className="mt-12 grid items-stretch gap-px overflow-hidden border border-border bg-border lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+        <div className="relative overflow-hidden bg-background">
           <Media
             src="/images/gcc-map.jpg"
             alt="GCC regional offices map"
@@ -61,12 +66,12 @@ export function RegionalOffices() {
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+        <div className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
           {regionalOffices.map((office) => (
             <article
               key={office.slug}
               className={cn(
-                "flex min-h-full flex-col rounded-md p-6 text-white",
+                "flex min-h-full flex-col p-6 text-white",
                 officeToneClass[office.tone]
               )}
             >

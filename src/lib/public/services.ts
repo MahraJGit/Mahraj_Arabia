@@ -296,16 +296,15 @@ function toDetailView(
         })
       : [],
     density:
-      (typeof service.density === "string" && service.density) || "1100 kg/m³",
+      typeof service.density === "string" ? service.density : "",
     warranty:
-      (typeof service.warranty === "string" && service.warranty) || "5 - 10 Years",
+      typeof service.warranty === "string" ? service.warranty : "",
     brandingTitle:
-      (typeof service.brandingTitle === "string" && service.brandingTitle) ||
-      "Custom Branding & Color",
+      typeof service.brandingTitle === "string" ? service.brandingTitle : "",
     brandingDescription:
-      (typeof service.brandingDescription === "string" &&
-        service.brandingDescription) ||
-      "Add custom logos, zone markings, and colourways using precision-cut inserts and application-specific finishes.",
+      typeof service.brandingDescription === "string"
+        ? service.brandingDescription
+        : "",
     brandColorLabel:
       typeof service.brandColorLabel === "string" ? service.brandColorLabel : "",
     brandColors: readBrandColors(service.brandColors),

@@ -14,7 +14,6 @@ import {
 import { Media } from "@/components/media";
 import { SubscribeForm } from "@/components/forms/subscribe-form";
 import { Section } from "@/components/layout/section";
-import { SectionHeading } from "@/components/layout/section-heading";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { TopicScroller } from "@/components/catalogues/topic-scroller";
@@ -120,29 +119,32 @@ export function FeaturedCollection({ query }: { query?: string }) {
 
   return (
     <Section>
-      <div className="grid items-center gap-8 md:grid-cols-2">
-        <div className="relative overflow-hidden rounded-md">
+      <div className="grid lg:grid-cols-2">
+        <div className="relative min-h-[18rem] overflow-hidden lg:min-h-[26rem]">
           <Media
             src={featured.image}
             alt={featured.title}
-            className="aspect-[4/3]"
-            sizes="(min-width: 768px) 50vw, 100vw"
+            className="absolute inset-0 size-full"
+            sizes="(min-width: 1024px) 50vw, 100vw"
           />
-          <span className="absolute start-4 top-4 rounded bg-brand px-3 py-1 text-xs font-semibold text-white">
+          <span className="absolute start-4 top-4 bg-brand px-3 py-1 text-xs font-semibold text-white">
             {featured.badge}
           </span>
         </div>
 
-        <div>
-          <h2 className="text-3xl font-semibold sm:text-4xl">
+        <div className="flex flex-col justify-center px-6 py-12 sm:px-10 lg:px-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+            Featured catalogue
+          </p>
+          <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
             {featured.title}
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-body">
+          <p className="mt-4 max-w-md text-base leading-relaxed text-body">
             {featured.excerpt}
           </p>
 
           <div className="mt-6 flex items-center gap-3">
-            <div className="size-10 overflow-hidden rounded-full bg-surface-alt">
+            <div className="size-10 overflow-hidden bg-surface-alt">
               <Media
                 src={featured.authorAvatar}
                 alt="Author"
@@ -155,14 +157,14 @@ export function FeaturedCollection({ query }: { query?: string }) {
             </span>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild variant="brand" size="xl">
-              <Link href="/catalogues">View Collection</Link>
+              <Link href="/catalogues">View collection</Link>
             </Button>
             <Button asChild variant="brandOutline" size="xl">
               <Link href="/catalogues">
                 <Download className="size-4" />
-                Download Catalogue
+                Download catalogue
               </Link>
             </Button>
           </div>
@@ -182,12 +184,19 @@ export function ExploreCollections({ query }: { query?: string }) {
 
   return (
     <Section id="collections" tone="alt" className="scroll-mt-28">
-      <SectionHeading align="center" title={cataloguePage.explore.title} />
-      <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {collections.map((col) => (
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Collections
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {cataloguePage.explore.title}
+        </h2>
+      </div>
+      <Stagger className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+        {collections.map((col, index) => (
           <StaggerItem
             key={col.title}
-            className="overflow-hidden rounded-md border border-border bg-background transition-shadow duration-200 hover:shadow-md"
+            className="overflow-hidden bg-background"
           >
             <div className="relative">
               <Media
@@ -197,48 +206,42 @@ export function ExploreCollections({ query }: { query?: string }) {
                 sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
               />
             </div>
-            <div className="p-4">
-              <h3 className="text-base font-semibold">{col.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-body">
+            <div className="p-5">
+              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-3 text-base font-semibold">{col.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-body">
                 {col.description}
               </p>
 
-              <p className="mt-3 text-xs font-semibold text-ink">Best For</p>
+              <p className="mt-4 text-xs font-semibold text-ink">Best for</p>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
                 {col.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded border border-border px-2 py-0.5 text-[0.6875rem] text-body"
+                    className="border border-border px-2 py-0.5 text-[0.6875rem] text-body"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
 
-              <div className="mt-4 flex items-center justify-between">
-                <Link
-                  href="/catalogues"
-                  className="text-sm font-semibold text-ink transition-colors hover:text-brand"
-                >
-                  Explore Collection
-                </Link>
-                <ArrowRight className="size-4 text-ink" />
-              </div>
-
-              <Button asChild variant="brand" size="xl" className="mt-3 w-full">
-                <Link href="/catalogues">
-                  <Download className="size-4" />
-                  Download Catalogue
-                </Link>
-              </Button>
+              <Link
+                href="/catalogues"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors hover:text-brand"
+              >
+                Explore collection
+                <ArrowRight className="size-3.5" />
+              </Link>
             </div>
           </StaggerItem>
         ))}
       </Stagger>
 
-      <div className="mt-10 flex justify-center">
+      <div className="mt-10">
         <Button asChild variant="brand" size="xl">
-          <Link href="/catalogues">View all Collections</Link>
+          <Link href="/catalogues">View all collections</Link>
         </Button>
       </div>
     </Section>
@@ -251,45 +254,35 @@ export function ChooseByMatters() {
   const cards = cataloguePage.matters.cards;
   return (
     <Section>
-      <SectionHeading align="center" title={cataloguePage.matters.title} />
-      <div className="mt-10 space-y-4">
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.slice(0, 4).map((card) => (
-            <li
-              key={card.title}
-              className="group flex flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center transition-colors hover:border-brand hover:bg-brand"
-            >
-              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white transition-colors group-hover:bg-white group-hover:text-brand">
-                <card.icon className="size-6" />
-              </span>
-              <p className="mt-4 text-sm font-semibold text-ink transition-colors group-hover:text-white">
-                {card.title}
-              </p>
-              <p className="mt-1 text-xs text-body transition-colors group-hover:text-white/80">
-                {card.description}
-              </p>
-            </li>
-          ))}
-        </ul>
-        <ul className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
-          {cards.slice(4).map((card, i) => (
-            <li
-              key={`${card.title}-${i}`}
-              className="group flex flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center transition-colors hover:border-brand hover:bg-brand"
-            >
-              <span className="flex size-12 items-center justify-center rounded-md bg-brand text-white transition-colors group-hover:bg-white group-hover:text-brand">
-                <card.icon className="size-6" />
-              </span>
-              <p className="mt-4 text-sm font-semibold text-ink transition-colors group-hover:text-white">
-                {card.title}
-              </p>
-              <p className="mt-1 text-xs text-body transition-colors group-hover:text-white/80">
-                {card.description}
-              </p>
-            </li>
-          ))}
-        </ul>
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Selection criteria
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {cataloguePage.matters.title}
+        </h2>
       </div>
+      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        {cards.map((card, index) => (
+          <li
+            key={card.title}
+            className="group flex flex-col bg-background px-5 py-8 transition-colors hover:bg-brand"
+          >
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand transition-colors group-hover:text-white/80">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="mt-5 flex size-10 items-center justify-center bg-brand/10 text-brand transition-colors group-hover:bg-white/15 group-hover:text-white">
+              <card.icon className="size-5" />
+            </span>
+            <p className="mt-5 text-sm font-semibold text-ink transition-colors group-hover:text-white">
+              {card.title}
+            </p>
+            <p className="mt-2 text-xs text-body transition-colors group-hover:text-white/80">
+              {card.description}
+            </p>
+          </li>
+        ))}
+      </ul>
     </Section>
   );
 }
@@ -300,19 +293,28 @@ function IndustryGrid({
   title,
   cards,
   ctaLabel,
+  eyebrow = "Browse",
 }: {
   title: string;
   cards: { title: string; description: string; image: string }[];
   ctaLabel: string;
+  eyebrow?: string;
 }) {
   return (
     <Section tone="alt">
-      <SectionHeading align="center" title={title} />
-      <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          {eyebrow}
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {title}
+        </h2>
+      </div>
+      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((card, i) => (
           <li
             key={`${card.title}-${i}`}
-            className="overflow-hidden rounded-md border border-border bg-background"
+            className="overflow-hidden bg-background"
           >
             <Media
               src={card.image}
@@ -320,20 +322,21 @@ function IndustryGrid({
               className="aspect-[16/10]"
               sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
             />
-            <div className="p-4">
-              <h3 className="text-base font-semibold">{card.title}</h3>
-              <p className="mt-1 text-sm text-body">{card.description}</p>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-sm font-semibold text-brand">
-                  Explore further
-                </span>
-                <ArrowRight className="size-4 text-brand" />
-              </div>
+            <div className="p-5">
+              <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-3 text-base font-semibold">{card.title}</h3>
+              <p className="mt-2 text-sm text-body">{card.description}</p>
+              <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand">
+                Explore further
+                <ArrowRight className="size-3.5" />
+              </span>
             </div>
           </li>
         ))}
       </ul>
-      <div className="mt-10 flex justify-center">
+      <div className="mt-10">
         <Button asChild variant="brand" size="xl">
           <Link href="/catalogues">{ctaLabel}</Link>
         </Button>
@@ -435,8 +438,15 @@ export function SizingGuide() {
   const sg = cataloguePage.sizingGuide;
   return (
     <Section>
-      <SectionHeading align="center" title={sg.title} />
-      <div className="mt-10 overflow-x-auto">
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Reference
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {sg.title}
+        </h2>
+      </div>
+      <div className="mt-10 overflow-x-auto border border-border">
         <table className="w-full min-w-[600px] text-sm">
           <thead>
             <tr className="border-b border-border bg-surface-alt">
@@ -452,7 +462,7 @@ export function SizingGuide() {
           </thead>
           <tbody>
             {sg.rows.map((row, ri) => (
-              <tr key={ri} className="border-b border-border">
+              <tr key={ri} className="border-b border-border last:border-b-0">
                 {row.cells.map((cell, ci) => (
                   <td
                     key={ci}
@@ -470,9 +480,9 @@ export function SizingGuide() {
           </tbody>
         </table>
       </div>
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8">
         <Button asChild variant="brandOutline" size="xl">
-          <Link href="/contact#get-in-touch">Talk to Our Team</Link>
+          <Link href="/contact#get-in-touch">Talk to our team</Link>
         </Button>
       </div>
     </Section>

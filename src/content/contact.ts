@@ -13,7 +13,7 @@ export type ContactChannel = {
 };
 
 export const contactHero = {
-  image: "/images/contact/contact-hero.png",
+  image: "/images/profile/modular-offices-parking.jpg",
   deviceImage: null,
   title: "Let’s discuss your requirement.",
 };
@@ -21,7 +21,7 @@ export const contactHero = {
 export const contactIntro = {
   title: "Call, visit or send your project brief through WhatsApp.",
   description:
-    "Review your prepared message before sending it in WhatsApp, or speak with our team directly.",
+    "Tell Mahraj Arabia about modular buildings, portable facilities, fencing, parking shades or steel fabrication. Review your prepared message before sending it in WhatsApp, or speak with our team directly.",
 };
 
 export const contactChannels: ContactChannel[] = [

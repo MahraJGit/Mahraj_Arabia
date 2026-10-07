@@ -1,3 +1,4 @@
+import { getArabiaCategories } from "@/content/arabia-posts";
 import { toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { loadMediaMap, resolveMediaUrl } from "@/lib/public/media";
@@ -15,6 +16,8 @@ export async function getCategories(): Promise<BlogCategory[]> {
   try {
     const { Category, Post } = await getModels();
     const docs = await Category.find().sort({ title: 1 }).limit(100).lean();
+    if (docs.length === 0) return getArabiaCategories();
+
     const media = await loadMediaMap(docs.map((doc) => toId(doc.image)));
 
     const counts = await Post.aggregate<{ _id: unknown; total: number }>([
@@ -37,6 +40,6 @@ export async function getCategories(): Promise<BlogCategory[]> {
       };
     });
   } catch {
-    return [];
+    return getArabiaCategories();
   }
 }

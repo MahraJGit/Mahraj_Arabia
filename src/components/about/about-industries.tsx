@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
-import { SectionHeading } from "@/components/layout/section-heading";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { aboutAudiences, aboutIndustries } from "@/content/about";
 import { cn } from "@/lib/utils";
@@ -17,17 +16,24 @@ const industrySpanClass = {
 export function AboutIndustries() {
   return (
     <Section>
-      <SectionHeading align="center" title="Industries we Serve" />
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Project settings
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          Industries we serve.
+        </h2>
+      </div>
 
-      <Stagger className="mt-10 grid auto-rows-36 grid-flow-row-dense grid-cols-1 gap-4 sm:auto-rows-40 sm:grid-cols-2 lg:auto-rows-46 lg:grid-cols-4">
+      <Stagger className="mt-10 grid auto-rows-36 grid-flow-row-dense grid-cols-1 gap-px overflow-hidden border border-border bg-border sm:auto-rows-40 sm:grid-cols-2 lg:auto-rows-46 lg:grid-cols-4">
         {aboutIndustries.map((industry) => (
           <StaggerItem
             key={industry.title}
-            className={cn("min-w-0", industrySpanClass[industry.size])}
+            className={cn("min-w-0 bg-background", industrySpanClass[industry.size])}
           >
             <Link
-              href="/services"
-              className="group relative flex size-full overflow-hidden rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
+              href="/industries"
+              className="group relative flex size-full overflow-hidden focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
             >
               <Media
                 src={industry.image}
@@ -38,19 +44,19 @@ export function AboutIndustries() {
 
               <span
                 aria-hidden
-                className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+                className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
               />
 
-              <span className="absolute inset-x-0 bottom-0 flex translate-y-2 items-end justify-between gap-4 p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+              <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-4">
                 <span className="min-w-0">
                   <span className="block truncate font-heading text-sm font-semibold text-white sm:text-base">
                     {industry.title}
                   </span>
                   <span className="mt-1 block text-xs text-white/80">
-                    Explore Solutions
+                    Explore settings
                   </span>
                 </span>
-                <span className="flex size-7 shrink-0 items-center justify-center rounded bg-white text-brand transition-colors group-hover:bg-brand group-hover:text-white">
+                <span className="flex size-7 shrink-0 items-center justify-center bg-white text-brand transition-colors group-hover:bg-brand group-hover:text-white">
                   <ArrowRight className="size-3.5" />
                 </span>
               </span>
@@ -65,46 +71,45 @@ export function AboutIndustries() {
 export function AboutAudiences() {
   return (
     <section>
-      {aboutAudiences.map((audience, index) => (
-        <Section
-          key={audience.title}
-          tone={index % 2 === 0 ? "default" : "alt"}
-          spacing="compact"
-        >
-          <div
-            className={cn(
-              "grid items-center gap-8 md:grid-cols-[14rem_minmax(0,1fr)]",
-              audience.imageSide === "end" &&
-                "md:grid-cols-[minmax(0,1fr)_14rem]"
-            )}
-          >
-            {audience.imageSide === "start" ? (
-              <Media
-                src={audience.image}
-                alt={audience.title}
-                className="aspect-[4/3] rounded-md"
-                sizes="14rem"
-              />
-            ) : null}
-            <div>
-              <h2 className="text-2xl font-semibold sm:text-3xl">
-                {audience.title}
-              </h2>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-body">
-                {audience.description}
-              </p>
+      {aboutAudiences.map((audience, index) => {
+        const imageRight = audience.imageSide === "end" || index % 2 === 0;
+
+        return (
+          <div key={audience.title} className="border-b border-border last:border-b-0">
+            <div className="grid lg:grid-cols-2">
+              <div
+                className={cn(
+                  "relative min-h-[18rem] bg-surface-alt sm:min-h-[22rem] lg:min-h-[28rem]",
+                  imageRight ? "lg:order-2" : "lg:order-1"
+                )}
+              >
+                <Media
+                  src={audience.image}
+                  alt={audience.title}
+                  className="absolute inset-0 size-full"
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                />
+              </div>
+              <div
+                className={cn(
+                  "flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-8 lg:py-16",
+                  imageRight ? "lg:order-1" : "lg:order-2"
+                )}
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+                  Who we support
+                </p>
+                <h2 className="mt-3 max-w-md font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+                  {audience.title}
+                </h2>
+                <p className="mt-4 max-w-md text-base leading-relaxed text-body">
+                  {audience.description}
+                </p>
+              </div>
             </div>
-            {audience.imageSide === "end" ? (
-              <Media
-                src={audience.image}
-                alt={audience.title}
-                className="aspect-[4/3] rounded-md"
-                sizes="14rem"
-              />
-            ) : null}
           </div>
-        </Section>
-      ))}
+        );
+      })}
     </section>
   );
 }

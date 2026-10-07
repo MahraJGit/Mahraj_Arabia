@@ -1,57 +1,44 @@
-import { Star } from "lucide-react";
-
 import { Section } from "@/components/layout/section";
-import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { whyChooseIntro, whyChooseItems } from "@/content/reviews";
 
-function WhyCard({ title, subtitle }: { title: string; subtitle: string }) {
-  return (
-    <div className="group flex h-full flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center transition-colors hover:border-brand hover:bg-brand">
-      <Star className="size-8 fill-brand text-brand transition-colors group-hover:fill-white group-hover:text-white" />
-      <p className="mt-4 text-sm font-semibold text-ink transition-colors group-hover:text-white">
-        {title}
-      </p>
-      <p className="mt-1 text-xs text-body transition-colors group-hover:text-white/80">
-        {subtitle}
-      </p>
-    </div>
-  );
-}
-
 export function WhyClientsChoose() {
-  const topRow = whyChooseItems.slice(0, 4);
-  const bottomRow = whyChooseItems.slice(4);
-
   return (
     <Section>
-      <SectionHeading
-        align="center"
-        title={whyChooseIntro.title}
-        description={whyChooseIntro.description}
-      />
-
-      <div className="mt-10 space-y-4">
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {topRow.map((item, index) => (
-            <li key={`${item.subtitle}-${index}`}>
-              <WhyCard title={item.title} subtitle={item.subtitle} />
-            </li>
-          ))}
-        </ul>
-
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {bottomRow.map((item, index) => (
-            <li key={`${item.subtitle}-${index + 4}`}>
-              <WhyCard title={item.title} subtitle={item.subtitle} />
-            </li>
-          ))}
-        </ul>
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Client confidence
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {whyChooseIntro.title}
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-body">
+          {whyChooseIntro.description}
+        </p>
       </div>
 
-      <div className="mt-10 flex justify-center">
+      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+        {whyChooseItems.map((item, index) => (
+          <li
+            key={`${item.subtitle}-${index}`}
+            className="group min-h-44 bg-background p-6 transition-colors hover:bg-brand"
+          >
+            <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand transition-colors group-hover:text-white/80">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <p className="mt-5 text-sm font-semibold text-ink transition-colors group-hover:text-white">
+              {item.title}
+            </p>
+            <p className="mt-2 text-xs text-body transition-colors group-hover:text-white/80">
+              {item.subtitle}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-10">
         <Button asChild variant="brandOutline" size="xl">
-          <a href="#industry-reviews">Read our Reviews</a>
+          <a href="#industry-reviews">Read our reviews</a>
         </Button>
       </div>
     </Section>

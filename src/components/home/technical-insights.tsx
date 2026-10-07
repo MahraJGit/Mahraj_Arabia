@@ -28,18 +28,18 @@ export async function TechnicalInsights() {
         }));
 
   return (
-    <Section tone="alt">
+    <Section id="blogs">
       <SectionHeading
         align="center"
-        title="Expert Project Insights"
+        title="Expert Project Blogs"
         description="Practical guides to help you prepare a clearer modular or steel project brief."
       />
 
       <HomeCarousel
         className="mt-10"
         itemClassName="w-full md:w-[calc((100%-2.5rem)/3)]"
-        prevLabel="Previous insights"
-        nextLabel="Next insights"
+        prevLabel="Previous blogs"
+        nextLabel="Next blogs"
       >
         {posts.map((post) => (
           <article key={post.key}>

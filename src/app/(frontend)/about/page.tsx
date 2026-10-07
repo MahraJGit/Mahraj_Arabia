@@ -4,7 +4,6 @@ import { AboutCta, AboutFaq } from "@/components/about/about-closing";
 import {
   AboutCompliance,
   AboutObjectives,
-  CommercialProcess,
 } from "@/components/about/about-delivery";
 import { AboutHero } from "@/components/about/about-hero";
 import {
@@ -31,7 +30,6 @@ export default function AboutPage() {
       <AboutIndustries />
       <AboutAudiences />
       <AboutObjectives />
-      <CommercialProcess />
       <AboutCompliance />
       <AboutFaq />
       <AboutCta />

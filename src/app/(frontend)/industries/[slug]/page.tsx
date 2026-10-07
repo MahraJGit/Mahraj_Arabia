@@ -36,7 +36,12 @@ export default async function IndustryDetailPage({
       <PageHero
         title={`Solutions for ${industry.label}`}
         description={`Capabilities planned around the operational demands of ${industry.label.toLowerCase()} projects.`}
-        breadcrumb={[{ label: "Industries", href: "/industries" }]}
+        breadcrumb={[
+          { label: "Industries", href: "/industries" },
+          { label: industry.label, href: `/industries/${industry.slug}` },
+        ]}
+        image="/images/advantage-installation.jpg"
+        eyebrow="Project settings"
       />
       <ComingSoon note="Sector-specific guidance, recommended systems, and reference projects are being prepared for this industry." />
     </>

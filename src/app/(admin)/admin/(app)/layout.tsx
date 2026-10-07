@@ -24,18 +24,18 @@ export default async function ManageAppLayout({
     <div className="flex min-h-screen">
       <aside className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r border-border bg-white">
         <div className="flex items-center gap-2.5 border-b border-border px-4 py-4">
-          <span className="relative size-8 overflow-hidden rounded-lg">
+          <span className="relative size-8 shrink-0 overflow-hidden">
             <Image
-              src="/brand/mahraj-arabia-logo.png"
+              src="/brand/mahraj-mark.png"
               alt=""
               fill
               sizes="32px"
-              className="object-contain"
+              className="object-cover object-top"
             />
           </span>
           <div className="min-w-0">
             <p className="truncate font-heading text-sm font-semibold text-ink">
-              Mahraj Arabia
+              Mahraj <span className="text-brand">Arabia</span>
             </p>
             <p className="text-[11px] text-muted-foreground">CMS</p>
           </div>

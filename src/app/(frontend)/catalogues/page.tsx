@@ -11,9 +11,9 @@ import {
   RealProjects,
   TestimonialBand,
   SizingGuide,
-  CatalogueCta,
 } from "@/components/catalogues/catalogue-sections";
 import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
+import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { cataloguePage } from "@/content/catalogues";
 
 export const metadata: Metadata = {
@@ -46,7 +46,10 @@ export default async function CataloguesPage({
       <RealProjects query={query} />
       <TestimonialBand />
       <SizingGuide />
-      <CatalogueCta />
+      <ProfileClosingCta
+        title="Need a catalogue for your brief?"
+        description="Tell us the solution family and project setting—Mahraj Arabia will share the right references."
+      />
       <TechnicalFaqForm
         formIdPrefix="catalogue"
         faqs={cataloguePage.faqs}

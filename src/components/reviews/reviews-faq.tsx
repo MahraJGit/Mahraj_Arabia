@@ -9,10 +9,15 @@ import { reviewsFaqIntro, reviewsFaqs } from "@/content/reviews";
 
 export function ReviewsFaq() {
   return (
-    <Section tone="alt" spacing="none" className="pb-16 md:pb-20 lg:pb-24">
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-semibold sm:text-4xl">FAQs</h2>
-        <p className="mt-4 text-sm leading-relaxed text-body sm:text-base">
+    <Section>
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          FAQs
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          Frequently asked questions.
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-body">
           {reviewsFaqIntro}
         </p>
       </div>
@@ -21,7 +26,7 @@ export function ReviewsFaq() {
         type="single"
         collapsible
         defaultValue={reviewsFaqs[0]?.question}
-        className="mx-auto mt-8 max-w-3xl"
+        className="mt-8 max-w-3xl border-y border-border"
       >
         {reviewsFaqs.map((faq) => (
           <AccordionItem key={faq.question} value={faq.question}>

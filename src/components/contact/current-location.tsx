@@ -1,13 +1,19 @@
 import { Section } from "@/components/layout/section";
-import { SectionHeading } from "@/components/layout/section-heading";
 import { currentLocation } from "@/content/contact";
 
 export function CurrentLocation() {
   return (
     <Section>
-      <SectionHeading align="center" title={currentLocation.title} />
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Visit us
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {currentLocation.title}
+        </h2>
+      </div>
 
-      <div className="mt-10 overflow-hidden rounded-md border border-border shadow-sm">
+      <div className="mt-10 overflow-hidden border border-border">
         <iframe
           title="Mahraj Arabia Riyadh office location"
           src={currentLocation.embedUrl}

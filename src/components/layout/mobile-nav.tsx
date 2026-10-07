@@ -46,50 +46,46 @@ export function MobileNav({ megaMenu }: { megaMenu: MegaMenuColumn[] }) {
         <nav className="flex flex-col px-4 pb-4">
           {mainNav.map((item) =>
             item.hasMegaMenu ? (
-              <Accordion key={item.href} type="single" collapsible>
-                <AccordionItem value="services" className="border-b-0">
-                  <AccordionTrigger className="py-3 text-base font-medium text-ink hover:no-underline!">
-                    {item.label}
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-3 [&_a]:no-underline!">
-                    <Accordion type="single" collapsible className="space-y-2">
-                      {megaMenu.map((column) => (
-                        <AccordionItem
-                          key={column.title}
-                          value={column.title}
-                          className="rounded-md border border-border px-3"
-                        >
-                          <AccordionTrigger className="py-3 text-sm font-semibold text-ink hover:no-underline">
-                            {column.title}
-                          </AccordionTrigger>
-                          <AccordionContent className="pb-3">
-                            <ul className="space-y-2">
-                              {column.links.map((link) => (
-                                <li key={`${column.title}-${link.href}-${link.label}`}>
-                                  <Link
-                                    href={link.href}
-                                    onClick={close}
-                                    className="text-sm text-body no-underline hover:text-brand"
-                                  >
-                                    {link.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                    <Link
-                      href="/services"
-                      onClick={close}
-                      className="mt-4 inline-block text-sm font-semibold text-brand no-underline"
-                    >
-                      View All Services
-                    </Link>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+              <div key={item.href} className="border-b border-border">
+                <Link
+                  href={item.href}
+                  onClick={close}
+                  className="block py-3 text-base font-medium text-ink transition-colors hover:text-brand"
+                >
+                  {item.label}
+                </Link>
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="services" className="border-b-0">
+                    <AccordionTrigger className="py-2 text-sm font-medium text-body hover:no-underline!">
+                      Browse categories
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-3 [&_a]:no-underline!">
+                      <ul className="space-y-2">
+                        {megaMenu.flatMap((column) =>
+                          column.links.map((link) => (
+                            <li key={`${column.title}-${link.href}-${link.label}`}>
+                              <Link
+                                href={link.href}
+                                onClick={close}
+                                className="text-sm text-body no-underline hover:text-brand"
+                              >
+                                {link.label}
+                              </Link>
+                            </li>
+                          ))
+                        )}
+                      </ul>
+                      <Link
+                        href="/services"
+                        onClick={close}
+                        className="mt-4 inline-block text-sm font-semibold text-brand no-underline"
+                      >
+                        View all services
+                      </Link>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
             ) : (
               <Link
                 key={item.href}

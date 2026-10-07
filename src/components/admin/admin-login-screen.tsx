@@ -7,18 +7,18 @@ export function AdminLoginScreen() {
     <div className="flex min-h-screen items-center justify-center px-4 py-12">
       <div className="w-full max-w-md rounded-2xl border border-border bg-white p-8 shadow-sm">
         <div className="mb-8 flex items-center gap-3">
-          <span className="relative size-10 overflow-hidden rounded-xl">
+          <span className="relative size-10 shrink-0 overflow-hidden">
             <Image
-              src="/brand/mahraj-arabia-logo.png"
+              src="/brand/mahraj-mark.png"
               alt=""
               fill
               sizes="40px"
-              className="object-contain"
+              className="object-cover object-top"
             />
           </span>
           <div>
             <p className="font-heading text-lg font-semibold text-ink">
-              Mahraj Arabia
+              Mahraj <span className="text-brand">Arabia</span>
             </p>
             <p className="text-sm text-muted-foreground">Content management</p>
           </div>

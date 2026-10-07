@@ -32,7 +32,7 @@ export function CatalogueSearchForm({ query }: { query?: string }) {
     <form
       role="search"
       onSubmit={onSubmit}
-      className="flex flex-1 items-center gap-3 rounded-full border border-white/20 bg-black/45 p-2"
+      className="flex w-full max-w-xl items-center gap-2 border border-border bg-background p-1.5"
     >
       <input
         type="search"
@@ -47,11 +47,11 @@ export function CatalogueSearchForm({ query }: { query?: string }) {
         }}
         placeholder={cataloguePage.hero.searchPlaceholder}
         aria-label="Search catalogues"
-        className="min-w-0 flex-1 bg-transparent px-4 text-sm text-white outline-none placeholder:text-white/60 sm:text-base"
+        className="min-w-0 flex-1 bg-transparent px-4 text-sm text-ink outline-none placeholder:text-body sm:text-base"
       />
       <button
         type="submit"
-        className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark"
+        className="inline-flex size-10 shrink-0 items-center justify-center bg-brand text-white transition-colors hover:bg-brand-dark"
         aria-label="Search"
       >
         <Search className="size-5" />

@@ -5,6 +5,7 @@ import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
+import { solutionStories } from "@/content/solution-stories";
 import { highlightIcon } from "@/lib/services/highlight-icons";
 import type {
   ServiceCard,
@@ -56,7 +57,7 @@ export function ExploreServices({
 
       <div className="mt-10 flex justify-center">
         <Button asChild variant="brandOutline" size="xl">
-          <Link href="/services">View all categories</Link>
+          <Link href="/services">View all solutions</Link>
         </Button>
       </div>
     </Section>
@@ -64,28 +65,70 @@ export function ExploreServices({
 }
 
 export function ServiceOverview({ service }: { service: ServiceDetailView }) {
+  const story = solutionStories.find(
+    (item) => item.href === `/services/${service.slug}`
+  );
+  const title = story?.title ?? service.overviewTitle;
+  const description = story?.description ?? service.overviewDescription;
+  const points =
+    story?.points ?? service.applications[0]?.points.slice(0, 3) ?? [];
+  const cta = story?.cta ?? "Request a quotation";
+
+  if (!title && !description) return null;
+
   return (
-    <Section tone="alt">
-      <div className="grid items-center gap-10 lg:grid-cols-[20rem_minmax(0,1fr)]">
-        <Media
-          src={service.overviewImage}
-          alt={`${service.title} installation`}
-          className="aspect-4/3 rounded-md"
-          sizes="20rem"
-        />
-        <div>
-          <h2 className="text-3xl font-semibold sm:text-4xl">
-            {service.overviewTitle}
-          </h2>
-          <p className="mt-5 max-w-2xl text-sm leading-relaxed text-body sm:text-base">
-            {service.overviewDescription}
+    <section className="border-y border-border bg-background">
+      <div className="grid lg:grid-cols-2">
+        <div className="flex flex-col justify-center px-4 py-12 sm:px-6 lg:order-1 lg:px-8 lg:py-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+            {service.title}
           </p>
-          <Button asChild variant="brand" size="xl" className="mt-7">
-            <Link href="/contact#get-in-touch">View Installation</Link>
-          </Button>
+          <h2 className="mt-3 max-w-md font-heading text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+            {title}
+          </h2>
+          {description ? (
+            <p className="mt-4 max-w-md text-base leading-relaxed text-body">
+              {description}
+            </p>
+          ) : null}
+
+          {points.length > 0 ? (
+            <ul className="mt-7 max-w-md space-y-3 border-t border-border pt-7">
+              {points.map((point) => (
+                <li
+                  key={point}
+                  className="flex gap-3 text-sm leading-snug text-ink sm:text-[0.9375rem]"
+                >
+                  <span
+                    aria-hidden
+                    className="mt-1.5 size-1.5 shrink-0 rounded-full bg-brand"
+                  />
+                  {point}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+
+          <div className="mt-8">
+            <Button asChild variant="brand" size="lg">
+              <Link href="/contact#quote-form">
+                {cta}
+                <ArrowRight />
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="relative min-h-[18rem] bg-surface-alt sm:min-h-[22rem] lg:order-2 lg:min-h-[28rem]">
+          <Media
+            src={story?.image || service.overviewImage || service.image}
+            alt={service.title}
+            className="absolute inset-0 size-full"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+          />
         </div>
       </div>
-    </Section>
+    </section>
   );
 }
 

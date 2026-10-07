@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const reviewsHero = {
-  image: "/images/projects/what-our-clients-say.png",
+  image: "/images/profile/modular-offices-parking.jpg",
   title: "What Our Clients Say About Us",
   description:
     "Real feedback from businesses and project teams who trusted us for modular, portable and steel solutions.",
@@ -149,7 +149,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "We needed site offices that matched our programme. Delivery and installation stayed coordinated without slowing the main works.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -158,7 +158,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "We compared three vendors before choosing Mahraj Arabia. Pricing was clear, and we never felt pushed into extras we did not need.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -167,7 +167,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "Our previous cabins wore out quickly. These porta cabins are still holding up well despite heavy daily site traffic.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 2,
   },
   {
@@ -176,7 +176,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "The installation team arrived on time every day and left the compound tidy. That level of care honestly surprised us.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 2,
   },
   {
@@ -185,7 +185,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "We had plenty of questions before deciding, and the team answered every one without rushing the brief.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -194,7 +194,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "Hundreds of staff use these facilities every day, and after months of operation the modular units still look well maintained.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 1,
   },
   {
@@ -203,7 +203,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "Timing could not have been better. They completed installation during our planned shutdown window with no disruption to operations.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 1,
   },
   {
@@ -212,7 +212,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "We were coordinating multiple compounds at once, but the team kept drawings, fabrication and delivery organised.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 1,
   },
   {
@@ -221,7 +221,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "They did not push the most expensive option. They understood our budget and gave practical steel and modular choices.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 1,
   },
   {
@@ -230,7 +230,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "The new modular offices made the compound feel more professional, and the teams settled in quickly.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 1,
   },
   {
@@ -239,7 +239,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "Our parking shades needed to look clean and still handle heavy daily use. The finished canopy did both.",
-    projectImage: "/images/services/landscaping-outdoor-industry.png",
+    projectImage: "/images/profile/car-parking-shades.jpg",
     extraViews: 2,
   },
   {
@@ -248,7 +248,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "Our campus stays busy around the clock. The team managed installation smoothly without affecting visitors.",
-    projectImage: "/images/services/landscaping-outdoor-industry.png",
+    projectImage: "/images/profile/car-parking-shades.jpg",
     extraViews: 2,
   },
   {
@@ -257,7 +257,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "We got a practical scope that looks professional and works for everyday operations—no unnecessary complexity.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -266,7 +266,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "We wanted the office compound to feel modern and welcoming. The modular fit-out gave us exactly that.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -275,7 +275,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "Foot traffic is high every day, but the facilities still look sharp months later. We have not seen premature wear.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 2,
   },
   {
@@ -284,7 +284,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "Our exhibition deadline was extremely tight, but the temporary structures arrived and were installed on schedule.",
-    projectImage: "/images/catalogue/Events.png",
+    projectImage: "/images/profile/event-tent-luxury.jpg",
     extraViews: 1,
   },
   {
@@ -293,7 +293,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "The temporary setup pulled the whole venue together. It looked clean, felt professional and took pressure off our team.",
-    projectImage: "/images/catalogue/Events.png",
+    projectImage: "/images/profile/event-tent-luxury.jpg",
     extraViews: 1,
   },
   {
@@ -302,7 +302,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "Event deadlines can be stressful, but the installation team stayed focused and kept everything moving.",
-    projectImage: "/images/catalogue/Events.png",
+    projectImage: "/images/profile/event-tent-luxury.jpg",
     extraViews: 1,
   },
   {
@@ -311,7 +311,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "We only needed a temporary structure, but the finished look felt much more premium than we expected.",
-    projectImage: "/images/catalogue/Events.png",
+    projectImage: "/images/profile/event-tent-luxury.jpg",
     extraViews: 1,
   },
   {
@@ -329,7 +329,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "We thought fabrication and delivery would disrupt the corridor works, but the programme stayed clear and well managed.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 2,
   },
   {
@@ -338,7 +338,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "Matching new site facilities with existing compound standards was a concern. The team got finishes and layout right.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -347,7 +347,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "Everything was planned properly from the beginning. It never felt like the installation was rushed into the schedule.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 2,
   },
   {
@@ -356,7 +356,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "We wanted the space to feel practical and welcoming for site teams. The finished modular offices delivered that.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -365,7 +365,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "Guests and inspectors walk through this compound daily, and the facilities still look fresh and organised.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
   {
@@ -392,7 +392,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "We appreciated honest recommendations on modular layouts instead of a one-size-fits-all package.",
-    projectImage: "/images/projects/global-tech-hq.jpg",
+    projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 1,
   },
   {
@@ -401,7 +401,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "From brief to installation, communication stayed clear. Our site coordinators always knew what was arriving next.",
-    projectImage: "/images/advantage-installation.jpg",
+    projectImage: "/images/profile/steel-fabrication-workshop.jpg",
     extraViews: 2,
   },
   {
@@ -410,7 +410,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "The portable facilities arrived ready for use, and the installation team coordinated cleanly with our HSE requirements.",
-    projectImage: "/images/projects/elite-padel-club.jpg",
+    projectImage: "/images/profile/modular-office-complex.jpg",
     extraViews: 2,
   },
 ];
@@ -423,6 +423,9 @@ export const solutionFeedbackFilters = [
   "Event Structures",
   "Custom Modular",
   "Site Facilities",
+  "Police Barrier",
+  "Heras Fence",
+  "Corrugated Fence",
 ];
 
 export type SolutionProject = {
@@ -440,7 +443,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Porta Cabins and Site Offices",
     location: "Riyadh, KSA",
     category: "Porta Cabins",
-    image: "/images/projects/global-tech-hq.jpg",
+    image: "/images/profile/porta-cabin-site-office.png",
     rating: 5,
   },
   {
@@ -448,7 +451,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Modular Offices and Meeting Rooms",
     location: "Riyadh, KSA",
     category: "Modular Offices",
-    image: "/images/projects/global-tech-hq.jpg",
+    image: "/images/profile/porta-cabin-site-office.png",
     rating: 5,
   },
   {
@@ -456,7 +459,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Car Parking Shades",
     location: "Riyadh, KSA",
     category: "Parking Shades",
-    image: "/images/services/landscaping-outdoor-industry.png",
+    image: "/images/profile/car-parking-shades.jpg",
     rating: 5,
   },
   {
@@ -464,7 +467,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Steel Structures and Fabrication",
     location: "Riyadh, KSA",
     category: "Steel Structures",
-    image: "/images/advantage-installation.jpg",
+    image: "/images/profile/steel-fabrication-workshop.jpg",
     rating: 4,
   },
   {
@@ -472,7 +475,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Event Tents and Temporary Structures",
     location: "Riyadh, KSA",
     category: "Event Structures",
-    image: "/images/catalogue/Events.png",
+    image: "/images/profile/event-tent-luxury.jpg",
     rating: 5,
   },
   {
@@ -480,7 +483,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Customized Modular Solutions",
     location: "Riyadh, KSA",
     category: "Custom Modular",
-    image: "/images/projects/elite-padel-club.jpg",
+    image: "/images/profile/modular-office-complex.jpg",
     rating: 4,
   },
 ];
@@ -565,7 +568,7 @@ export const reviewsFaqs = [
 ];
 
 export const reviewsCta = {
-  image: "/images/advantage-installation.jpg",
+  image: "/images/profile/steel-fabrication-workshop.jpg",
   title: "Like What Our Clients Are Saying?",
   description: "Bring the same clarity, coordination and support to your next modular or steel project. Our team is ready to help you get started.",
 };

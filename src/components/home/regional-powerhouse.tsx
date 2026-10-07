@@ -7,7 +7,7 @@ import { regions, trustPartnerLogos } from "@/content/home";
 
 export function RegionalPowerhouse() {
   return (
-    <Section tone="alt">
+    <Section id="regional" tone="alt">
       <div className="rounded-md border border-border bg-background p-8 lg:p-12">
         <HomeCarousel
           controlsPlacement="before"
@@ -23,7 +23,7 @@ export function RegionalPowerhouse() {
                 Based in Riyadh
               </p>
               <h2 className="mt-2 text-3xl font-semibold sm:text-4xl">
-                Built for Saudi Projects
+                Infrastructure that supports the work
               </h2>
             </div>
           }
@@ -49,17 +49,17 @@ export function RegionalPowerhouse() {
                 </h3>
                 <div className="relative overflow-hidden rounded-md border border-border">
                   <Media
-                    src="/images/gcc-map.jpg"
-                    alt="GCC coverage map"
-                    className="aspect-[16/10] grayscale"
+                    src="/images/profile/steel-plant-yard.jpg"
+                    alt="Mahraj Arabia steel and project infrastructure"
+                    className="aspect-[16/10]"
                     sizes="(min-width: 1024px) 45vw, 90vw"
                   />
                   <div
                     aria-hidden
-                    className="absolute inset-0 bg-gradient-to-b from-white via-white/75 to-white/15"
+                    className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center p-4">
-                    <p className="flex flex-col items-center gap-2 rounded-md border border-border bg-background/95 px-6 py-4 text-center text-sm font-semibold shadow-sm">
+                  <div className="absolute inset-0 flex items-end justify-center p-4 pb-6">
+                    <p className="flex flex-col items-center gap-2 rounded-md border border-white/20 bg-background/95 px-6 py-4 text-center text-sm font-semibold shadow-sm">
                       <MapPin className="size-5 text-brand" />
                       Serving projects across Saudi Arabia
                     </p>

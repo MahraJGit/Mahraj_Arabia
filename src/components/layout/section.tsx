@@ -30,6 +30,7 @@ export function Section({
   tone,
   spacing,
   children,
+  id,
   ...props
 }: React.ComponentProps<"section"> &
   VariantProps<typeof sectionVariants> & {
@@ -37,8 +38,13 @@ export function Section({
   }) {
   return (
     <section
+      id={id}
       data-section=""
-      className={cn(sectionVariants({ tone, spacing }), className)}
+      className={cn(
+        sectionVariants({ tone, spacing }),
+        id && "scroll-mt-28",
+        className
+      )}
       {...props}
     >
       <Reveal>

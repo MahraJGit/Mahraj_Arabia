@@ -1,12 +1,9 @@
 import { Media } from "@/components/media";
 import { IndustryReviewsCarousel } from "@/components/reviews/industry-reviews-carousel";
 import { Section } from "@/components/layout/section";
-import { SectionHeading } from "@/components/layout/section-heading";
 import { industryReviewFilters, industryReviews } from "@/content/reviews";
 
 export function IndustryReviews() {
-  // Media reads the filesystem, so the images are rendered here and handed to
-  // the client carousel as ready-made nodes.
   const media = Object.fromEntries(
     industryReviews.map((review) => [
       review.industry,
@@ -22,11 +19,18 @@ export function IndustryReviews() {
 
   return (
     <Section id="industry-reviews" tone="alt">
-      <SectionHeading
-        align="center"
-        title="What Our Clients Say"
-        description="Real project experiences from different sites across the region, from dependable delivery to smooth installation and professional support."
-      />
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Testimonials
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          What our clients say.
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-body">
+          Real project experiences from different sites across the region, from
+          dependable delivery to smooth installation and professional support.
+        </p>
+      </div>
 
       <IndustryReviewsCarousel
         filters={industryReviewFilters}

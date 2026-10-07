@@ -1,17 +1,23 @@
-import { Target } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Target } from "lucide-react";
 
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
-import { aboutOverview, aboutPartners } from "@/content/about";
+import { Button } from "@/components/ui/button";
+import { aboutPromise } from "@/content/delivery-approach";
+import { aboutPartners } from "@/content/about";
 
 export function AboutPartners() {
   return (
     <Section spacing="compact">
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+        Trusted by project teams
+      </p>
+      <ul className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
         {aboutPartners.map((partner) => (
           <li
             key={partner}
-            className="flex h-14 items-center justify-center rounded border border-border px-4 text-center text-sm font-black italic tracking-tight text-ink/80"
+            className="flex h-14 items-center justify-center bg-background px-4 text-center text-sm font-semibold tracking-tight text-ink/80"
           >
             {partner}
           </li>
@@ -23,43 +29,49 @@ export function AboutPartners() {
 
 export function AboutOverview() {
   return (
-    <Section tone="alt">
-      <div className="grid items-center gap-10 lg:grid-cols-2">
-        <Media
-          src={aboutOverview.image}
-          alt="Mahraj Arabia modular project installation"
-          className="aspect-[4/3] rounded-md"
-          sizes="(min-width: 1024px) 46vw, 90vw"
-        />
+    <section className="border-b border-border">
+      <div className="grid lg:grid-cols-2">
+        <div className="relative min-h-[18rem] bg-surface-alt sm:min-h-[22rem] lg:min-h-[28rem]">
+          <Media
+            src="/images/profile/steel-and-modular-collage.jpg"
+            alt="Mahraj Arabia modular and steel solutions"
+            className="absolute inset-0 size-full"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+          />
+        </div>
 
-        <div>
-          <h2 className="text-3xl font-semibold sm:text-4xl">
-            {aboutOverview.title}
+        <div className="flex flex-col justify-center px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+            About Mahraj Arabia
+          </p>
+          <h2 className="mt-3 max-w-md font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+            From first idea to a site-ready solution.
           </h2>
-          <ol className="mt-8 grid gap-5 sm:grid-cols-2">
-            {aboutOverview.steps.map((step, index) => (
-              <li key={step} className="flex gap-3">
-                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-brand/10 text-sm font-semibold text-brand">
-                  {index + 1}
-                </span>
-                <p className="pt-1 text-sm font-medium leading-relaxed text-ink">
-                  {step}
-                </p>
-              </li>
-            ))}
-          </ol>
+          <p className="mt-4 max-w-md text-base leading-relaxed text-body">
+            {aboutPromise}
+          </p>
 
-          <div className="mt-8 rounded-md border border-border border-s-4 border-s-brand bg-background p-5">
+          <div className="mt-8 border-s-4 border-s-brand bg-surface-alt px-5 py-4">
             <p className="flex items-center gap-2 text-sm font-semibold text-brand">
               <Target className="size-4" />
               Our Promise
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-body">
-              {aboutOverview.objective}
+            <p className="mt-2 text-sm leading-relaxed text-body">
+              Practical design, clear coordination and dependable delivery—shaped
+              around how the solution will be used on site.
             </p>
+          </div>
+
+          <div className="mt-8">
+            <Button asChild variant="brand" size="lg">
+              <Link href="/#working-process">
+                See how we deliver
+                <ArrowRight />
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
-    </Section>
+    </section>
   );
 }

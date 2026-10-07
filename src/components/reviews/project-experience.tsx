@@ -1,5 +1,4 @@
 import { Section } from "@/components/layout/section";
-import { SectionHeading } from "@/components/layout/section-heading";
 import {
   projectExperienceIntro,
   projectExperienceSteps,
@@ -8,33 +7,31 @@ import {
 export function ProjectExperience() {
   return (
     <Section tone="alt">
-      <SectionHeading align="center" title={projectExperienceIntro.title} />
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Delivery path
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {projectExperienceIntro.title}
+        </h2>
+      </div>
 
-      <ul className="mt-12 grid gap-10 sm:grid-cols-2">
+      <ol className="mt-12 grid gap-0 border-y border-border sm:grid-cols-2">
         {projectExperienceSteps.map((step) => (
-          <li key={step.number} className="flex gap-5">
-            <span
-              aria-hidden
-              className="font-heading text-5xl font-bold leading-none sm:text-6xl"
-              style={{
-                backgroundImage:
-                  "linear-gradient(180deg, var(--brand) 0%, color-mix(in srgb, var(--brand) 15%, white) 100%)",
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                color: "transparent",
-              }}
-            >
+          <li
+            key={step.number}
+            className="border-border px-1 py-8 sm:border-e sm:px-6 sm:odd:border-e sm:[&:nth-child(2n)]:border-e-0"
+          >
+            <p className="font-heading text-5xl font-semibold tracking-tight text-brand/20">
               {step.number}
-            </span>
-            <div className="pt-1">
-              <h3 className="text-lg font-semibold text-ink">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-body">
-                {step.description}
-              </p>
-            </div>
+            </p>
+            <h3 className="mt-4 text-lg font-semibold text-ink">{step.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-body">
+              {step.description}
+            </p>
           </li>
         ))}
-      </ul>
+      </ol>
     </Section>
   );
 }

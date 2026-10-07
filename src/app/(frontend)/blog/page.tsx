@@ -12,9 +12,9 @@ import {
 import { getCategories, getFeaturedPosts, getPosts } from "@/lib/public/blog";
 
 export const metadata: Metadata = {
-  title: "Blog",
+  title: "Blogs",
   description:
-    "Short practical guides to help you prepare a clearer modular or steel project brief.",
+    "Practical Mahraj Arabia guides for modular buildings, portable facilities, fencing and steel fabrication across Saudi Arabia.",
 };
 
 function firstValue(value: string | string[] | undefined) {

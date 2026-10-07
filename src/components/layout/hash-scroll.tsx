@@ -3,9 +3,11 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
+const HEADER_OFFSET = 112;
+
 /**
- * Ensures in-app navigations to `/path#section` scroll to the target.
- * Native hash scrolling is unreliable with the App Router + sticky header.
+ * Ensures in-app navigations to `/path#section` scroll to the target
+ * with sticky-header clearance.
  */
 export function HashScroll() {
   const pathname = usePathname();
@@ -15,11 +17,12 @@ export function HashScroll() {
       const hash = window.location.hash.replace(/^#/, "");
       if (!hash) return;
 
-      // Wait a tick so the destination page has painted.
       window.requestAnimationFrame(() => {
         const el = document.getElementById(hash);
         if (!el) return;
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        const top =
+          el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+        window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
       });
     }
 

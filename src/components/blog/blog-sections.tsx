@@ -4,9 +4,7 @@ import {
   BookOpenText,
   CalendarDays,
   Clock,
-  Mail,
   Star,
-  UserRoundSearch,
 } from "lucide-react";
 
 import { FeaturedBlogsCarousel } from "@/components/blog/featured-blogs-carousel";
@@ -25,7 +23,14 @@ export function FeaturedBlogs({ posts }: { posts: BlogCard[] }) {
 
   return (
     <Section>
-      <SectionHeading align="center" title={blogPage.featured.title} />
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Featured
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {blogPage.featured.title}
+        </h2>
+      </div>
       <FeaturedBlogsCarousel articles={posts} />
     </Section>
   );
@@ -35,9 +40,16 @@ export function ExploreByTopic({ categories }: { categories: BlogCategory[] }) {
   if (categories.length === 0) return null;
 
   return (
-    <Section>
-      <SectionHeading title="Explore by Topic" />
-      <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <Section tone="alt">
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Topics
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          Explore by topic.
+        </h2>
+      </div>
+      <ul className="mt-8 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
         {categories.map((topic) => {
           const hasArticles = topic.postCount > 0;
           const href = `/blog?category=${topic.slug}#latest-insights`;
@@ -80,7 +92,7 @@ export function ExploreByTopic({ categories }: { categories: BlogCategory[] }) {
             <li
               key={topic.id}
               className={cn(
-                "group relative overflow-hidden rounded-md",
+                "group relative overflow-hidden bg-background",
                 !hasArticles && "opacity-80"
               )}
             >
@@ -157,8 +169,8 @@ export function WorkingOnSection() {
 
 export function BlogPostCard({ post }: { post: BlogCard }) {
   return (
-    <article className="group h-full overflow-hidden rounded-md border border-border bg-background transition-colors hover:border-brand">
-      <Link href={post.href} className="block">
+    <article className="group h-full overflow-hidden bg-background">
+      <Link href={post.href} className="block h-full">
         <div className="relative">
           <Media
             src={post.image}
@@ -166,42 +178,26 @@ export function BlogPostCard({ post }: { post: BlogCard }) {
             className="aspect-[16/10] transition-transform duration-500 group-hover:scale-105"
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
           />
-          <span className="absolute start-3 top-3 rounded bg-brand px-3 py-1 text-xs font-semibold text-white">
+          <span className="absolute start-3 top-3 bg-brand px-3 py-1 text-xs font-semibold text-white">
             {post.category}
           </span>
         </div>
-        <div className="p-4">
-          <span className="inline-flex size-10 items-center justify-center rounded bg-brand text-white">
-            <BookOpenText className="size-5" />
-          </span>
-          <h3 className="mt-3 text-base font-semibold leading-snug transition-colors group-hover:text-brand">
+        <div className="flex h-full flex-col p-5">
+          <h3 className="text-lg font-semibold leading-snug tracking-tight transition-colors group-hover:text-brand">
             {post.title}
           </h3>
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-body">
+          <p className="mt-3 line-clamp-2 flex-1 text-sm leading-relaxed text-body">
             {post.excerpt}
           </p>
-          {post.author ? (
-            <div className="mt-4 flex items-center gap-2 text-xs text-body">
-              {post.authorImage ? (
-                <Media
-                  src={post.authorImage}
-                  alt={post.authorImageAlt}
-                  className="size-7 shrink-0 rounded-full"
-                  sizes="1.75rem"
-                />
-              ) : null}
-              <span>{post.author}</span>
-            </div>
-          ) : null}
-          <div className="mt-4 flex flex-wrap gap-2 text-[0.6875rem] text-body">
+          <div className="mt-5 flex flex-wrap gap-3 text-[0.6875rem] text-body">
             {post.readTime ? (
-              <span className="inline-flex items-center gap-1.5 rounded border border-border px-2 py-1">
+              <span className="inline-flex items-center gap-1.5">
                 <Clock className="size-3.5 shrink-0" aria-hidden />
                 {post.readTime}
               </span>
             ) : null}
             {post.date ? (
-              <span className="inline-flex items-center gap-1.5 rounded border border-border px-2 py-1">
+              <span className="inline-flex items-center gap-1.5">
                 <CalendarDays className="size-3.5 shrink-0" aria-hidden />
                 {post.date}
               </span>
@@ -245,19 +241,25 @@ export function LatestInsights({
 
   return (
     <Section id="latest-insights">
-      <SectionHeading
-        align="center"
-        title={blogPage.latestInsights.title}
-        description={blogPage.latestInsights.description}
-      />
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          Latest
+        </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          {blogPage.latestInsights.title}
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-body">
+          {blogPage.latestInsights.description}
+        </p>
+      </div>
 
       {categories.length > 0 ? (
-        <ul className="mt-8 flex flex-wrap justify-center gap-2">
+        <ul className="mt-8 flex flex-wrap gap-2">
           <li>
             <Link
               href={buildHref({ q: query })}
               className={cn(
-                "inline-flex rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                "inline-flex border px-4 py-2 text-sm font-medium transition-colors",
                 activeCategory
                   ? "border-border text-body hover:border-brand hover:text-brand"
                   : "border-brand bg-brand text-white"
@@ -271,7 +273,7 @@ export function LatestInsights({
               <Link
                 href={buildHref({ category: category.slug, q: query })}
                 className={cn(
-                  "inline-flex rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                  "inline-flex border px-4 py-2 text-sm font-medium transition-colors",
                   activeCategory === category.slug
                     ? "border-brand bg-brand text-white"
                     : "border-border text-body hover:border-brand hover:text-brand"
@@ -299,9 +301,9 @@ export function LatestInsights({
           ) : null}
         </div>
       ) : (
-        <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
-            <StaggerItem key={post.id}>
+            <StaggerItem key={post.id} className="bg-background">
               <BlogPostCard post={post} />
             </StaggerItem>
           ))}
@@ -361,69 +363,42 @@ export function KnowledgeHubBand() {
 }
 
 export function LessonsAndCta() {
-  //{ caseStudy }: { caseStudy?: BlogCard }
-  // const image = caseStudy?.image ?? blogPage.caseStudy.image;
-  // const title = caseStudy?.title ?? blogPage.caseStudy.title;
-  // const description = caseStudy?.excerpt ?? blogPage.caseStudy.description;
-  // const href = caseStudy?.href ?? "/blog";
-
   return (
-    <section>
-      {/* <div className="grid md:grid-cols-2">
-        <Media
-          src={image}
-          alt={caseStudy?.imageAlt ?? "Case study preview"}
-          className="aspect-[4/3] md:aspect-auto md:h-full"
-          sizes="(min-width: 768px) 50vw, 100vw"
-        />
-        <div className="bg-ink p-8 text-white lg:p-12">
-          <span className="rounded bg-brand px-3 py-1 text-xs font-semibold text-white">
-            Case study
-          </span>
-          <h2 className="mt-5 text-4xl font-semibold leading-tight text-white">
-            {title}
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-white/75">
-            {description}
-          </p>
-          <Button asChild variant="inverse" size="xl" className="mt-6">
-            <Link href={href}>
-              Read More
-              <ArrowRight className="size-4" />
-            </Link>
-          </Button>
-        </div>
-      </div> */}
-
-      <div className="grid md:grid-cols-2">
-        <div className="bg-brand px-8 py-10 text-white lg:px-12 lg:py-12">
-          <span className="flex size-12 items-center justify-center rounded bg-white text-brand">
-            <UserRoundSearch className="size-7" />
-          </span>
-          <h3 className="mt-5 text-4xl font-semibold leading-tight text-white">
-            {blogPage.ctaPanels.help.title}
-          </h3>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/80">
-            {blogPage.ctaPanels.help.description}
-          </p>
-          <Button asChild variant="inverse" size="xl" className="mt-6">
-            <Link href="/contact#quote-form">Talk to Our Team</Link>
-          </Button>
+    <section className="overflow-hidden bg-background">
+      <div className="grid lg:grid-cols-2">
+        <div className="relative flex flex-col justify-center bg-surface-alt px-6 py-16 sm:px-10 lg:px-14">
+          <div className="relative z-10 max-w-md">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+              Need guidance
+            </p>
+            <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+              {blogPage.ctaPanels.help.title}
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-body">
+              {blogPage.ctaPanels.help.description}
+            </p>
+            <Button asChild variant="brand" size="xl" className="mt-8">
+              <Link href="/contact#quote-form">
+                Talk to our team
+                <ArrowRight />
+              </Link>
+            </Button>
+          </div>
         </div>
 
-        <div className="bg-charcoal px-8 py-10 text-white lg:px-12 lg:py-12">
-          <span className="flex size-12 items-center justify-center rounded bg-white text-brand">
-            <Mail className="size-7" />
-          </span>
-          <h3 className="mt-5 text-4xl font-semibold leading-tight text-white">
+        <div className="flex flex-col justify-center bg-brand px-6 py-16 text-white sm:px-10 lg:px-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
+            Stay updated
+          </p>
+          <h3 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
             {blogPage.ctaPanels.subscribe.title}
           </h3>
-          <p className="mt-4 max-w-xl text-base leading-relaxed text-white/75">
+          <p className="mt-4 max-w-md text-base leading-relaxed text-white/80">
             {blogPage.ctaPanels.subscribe.description}
           </p>
           <SubscribeForm
             placeholder={blogPage.ctaPanels.subscribe.placeholder}
-            className="mt-6"
+            className="mt-8"
           />
         </div>
       </div>

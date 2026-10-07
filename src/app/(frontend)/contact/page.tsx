@@ -5,6 +5,7 @@ import { CurrentLocation } from "@/components/contact/current-location";
 import { GetInTouch } from "@/components/contact/get-in-touch";
 import { RegionalOffices } from "@/components/contact/regional-offices";
 import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
+import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { contactFaqs, contactFaqIntro } from "@/content/contact";
 
 export const metadata: Metadata = {
@@ -24,6 +25,10 @@ export default function ContactPage() {
         formIdPrefix="contact"
         faqs={contactFaqs}
         faqIntro={contactFaqIntro}
+      />
+      <ProfileClosingCta
+        title="Ready to discuss your requirement?"
+        description="Call, WhatsApp, or send drawings—Mahraj Arabia will help define a clear next step."
       />
     </>
   );

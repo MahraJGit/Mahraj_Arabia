@@ -36,7 +36,12 @@ export default async function ProjectDetailPage({
       <PageHero
         title={project.title}
         description={`${project.location} — Application: ${project.application} | Product: ${project.product}`}
-        breadcrumb={[{ label: "Projects", href: "/projects" }]}
+        breadcrumb={[
+          { label: "Projects", href: "/projects" },
+          { label: project.title, href: `/projects/${project.slug}` },
+        ]}
+        image={project.image}
+        eyebrow="Project capability"
       />
       <ComingSoon note="Project photography, scope of works, and material schedule for this installation are being compiled." />
     </>

@@ -1,8 +1,4 @@
-import { existsSync } from "node:fs";
-import path from "node:path";
-import Image from "next/image";
-import Link from "next/link";
-
+import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { Section } from "@/components/layout/section";
 import {
   Accordion,
@@ -10,28 +6,26 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import { aboutCta, aboutFaqIntro, aboutFaqs } from "@/content/about";
-
-function hasPublicAsset(src: string) {
-  return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
-}
 
 export function AboutFaq() {
   return (
     <Section>
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="text-3xl font-semibold sm:text-4xl">FAQs</h2>
-        <p className="mt-4 text-sm leading-relaxed text-body sm:text-base">
-          {aboutFaqIntro}
+      <div className="max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          FAQs
         </p>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          Frequently asked questions.
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-body">{aboutFaqIntro}</p>
       </div>
 
       <Accordion
         type="single"
         collapsible
         defaultValue={aboutFaqs[0]?.question}
-        className="mx-auto mt-8 max-w-3xl"
+        className="mt-8 max-w-3xl border-y border-border"
       >
         {aboutFaqs.map((faq) => (
           <AccordionItem key={faq.question} value={faq.question}>
@@ -49,40 +43,10 @@ export function AboutFaq() {
 }
 
 export function AboutCta() {
-  const showImage = hasPublicAsset(aboutCta.image);
-
   return (
-    <Section spacing="compact">
-      <div className="relative isolate overflow-hidden rounded-md">
-        <div aria-hidden className="absolute inset-0 -z-20 bg-brand-dark" />
-        {showImage ? (
-          <Image
-            src={aboutCta.image}
-            alt=""
-            fill
-            sizes="100vw"
-            className="-z-10 object-cover object-center"
-          />
-        ) : null}
-        <div aria-hidden className="absolute inset-0 -z-10 bg-brand-dark/80" />
-
-        <div className="flex flex-col items-center px-6 py-14 text-center sm:px-10 lg:py-16">
-          <h2 className="max-w-xl font-heading text-3xl font-semibold text-white sm:text-4xl">
-            {aboutCta.title}
-          </h2>
-          <p className="mt-4 max-w-lg text-sm leading-relaxed text-white/80 sm:text-base">
-            {aboutCta.description}
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild variant="inverse" size="xl">
-              <Link href="/contact#quote-form">Request a Quote</Link>
-            </Button>
-            <Button asChild variant="inverseOutline" size="xl">
-              <Link href="/contact#get-in-touch">Contact us</Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    </Section>
+    <ProfileClosingCta
+      title={aboutCta.title}
+      description={aboutCta.description}
+    />
   );
 }

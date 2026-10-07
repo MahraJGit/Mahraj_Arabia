@@ -1,55 +1,35 @@
-import Link from "next/link";
-import { ChevronRight } from "lucide-react";
-
-import { Container } from "@/components/layout/container";
-import { FadeIn } from "@/components/motion/reveal";
+import {
+  ProfileHero,
+  type ProfileBreadcrumb,
+} from "@/components/layout/profile-hero";
 
 export function PageHero({
   title,
   description,
   breadcrumb,
+  image,
+  eyebrow,
 }: {
   title: string;
   description?: string;
   breadcrumb?: { label: string; href: string }[];
+  image?: string;
+  eyebrow?: string;
 }) {
-  return (
-    <section className="border-b border-border bg-surface-alt">
-      <Container className="py-14 lg:py-20">
-        {breadcrumb?.length ? (
-          <nav aria-label="Breadcrumb" className="mb-4">
-            <ol className="flex flex-wrap items-center gap-1.5 text-xs text-body">
-              <li>
-                <Link href="/" className="transition-colors hover:text-brand">
-                  Home
-                </Link>
-              </li>
-              {breadcrumb.map((crumb) => (
-                <li key={crumb.href} className="flex items-center gap-1.5">
-                  <ChevronRight className="size-3.5" />
-                  <Link
-                    href={crumb.href}
-                    className="transition-colors hover:text-brand"
-                  >
-                    {crumb.label}
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        ) : null}
+  const crumbs: ProfileBreadcrumb[] | undefined = breadcrumb?.map((crumb, index) =>
+    index === breadcrumb.length - 1
+      ? { label: crumb.label }
+      : { label: crumb.label, href: crumb.href }
+  );
 
-        <FadeIn>
-          <h1 className="font-heading text-3xl font-semibold sm:text-4xl lg:text-[2.75rem]">
-            {title}
-          </h1>
-          {description ? (
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-body">
-              {description}
-            </p>
-          ) : null}
-        </FadeIn>
-      </Container>
-    </section>
+  return (
+    <ProfileHero
+      title={title}
+      description={description}
+      breadcrumb={crumbs}
+      image={image}
+      eyebrow={eyebrow}
+      compact
+    />
   );
 }

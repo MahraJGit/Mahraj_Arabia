@@ -1,9 +1,9 @@
 export const site = {
   name: "MahrajArabia",
   shortName: "Mahraj Arabia",
-  tagline: "Modular, portable & steel solutions",
+  tagline: "Modular spaces. Steel built.",
   description:
-    "Practical modular buildings, portable facilities and custom steel fabrication for projects across Saudi Arabia.",
+    "Modular, portable, fencing and steel solutions for construction, events and industrial sites across Saudi Arabia.",
   url: "https://m-arabia.vercel.app",
   phone: "+966 55 434 6336",
   phoneHref: "tel:+966554346336",
@@ -33,7 +33,7 @@ export const mainNav: NavLink[] = [
   { label: "Services", href: "/services", hasMegaMenu: true },
   { label: "Projects", href: "/projects" },
   { label: "Industries", href: "/industries" },
-  { label: "Insights", href: "/blog" },
+  { label: "Blogs", href: "/blog" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];

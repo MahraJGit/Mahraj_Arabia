@@ -19,10 +19,10 @@ const SHARED_FAQS = [
 ] as const;
 
 const PROCESS_STEPS = [
-  { label: "Project-specific planning" },
-  { label: "Controlled fabrication" },
-  { label: "Coordinated delivery" },
-  { label: "Site installation" },
+  { label: "Understand" },
+  { label: "Configure" },
+  { label: "Fabricate" },
+  { label: "Install" },
 ] as const;
 
 type ArabiaServiceInput = {
@@ -82,9 +82,9 @@ function buildService(input: ArabiaServiceInput): ServiceDetailView {
     spaceLabels: [],
     spaceRows: [],
     showProcess: true,
-    processTitle: "Planning your project.",
+    processTitle: "From requirements to installation.",
     processDescription:
-      "A focused route from brief to fabrication, delivery and installation.",
+      "Our experienced team develops practical designs, delivers quality fabrication and coordinates reliable installation tailored to each project.",
     processSteps: [...PROCESS_STEPS],
     faqIntro: "Planning your project.",
     faqs: SHARED_FAQS.map((faq) => ({ ...faq })),
@@ -106,7 +106,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Porta Cabins & Site Offices",
     excerpt:
       "Site-ready offices, security cabins, accommodation and storage spaces.",
-    image: "/images/projects/global-tech-hq.jpg",
+    image: "/images/profile/porta-cabin-site-office.png",
     heroTitle: "Site-ready offices, security cabins, accommodation and storage spaces.",
     heroDescription:
       "Portable site facilities planned around access, utilities and your project programme.",
@@ -141,7 +141,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Modular Offices & Meeting Rooms",
     excerpt:
       "Professional modular workplaces with flexible layouts and integrated services.",
-    image: "/images/services/office-carpet-flooring.jpg",
+    image: "/images/profile/modular-meeting-room.png",
     heroTitle: "Professional modular workplaces with flexible layouts and integrated services.",
     heroDescription:
       "Modular offices and meeting rooms configured for teams, visitors and daily operations.",
@@ -175,7 +175,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     slug: "ablution-sanitary-units",
     title: "Ablution & Sanitary Units",
     excerpt: "Robust portable washroom, toilet and shower facilities.",
-    image: "/images/advantage-installation.jpg",
+    image: "/images/profile/ablution-sanitary-units.png",
     heroTitle: "Robust portable washroom, toilet and shower facilities.",
     heroDescription:
       "Welfare units planned for construction, events and remote-site operations.",
@@ -210,7 +210,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Car Parking Shades",
     excerpt:
       "Engineered shade structures for commercial, residential and industrial parking.",
-    image: "/images/services/landscaping-outdoor-industry.png",
+    image: "/images/profile/car-parking-shades.jpg",
     heroTitle:
       "Engineered shade structures for commercial, residential and industrial parking.",
     heroDescription:
@@ -246,7 +246,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Event Tents & Temporary Structures",
     excerpt:
       "Adaptable temporary spaces for events, hospitality and operations.",
-    image: "/images/services/events-exhibition-industry.png",
+    image: "/images/profile/event-tent-luxury.jpg",
     heroTitle: "Adaptable temporary spaces for events, hospitality and operations.",
     heroDescription:
       "Temporary structures coordinated around programme, access and guest flow.",
@@ -281,7 +281,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Steel Structures & Fabrication Works",
     excerpt:
       "Structural frames, sheds, platforms, canopies and supporting steelwork.",
-    image: "/images/advantage-installation.png",
+    image: "/images/profile/steel-structure-frame.jpg",
     heroTitle: "Structural frames, sheds, platforms, canopies and supporting steelwork.",
     heroDescription:
       "Steel structures fabricated and coordinated for industrial and commercial sites.",
@@ -316,7 +316,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Custom Steel Fabrication",
     excerpt:
       "Made-to-order steel components for architectural and industrial applications.",
-    image: "/images/services/homogeneous-flooring.jpg",
+    image: "/images/profile/steel-fabrication-workshop.jpg",
     heroTitle:
       "Made-to-order steel components for architectural and industrial applications.",
     heroDescription:
@@ -352,7 +352,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Customized Modular Solutions",
     excerpt:
       "Purpose-built modular environments with tailored layouts, finishes and utilities.",
-    image: "/images/services/commercial-vinyl&LVT.png",
+    image: "/images/profile/modular-office-complex.jpg",
     heroTitle:
       "Purpose-built modular environments with tailored layouts, finishes and utilities.",
     heroDescription:
@@ -378,6 +378,114 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
           "Custom façades and sun control",
           "Integrated service zones",
           "Specialized room layouts",
+        ],
+      },
+    ],
+  },
+  {
+    id: "police-barrier",
+    slug: "police-barrier",
+    title: "Police Barrier",
+    excerpt:
+      "Heavy-duty steel police barriers for road closures, government events and perimeter control.",
+    image: "/images/profile/site-compound-fencing.jpg",
+    heroTitle:
+      "Heavy-duty steel police barriers for road closures, government events and perimeter control.",
+    heroDescription:
+      "Crowd-control and perimeter barriers planned for rapid deployment across Saudi project and event sites.",
+    applications: [
+      {
+        title: "Where this solution works",
+        description: "Reliable barrier systems for controlled access and public safety.",
+        icon: "home",
+        points: [
+          "Road closures and traffic management",
+          "Government and civic events",
+          "Perimeter and crowd control",
+          "Temporary site boundaries",
+        ],
+      },
+      {
+        title: "Planned around your brief",
+        description: "Quantities, finishes and logistics shaped to the deployment.",
+        icon: "layers",
+        points: [
+          "Interlocking barrier sections",
+          "Heavy-duty steel construction",
+          "Fast install and relocation",
+          "Purchase or project supply options",
+        ],
+      },
+    ],
+  },
+  {
+    id: "heras-fence",
+    slug: "heras-fence",
+    title: "Heras Fence",
+    excerpt:
+      "Temporary Heras fencing panels for construction sites and event perimeters.",
+    image: "/images/profile/site-compound-fencing.jpg",
+    heroTitle:
+      "Temporary Heras fencing panels for construction sites and event perimeters.",
+    heroDescription:
+      "Mesh panel fencing for secure, relocatable boundaries on active sites and events.",
+    applications: [
+      {
+        title: "Where this solution works",
+        description: "Practical temporary fencing for secure site and event control.",
+        icon: "home",
+        points: [
+          "Construction site perimeters",
+          "Event and exhibition boundaries",
+          "Temporary compound fencing",
+          "Rapid redeployment across phases",
+        ],
+      },
+      {
+        title: "Planned around your brief",
+        description: "Panel counts, gates and accessories matched to site access.",
+        icon: "layers",
+        points: [
+          "Galvanized mesh panels",
+          "Stable base and clamp systems",
+          "Pedestrian and vehicle gates",
+          "Hire or supply programmes",
+        ],
+      },
+    ],
+  },
+  {
+    id: "corrugated-fence",
+    slug: "corrugated-fence",
+    title: "Corrugated Fence",
+    excerpt:
+      "Corrugated steel sheet fencing for construction hoarding and event boundaries.",
+    image: "/images/profile/steel-structure-frame.jpg",
+    heroTitle:
+      "Corrugated steel sheet fencing for construction hoarding and event boundaries.",
+    heroDescription:
+      "Solid corrugated fencing for privacy, site security and branded hoarding applications.",
+    applications: [
+      {
+        title: "Where this solution works",
+        description: "Solid boundary fencing where privacy and presentation matter.",
+        icon: "home",
+        points: [
+          "Construction hoarding",
+          "Event and site boundaries",
+          "Privacy screening",
+          "Branded perimeter cladding",
+        ],
+      },
+      {
+        title: "Planned around your brief",
+        description: "Height, finish and access details shaped to the project.",
+        icon: "layers",
+        points: [
+          "Corrugated steel sheet panels",
+          "Durable site-ready frames",
+          "Optional branding surfaces",
+          "Coordinated delivery and install",
         ],
       },
     ],

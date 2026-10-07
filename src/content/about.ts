@@ -1,5 +1,4 @@
 import {
-  Building2,
   ClipboardCheck,
   FileCheck2,
   Handshake,
@@ -13,10 +12,10 @@ import {
 } from "lucide-react";
 
 export const aboutHero = {
-  image: "/images/about/about-hero.png",
-  title: "Built around real-world project needs.",
+  image: "/images/profile/portable-cabins-skyline.jpg",
+  title: "Modular spaces. Steel built.",
   description:
-    "We bring practical planning, fabrication and site coordination together.",
+    "Mahraj Arabia brings practical planning, fabrication and site coordination together for modular, portable, fencing and steel solutions across Saudi Arabia.",
 };
 
 export const aboutPartners = [
@@ -28,19 +27,6 @@ export const aboutPartners = [
   "SABIC",
 ];
 
-export const aboutOverview = {
-  image: "/images/advantage-installation.png",
-  title: "From first idea to a site-ready solution.",
-  steps: [
-    "Practical design",
-    "Flexible thinking",
-    "Clear coordination",
-    "Dependable delivery",
-  ],
-  objective:
-    "MahrajArabia supports construction, industrial, commercial and event clients with portable buildings, modular spaces and fabricated steelwork. Our work begins with how the solution will be used—people, access, utilities, movement, maintenance and programme—before shaping the scope.",
-};
-
 export type AboutIndustry = {
   title: string;
   image: string;
@@ -50,33 +36,48 @@ export type AboutIndustry = {
 export const aboutIndustries: AboutIndustry[] = [
   {
     title: "Porta Cabins & Site Offices",
-    image: "/images/projects/global-tech-hq.jpg",
+    image: "/images/profile/porta-cabin-site-office.png",
     size: "small",
   },
   {
     title: "Modular Offices & Meeting Rooms",
-    image: "/images/services/office-carpet-flooring.jpg",
+    image: "/images/profile/modular-meeting-room.png",
     size: "large",
   },
   {
     title: "Ablution & Sanitary Units",
-    image: "/images/advantage-installation.jpg",
+    image: "/images/profile/ablution-sanitary-units.png",
     size: "small",
   },
   {
     title: "Car Parking Shades",
-    image: "/images/services/landscaping-outdoor-industry.png",
+    image: "/images/profile/car-parking-shades.jpg",
     size: "wide",
   },
   {
     title: "Steel Structures & Fabrication",
-    image: "/images/advantage-installation.png",
+    image: "/images/profile/steel-structure-frame.jpg",
     size: "small",
   },
   {
     title: "Customized Modular Solutions",
-    image: "/images/services/commercial-vinyl&LVT.png",
+    image: "/images/profile/modular-office-complex.jpg",
     size: "small",
+  },
+  {
+    title: "Police Barrier",
+    image: "/images/profile/site-compound-fencing.jpg",
+    size: "small",
+  },
+  {
+    title: "Heras Fence",
+    image: "/images/profile/site-compound-fencing.jpg",
+    size: "small",
+  },
+  {
+    title: "Corrugated Fence",
+    image: "/images/profile/steel-structure-frame.jpg",
+    size: "wide",
   },
 ];
 
@@ -85,14 +86,14 @@ export const aboutAudiences = [
     title: "Built for teams who need clarity early",
     description:
       "Layouts shaped around everyday operation. We consider how people will use the space before drawings and fabrication begin.",
-    image: "/images/advantage-installation.jpg",
+    image: "/images/profile/modular-crane-install.png",
     imageSide: "start" as const,
   },
   {
     title: "Delivery that keeps the programme moving",
     description:
       "Defined fabrication, logistics and installation planning—so temporary or permanent solutions arrive ready for site use.",
-    image: "/images/projects/global-tech-hq.jpg",
+    image: "/images/profile/container-office-sunset.jpg",
     imageSide: "end" as const,
   },
 ];
@@ -153,14 +154,6 @@ export const aboutObjectives: Objective[] = [
   },
 ];
 
-export const commercialProcess = [
-  { number: "01", label: "Consult the requirement", icon: Building2 },
-  { number: "02", label: "Plan layout and services", icon: Ruler },
-  { number: "03", label: "Fabricate the approved scope", icon: FileCheck2 },
-  { number: "04", label: "Coordinate delivery", icon: Handshake },
-  { number: "05", label: "Install and hand over", icon: Truck },
-];
-
 export const aboutCompliance = [
   { title: "Project-specific planning", icon: ShieldCheck },
   { title: "Controlled fabrication quality", icon: FileCheck2 },
@@ -204,7 +197,7 @@ export const aboutFaqs = [
 ];
 
 export const aboutCta = {
-  image: "/images/advantage-installation.jpg",
+  image: "/images/profile/steel-plant-yard.jpg",
   title: "Ready to discuss your requirement?",
   description:
     "Call, visit or send your project brief through WhatsApp. Our team is ready to help from first idea to a site-ready solution.",

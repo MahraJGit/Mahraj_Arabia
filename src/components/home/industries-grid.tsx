@@ -2,23 +2,34 @@ import Link from "next/link";
 
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Section } from "@/components/layout/section";
+import { Eyebrow } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { homeIndustriesCompact } from "@/content/home";
 
 export function IndustriesGrid() {
   return (
-    <Section>
-      <h2 className="text-center text-3xl font-semibold sm:text-4xl">
-        Industries We Serve
-      </h2>
+    <Section id="project-settings">
+      <div className="mx-auto max-w-2xl text-center">
+        <Eyebrow>Project settings</Eyebrow>
+        <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          Solutions across project settings
+        </h2>
+        <p className="mt-4 text-base leading-relaxed text-body">
+          Construction, industrial, commercial and event sites—each with its own
+          access, utilities and programme needs.
+        </p>
+      </div>
 
-      <Stagger className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <Stagger className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {homeIndustriesCompact.map(({ slug, label, icon: Icon }) => (
           <StaggerItem key={slug}>
-            <div className="flex h-full flex-col items-center justify-center gap-2 rounded-md border border-border bg-background px-4 py-6 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-sm motion-reduce:hover:translate-y-0">
+            <Link
+              href={`/industries/${slug}`}
+              className="flex h-full flex-col items-center justify-center gap-2 border border-border bg-background px-4 py-6 text-center transition-colors hover:border-brand/40"
+            >
               <Icon className="size-5 text-brand" />
               <span className="text-xs font-medium text-ink">{label}</span>
-            </div>
+            </Link>
           </StaggerItem>
         ))}
       </Stagger>
