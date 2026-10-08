@@ -30,7 +30,7 @@ export function SubscribeForm({
   if (done) {
     return (
       <p className={cn("text-sm font-medium text-white", className)}>
-        Thanks — you&apos;re subscribed.
+        Thanks, you&apos;re subscribed.
       </p>
     );
   }

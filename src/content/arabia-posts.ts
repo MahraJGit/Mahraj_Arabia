@@ -110,7 +110,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
     featured: true,
     content: article(
       p(
-        "A portable site office works best when it is planned around how people will actually use it—not only the footprint on the drawing. At Mahraj Arabia, clearer inputs at the start create faster fabrication and smoother handover on Saudi project sites."
+        "A portable site office works best when it is planned around how people will actually use it, not only the footprint on the drawing. At Mahraj Arabia, clearer inputs at the start create faster fabrication and smoother handover on Saudi project sites."
       ),
       h2("Start with people and programme"),
       p(
@@ -134,7 +134,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
         "Any branding or exterior finish preferences"
       ),
       quote(
-        "Share a short brief on WhatsApp with sketches or photos of the plot—our Riyadh team can refine the layout before fabrication begins."
+        "Share a short brief on WhatsApp with sketches or photos of the plot. Our Riyadh team can refine the layout before fabrication begins."
       )
     ),
   },
@@ -242,7 +242,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
         "Choose police barriers when you need visible, relocatable crowd control. Choose Heras or corrugated fencing when you need taller perimeter security or privacy screening."
       ),
       quote(
-        "Tell us the route length and event dates—we can recommend quantities and delivery timing for Riyadh and wider KSA deployments."
+        "Tell us the route length and event dates. We can recommend quantities and delivery timing for Riyadh and wider KSA deployments."
       )
     ),
   },
@@ -264,7 +264,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
       ),
       h2("Heras fence"),
       p(
-        "Heras-style mesh panels are fast to install, easy to relocate and ideal when visibility and ventilation matter—construction phases, event perimeters and temporary compounds."
+        "Heras-style mesh panels are fast to install, easy to relocate and ideal when visibility and ventilation matter: construction phases, event perimeters and temporary compounds."
       ),
       ul(
         "Galvanized mesh panels with stable bases",
@@ -284,7 +284,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
       ),
       h2("How to decide"),
       p(
-        "If the fence must move often and stay open to view, start with Heras. If the priority is privacy, presentation or hoarding, start with corrugated. Many Mahraj Arabia clients use both on the same programme—mesh for active work zones and corrugated along public edges."
+        "If the fence must move often and stay open to view, start with Heras. If the priority is privacy, presentation or hoarding, start with corrugated. Many Mahraj Arabia clients use both on the same programme: mesh for active work zones and corrugated along public edges."
       )
     ),
   },
@@ -338,7 +338,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
       ),
       h2("1. Consult"),
       p(
-        "We define use, size, location and schedule—whether you need porta cabins, modular offices, fencing, parking shades or steelwork."
+        "We define use, size, location and schedule, whether you need porta cabins, modular offices, fencing, parking shades or steelwork."
       ),
       h2("2. Plan"),
       p(
@@ -386,7 +386,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
       ),
       h2("One supplier, clearer coordination"),
       p(
-        "Mahraj Arabia fabricates and supplies modular, fencing and steel solutions from one brief—so quantities, delivery windows and installation teams stay aligned."
+        "Mahraj Arabia fabricates and supplies modular, fencing and steel solutions from one brief, so quantities, delivery windows and installation teams stay aligned."
       )
     ),
   },

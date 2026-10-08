@@ -1,4 +1,4 @@
-/** Demo admin mode until Supabase is connected. Active when DATABASE_URI is unset. */
+/** Demo CMS mode when MongoDB is unset. Auth uses Supabase when configured. */
 
 export const DEMO_ADMIN = {
   id: "demo-admin-001",

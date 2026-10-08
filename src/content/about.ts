@@ -92,7 +92,7 @@ export const aboutAudiences = [
   {
     title: "Delivery that keeps the programme moving",
     description:
-      "Defined fabrication, logistics and installation planning—so temporary or permanent solutions arrive ready for site use.",
+      "Defined fabrication, logistics and installation planning so temporary or permanent solutions arrive ready for site use.",
     image: "/images/profile/container-office-sunset.jpg",
     imageSide: "end" as const,
   },

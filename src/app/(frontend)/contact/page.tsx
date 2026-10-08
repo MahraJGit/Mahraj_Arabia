@@ -28,7 +28,7 @@ export default function ContactPage() {
       />
       <ProfileClosingCta
         title="Ready to discuss your requirement?"
-        description="Call, WhatsApp, or send drawings—Mahraj Arabia will help define a clear next step."
+        description="Call, WhatsApp, or send drawings. Mahraj Arabia will help define a clear next step."
       />
     </>
   );

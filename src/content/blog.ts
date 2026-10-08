@@ -98,7 +98,7 @@ export const blogPage = {
     image: "/images/profile/steel-and-modular-collage.jpg",
     title: "Lessons from Real Project Briefs",
     description:
-      "Clearer inputs create better outcomes—practical guidance for site-ready modular, fencing and steel solutions from Mahraj Arabia.",
+      "Clearer inputs create better outcomes: practical guidance for site-ready modular, fencing and steel solutions from Mahraj Arabia.",
   },
   ctaPanels: {
     help: {

@@ -3,10 +3,18 @@ import { getModels } from "@/lib/db/models";
 import { DEMO_ADMIN, isDemoMode } from "@/lib/auth/demo";
 import { readSession } from "@/lib/auth/session";
 import type { AdminUser, UserRole } from "@/lib/cms/types";
+import { getAdminProfileById } from "@/lib/supabase/admin-auth";
+import { isSupabaseAuthEnabled } from "@/lib/supabase/env";
 
 export async function getCurrentUser(): Promise<AdminUser | null> {
   const session = await readSession();
   if (!session) return null;
+
+  if (isSupabaseAuthEnabled()) {
+    const profile = await getAdminProfileById(session.userId);
+    if (!profile) return null;
+    return profile;
+  }
 
   if (isDemoMode() || session.userId === DEMO_ADMIN.id) {
     return {

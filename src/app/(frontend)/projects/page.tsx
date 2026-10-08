@@ -53,7 +53,7 @@ export default function ProjectsPage() {
       </Section>
       <ProfileClosingCta
         title="Have a similar project brief?"
-        description="Share location, use and timeline—Mahraj Arabia will help shape a practical capability package."
+        description="Share location, use and timeline. Mahraj Arabia will help shape a practical capability package."
       />
     </>
   );

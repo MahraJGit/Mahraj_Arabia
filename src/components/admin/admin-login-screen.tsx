@@ -25,9 +25,7 @@ export function AdminLoginScreen() {
         </div>
         <h1 className="font-heading text-2xl font-semibold">Sign in</h1>
         <p className="mt-1 mb-6 text-sm text-muted-foreground">
-          Demo credentials:{" "}
-          <span className="text-ink">admin@mahrajarabia.com</span> /{" "}
-          <span className="text-ink">Admin@123</span>
+          Use your admin email and password.
         </p>
         <LoginForm />
       </div>

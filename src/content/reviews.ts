@@ -109,7 +109,7 @@ export type WhyChooseItem = {
 export const whyChooseIntro = {
   title: "Why Clients Trust Mahraj Arabia",
   description:
-    "Practical modular and steel solutions for Saudi project sites—clear advice, coordinated delivery and support that continues after handover.",
+    "Practical modular and steel solutions for Saudi project sites: clear advice, coordinated delivery and support that continues after handover.",
 };
 
 export const whyChooseItems: WhyChooseItem[] = [
@@ -256,7 +256,7 @@ export const industryReviews: IndustryReview[] = [
     name: "Hessa Al-Anazi",
     rating: "4.8",
     quote:
-      "We got a practical scope that looks professional and works for everyday operations—no unnecessary complexity.",
+      "We got a practical scope that looks professional and works for everyday operations, with no unnecessary complexity.",
     projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
@@ -382,7 +382,7 @@ export const industryReviews: IndustryReview[] = [
     name: "Khalid Al-Mansour",
     rating: "4.8",
     quote:
-      "Clear drawings, dependable fabrication and tidy handover—exactly what we needed for a campus environment in Riyadh.",
+      "Clear drawings, dependable fabrication and tidy handover: exactly what we needed for a campus environment in Riyadh.",
     projectImage: "/images/projects/al-noor-specialist-hospital.jpg",
     extraViews: 1,
   },
@@ -526,7 +526,7 @@ export const projectExperienceSteps = [
     number: "03",
     title: "We Deliver As Promised",
     description:
-      "On-time delivery, clean job sites, and clear communication—the details our reviews mention again and again.",
+      "On-time delivery, clean job sites, and clear communication: the details our reviews mention again and again.",
   },
   {
     number: "04",
@@ -548,7 +548,7 @@ export const reviewsFaqs = [
   {
     question: "Can we review references before specifying?",
     answer:
-      "Yes. Share your brief and we can discuss similar scopes, drawings and references—often quickly over WhatsApp.",
+      "Yes. Share your brief and we can discuss similar scopes, drawings and references, often quickly over WhatsApp.",
   },
   {
     question: "Do you offer a warranty?",
@@ -563,7 +563,7 @@ export const reviewsFaqs = [
   {
     question: "How do I get a quote?",
     answer:
-      "Getting a quote from Mahraj Arabia is simple—fill out our contact form, call, or message us on WhatsApp with your project brief.",
+      "Getting a quote from Mahraj Arabia is simple. Fill out our contact form, call, or message us on WhatsApp with your project brief.",
   },
 ];
 

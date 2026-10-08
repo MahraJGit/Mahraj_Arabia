@@ -16,7 +16,7 @@ export async function SolutionCategories() {
       <SectionHeading
         eyebrow="Our Solutions"
         title="A connected range of solutions."
-        description="Modular spaces, portable facilities, fencing and steel fabrication—planned around your site, your team and your project timeline."
+        description="Modular spaces, portable facilities, fencing and steel fabrication, planned around your site, your team and your project timeline."
       />
 
       <Stagger className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

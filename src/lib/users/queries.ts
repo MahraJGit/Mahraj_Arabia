@@ -3,6 +3,8 @@ import { getModels } from "@/lib/db/models";
 import { isDemoMode } from "@/lib/auth/demo";
 import { getDemoUsers } from "@/lib/cms/demo-data";
 import type { UserRole } from "@/lib/cms/types";
+import { isSupabaseAuthEnabled } from "@/lib/supabase/env";
+import { getSupabaseAdminClient } from "@/lib/supabase/server";
 
 export type UserAccountStatus = "active" | "locked";
 
@@ -47,6 +49,28 @@ function formatLock(value: Date) {
 }
 
 export async function listUsers(): Promise<UserListItem[]> {
+  if (isSupabaseAuthEnabled()) {
+    const admin = getSupabaseAdminClient();
+    const { data, error } = await admin
+      .from("profiles")
+      .select("id, name, email, role, created_at")
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return (data ?? []).map((doc) => ({
+      id: String(doc.id),
+      name: String(doc.name ?? ""),
+      email: String(doc.email ?? ""),
+      role: doc.role === "admin" ? "admin" : "editor",
+      status: "active" as const,
+      lockLabel: null,
+      createdLabel: formatDate(dateValue(doc.created_at)),
+    }));
+  }
+
   if (isDemoMode()) {
     return getDemoUsers();
   }

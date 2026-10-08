@@ -327,7 +327,7 @@ export const cataloguePage = {
     subscribe: {
       title: "Stay Ahead with Project News",
       description:
-        "Be the first to see new solution ranges, project ideas and helpful planning guides—sent straight to your email.",
+        "Be the first to see new solution ranges, project ideas and helpful planning guides, sent straight to your email.",
       placeholder: "Your email address",
     },
   },

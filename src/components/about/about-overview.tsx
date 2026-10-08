@@ -58,7 +58,7 @@ export function AboutOverview() {
               Our Promise
             </p>
             <p className="mt-2 text-sm leading-relaxed text-body">
-              Practical design, clear coordination and dependable delivery—shaped
+              Practical design, clear coordination and dependable delivery, shaped
               around how the solution will be used on site.
             </p>
           </div>

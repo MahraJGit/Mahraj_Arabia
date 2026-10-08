@@ -48,7 +48,7 @@ export default async function CataloguesPage({
       <SizingGuide />
       <ProfileClosingCta
         title="Need a catalogue for your brief?"
-        description="Tell us the solution family and project setting—Mahraj Arabia will share the right references."
+        description="Tell us the solution family and project setting. Mahraj Arabia will share the right references."
       />
       <TechnicalFaqForm
         formIdPrefix="catalogue"

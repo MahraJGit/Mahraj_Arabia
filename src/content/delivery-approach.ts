@@ -34,4 +34,4 @@ export const deliveryApproach = {
 };
 
 export const aboutPromise =
-  "Mahraj Arabia supports construction, industrial, commercial and event clients with portable buildings, modular spaces, fencing systems and fabricated steelwork. Our work begins with how the solution will be used—people, access, utilities, movement, maintenance and programme—before shaping the scope.";
+  "Mahraj Arabia supports construction, industrial, commercial and event clients with portable buildings, modular spaces, fencing systems and fabricated steelwork. Our work begins with how the solution will be used (people, access, utilities, movement, maintenance and programme) before shaping the scope.";

@@ -57,7 +57,7 @@ function buildService(input: ArabiaServiceInput): ServiceDetailView {
     detailReady: true,
     heroTitle: input.heroTitle,
     heroDescription: input.heroDescription,
-    overviewTitle: `${input.title} — planned around your brief`,
+    overviewTitle: `${input.title}: planned around your brief`,
     overviewDescription:
       "Clear design, dependable fabrication and coordinated delivery from first requirement through site handover.",
     overviewImage: input.image,

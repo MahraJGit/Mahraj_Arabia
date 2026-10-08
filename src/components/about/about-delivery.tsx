@@ -50,7 +50,7 @@ export function AboutCompliance() {
         </h2>
         <p className="mt-4 text-base leading-relaxed text-body">
           Every solution is backed by practical planning and controlled
-          fabrication—from design through handover.
+          fabrication, from design through handover.
         </p>
       </div>
 

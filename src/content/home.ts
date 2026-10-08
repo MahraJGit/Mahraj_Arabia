@@ -219,7 +219,7 @@ export const faqs = [
   {
     question: "What makes Mahraj Arabia different?",
     answer:
-      "We provide modular, portable, fencing and steel solutions with one clear route from requirement to installation—focused on clear design, dependable fabrication and coordinated delivery across Saudi projects.",
+      "We provide modular, portable, fencing and steel solutions with one clear route from requirement to installation, focused on clear design, dependable fabrication and coordinated delivery across Saudi projects.",
   },
   {
     question: "Do you offer free consultations?",

@@ -15,7 +15,7 @@ export function IndustriesGrid() {
           Solutions across project settings
         </h2>
         <p className="mt-4 text-base leading-relaxed text-body">
-          Construction, industrial, commercial and event sites—each with its own
+          Construction, industrial, commercial and event sites, each with its own
           access, utilities and programme needs.
         </p>
       </div>

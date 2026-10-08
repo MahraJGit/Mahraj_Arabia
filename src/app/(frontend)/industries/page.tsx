@@ -44,7 +44,7 @@ export default function IndustriesPage() {
       </Section>
       <ProfileClosingCta
         title="Tell us your project setting."
-        description="Construction, events, industrial or commercial—share the brief and we will recommend a fitting Mahraj Arabia solution."
+        description="Construction, events, industrial or commercial: share the brief and we will recommend a fitting Mahraj Arabia solution."
       />
     </>
   );

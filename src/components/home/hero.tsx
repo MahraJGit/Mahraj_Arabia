@@ -14,12 +14,18 @@ function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
+/** Header = top bar (2.25rem) + nav (4rem / 4.5rem lg). */
+const heroMinHeight =
+  "min-h-[max(34rem,calc(100svh-6.25rem))] lg:min-h-[max(38rem,calc(100svh-6.75rem))]";
+
 export function Hero() {
   const showVideo = hasPublicAsset(heroVideo);
   const showImage = hasPublicAsset(heroImage);
 
   return (
-    <section className="relative isolate min-h-[var(--hero-min-h)] overflow-hidden border-b border-border bg-ink sm:min-h-[var(--hero-min-h-sm)] lg:min-h-[var(--hero-min-h-lg)]">
+    <section
+      className={`relative isolate flex overflow-hidden bg-ink ${heroMinHeight}`}
+    >
       {showImage ? (
         <Image
           src={heroImage}
@@ -27,13 +33,18 @@ export function Hero() {
           fill
           priority
           sizes="100vw"
-          className="absolute inset-0 object-cover object-center"
+          className="absolute inset-0 z-0 object-cover object-center"
         />
-      ) : null}
+      ) : (
+        <div
+          aria-hidden
+          className="absolute inset-0 z-0 bg-gradient-to-br from-neutral-700 via-neutral-800 to-neutral-900"
+        />
+      )}
 
       {showVideo ? (
         <video
-          className="absolute inset-0 z-0 size-full object-cover object-center motion-reduce:hidden"
+          className="absolute inset-0 z-[1] size-full object-cover object-center motion-reduce:hidden"
           autoPlay
           muted
           loop
@@ -48,10 +59,10 @@ export function Hero() {
 
       <div
         aria-hidden
-        className="absolute inset-0 z-10 bg-gradient-to-r from-black/90 via-black/65 to-black/20"
+        className="absolute inset-0 z-[2] bg-gradient-to-r from-black/85 via-black/55 to-black/20"
       />
 
-      <Container className="relative z-20 flex min-h-[var(--hero-min-h)] flex-col justify-center py-12 sm:min-h-[var(--hero-min-h-sm)] sm:py-14 lg:min-h-[var(--hero-min-h-lg)] lg:py-16">
+      <Container className="relative z-10 flex w-full flex-1 flex-col justify-center py-20 lg:py-24">
         <FadeIn className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
             Built for Saudi projects

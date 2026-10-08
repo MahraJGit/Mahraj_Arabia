@@ -21,7 +21,7 @@ export function ProfileToc() {
           </h2>
           <p className="mt-4 text-base leading-relaxed text-body">
             Jump to solutions, project settings, delivery process, insights and
-            contact—everything organised for clear project planning.
+            contact. Everything organised for clear project planning.
           </p>
         </FadeIn>
 

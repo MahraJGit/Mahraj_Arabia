@@ -18,6 +18,8 @@ import { createSession } from "@/lib/auth/session";
 import { getModels } from "@/lib/db/models";
 import { toId } from "@/lib/db/ids";
 import type { UserRole } from "@/lib/cms/types";
+import { signInWithSupabase } from "@/lib/supabase/admin-auth";
+import { isSupabaseAuthEnabled } from "@/lib/supabase/env";
 
 export type LoginState = {
   error: string | null;
@@ -43,6 +45,23 @@ export async function loginAction(
     return {
       error: "Too many failed attempts. Try again in 10 minutes.",
     };
+  }
+
+  if (isSupabaseAuthEnabled()) {
+    const { profile, error } = await signInWithSupabase(email, password);
+    if (!profile) {
+      recordLoginFailure(email);
+      return { error: error === "Invalid login credentials" ? INVALID : error || INVALID };
+    }
+
+    clearLoginFailures(email);
+    await createSession({
+      userId: profile.id,
+      email: profile.email,
+      name: profile.name,
+      role: profile.role,
+    });
+    redirect("/admin");
   }
 
   if (

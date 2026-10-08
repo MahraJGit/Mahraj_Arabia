@@ -83,7 +83,7 @@ export default async function ServicesPage() {
       </Section>
       <ProfileClosingCta
         title="Need a solution scoped for your site?"
-        description="Tell us the use, quantity and location—Mahraj Arabia will help shape a clear modular, fencing or steel proposal."
+        description="Tell us the use, quantity and location. Mahraj Arabia will help shape a clear modular, fencing or steel proposal."
       />
     </>
   );
