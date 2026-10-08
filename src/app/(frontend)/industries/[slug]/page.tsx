@@ -40,7 +40,7 @@ export default async function IndustryDetailPage({
           { label: "Industries", href: "/industries" },
           { label: industry.label, href: `/industries/${industry.slug}` },
         ]}
-        image="/images/advantage-installation.jpg"
+        image="/images/profile/steel-plant-yard.jpg"
         eyebrow="Project settings"
       />
       <ComingSoon note="Sector-specific guidance, recommended systems, and reference projects are being prepared for this industry." />

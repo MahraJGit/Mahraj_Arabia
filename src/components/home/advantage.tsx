@@ -42,7 +42,7 @@ export function Advantage() {
         </div>
 
         <Media
-          src="/images/advantage-installation.jpg"
+          src="/images/profile/modular-crane-install.png"
           alt="Specialist crew coordinating site installation"
           className="aspect-[4/3] rounded-md"
           sizes="(min-width: 1024px) 45vw, 90vw"

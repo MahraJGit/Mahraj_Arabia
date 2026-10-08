@@ -6,6 +6,7 @@ import { Section } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import { aboutPromise } from "@/content/delivery-approach";
 import { aboutPartners } from "@/content/about";
+import { cardGridClass, cardGridItemClass } from "@/lib/utils";
 
 export function AboutPartners() {
   return (
@@ -13,11 +14,11 @@ export function AboutPartners() {
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
         Trusted by project teams
       </p>
-      <ul className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
+      <ul className={`mt-6 ${cardGridClass} grid-cols-2 sm:grid-cols-3 lg:grid-cols-6`}>
         {aboutPartners.map((partner) => (
           <li
             key={partner}
-            className="flex h-14 items-center justify-center bg-background px-4 text-center text-sm font-semibold tracking-tight text-ink/80"
+            className={`flex h-14 items-center justify-center px-4 text-center text-sm font-semibold tracking-tight text-ink/80 ${cardGridItemClass}`}
           >
             {partner}
           </li>

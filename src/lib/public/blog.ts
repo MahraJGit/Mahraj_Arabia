@@ -82,7 +82,7 @@ function resolveImage(
 ) {
   const resolved = resolveMediaUrl(media ?? null, size);
   return {
-    url: resolved.url || "/images/advantage-installation.jpg",
+    url: resolved.url || "/images/profile/modular-office-complex.jpg",
     alt: resolved.alt,
   };
 }

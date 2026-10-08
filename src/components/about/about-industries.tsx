@@ -5,7 +5,7 @@ import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { aboutAudiences, aboutIndustries } from "@/content/about";
-import { cn } from "@/lib/utils";
+import { cardGridClass, cardGridItemClass, cn } from "@/lib/utils";
 
 const industrySpanClass = {
   small: "sm:col-span-1 sm:row-span-1",
@@ -25,11 +25,11 @@ export function AboutIndustries() {
         </h2>
       </div>
 
-      <Stagger className="mt-10 grid auto-rows-36 grid-flow-row-dense grid-cols-1 gap-px overflow-hidden border border-border bg-border sm:auto-rows-40 sm:grid-cols-2 lg:auto-rows-46 lg:grid-cols-4">
+      <Stagger className={`mt-10 ${cardGridClass} auto-rows-36 grid-flow-row-dense grid-cols-1 sm:auto-rows-40 sm:grid-cols-2 lg:auto-rows-46 lg:grid-cols-4`}>
         {aboutIndustries.map((industry) => (
           <StaggerItem
             key={industry.title}
-            className={cn("min-w-0 bg-background", industrySpanClass[industry.size])}
+            className={cn("min-w-0", cardGridItemClass, industrySpanClass[industry.size])}
           >
             <Link
               href="/industries"

@@ -1,6 +1,7 @@
 import { Section } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import { whyChooseIntro, whyChooseItems } from "@/content/reviews";
+import { cardGridClass, cardGridItemClass, cn } from "@/lib/utils";
 
 export function WhyClientsChoose() {
   return (
@@ -17,11 +18,14 @@ export function WhyClientsChoose() {
         </p>
       </div>
 
-      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      <ul className={`mt-10 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-4`}>
         {whyChooseItems.map((item, index) => (
           <li
             key={`${item.subtitle}-${index}`}
-            className="group min-h-44 bg-background p-6 transition-colors hover:bg-brand"
+            className={cn(
+              cardGridItemClass,
+              "group min-h-44 p-6 transition-colors hover:bg-brand"
+            )}
           >
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand transition-colors group-hover:text-white/80">
               {String(index + 1).padStart(2, "0")}

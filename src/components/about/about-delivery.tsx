@@ -1,5 +1,6 @@
 import { Section } from "@/components/layout/section";
 import { aboutCompliance, aboutObjectives } from "@/content/about";
+import { cardGridClass, cardGridItemClass, cn } from "@/lib/utils";
 
 export function AboutObjectives() {
   return (
@@ -12,11 +13,14 @@ export function AboutObjectives() {
           Why clients choose Mahraj Arabia.
         </h2>
       </div>
-      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      <ul className={`mt-10 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-4`}>
         {aboutObjectives.map(({ title, description, icon: Icon }) => (
           <li
             key={title}
-            className="group min-h-56 bg-background p-7 transition-colors hover:bg-brand hover:text-white"
+            className={cn(
+              cardGridItemClass,
+              "group min-h-56 p-7 transition-colors hover:bg-brand hover:text-white"
+            )}
           >
             <span className="flex size-9 items-center justify-center bg-brand/10 text-brand transition-colors group-hover:bg-white/15 group-hover:text-white">
               <Icon className="size-4" />
@@ -50,9 +54,9 @@ export function AboutCompliance() {
         </p>
       </div>
 
-      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border md:grid-cols-3">
+      <ul className={`mt-10 ${cardGridClass} md:grid-cols-3`}>
         {aboutCompliance.map(({ title, icon: Icon }, index) => (
-          <li key={title} className="bg-background p-6">
+          <li key={title} className={cn(cardGridItemClass, "p-6")}>
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
               {String(index + 1).padStart(2, "0")}
             </span>

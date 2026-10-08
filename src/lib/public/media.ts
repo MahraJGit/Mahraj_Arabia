@@ -26,7 +26,7 @@ export type PublicMedia = {
   sizes: Partial<Record<MediaSize, PublicMediaSize>>;
 };
 
-const FALLBACK = "/images/advantage-installation.jpg";
+const FALLBACK = "/images/profile/modular-office-complex.jpg";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);

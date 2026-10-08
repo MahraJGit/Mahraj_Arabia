@@ -192,7 +192,7 @@ export function getDemoPosts() {
       status: "published" as PublishStatus,
       publishedAt: "2026-06-02",
       updatedAt: now,
-      coverUrl: "/images/advantage-installation.jpg",
+      coverUrl: "/images/profile/modular-office-complex.jpg",
     },
     {
       id: "demo-post-3",
@@ -204,7 +204,7 @@ export function getDemoPosts() {
       status: "published" as PublishStatus,
       publishedAt: "2026-07-08",
       updatedAt: now,
-      coverUrl: "/images/advantage-installation.jpg",
+      coverUrl: "/images/profile/site-compound-fencing.jpg",
     },
     {
       id: "demo-post-4",
@@ -216,7 +216,7 @@ export function getDemoPosts() {
       status: "published" as PublishStatus,
       publishedAt: "2026-07-22",
       updatedAt: now,
-      coverUrl: "/images/services/landscaping-outdoor-industry.png",
+      coverUrl: "/images/profile/site-compound-fencing.jpg",
     },
     {
       id: "demo-post-5",
@@ -297,7 +297,7 @@ export function getDemoCategories() {
       subtitle: "Briefs, logistics and installation",
       postCount: 2,
       updatedAt: now,
-      imageUrl: "/images/advantage-installation.jpg",
+      imageUrl: "/images/profile/modular-office-complex.jpg",
     },
     {
       id: "demo-cat-2",
@@ -315,7 +315,7 @@ export function getDemoCategories() {
       subtitle: "Police barriers, Heras and corrugated fencing",
       postCount: 2,
       updatedAt: now,
-      imageUrl: "/images/services/landscaping-outdoor-industry.png",
+      imageUrl: "/images/profile/site-compound-fencing.jpg",
     },
   ];
 }
@@ -375,14 +375,14 @@ export function getDemoMedia() {
     },
     {
       id: "demo-media-2",
-      alt: "Fabrication and installation",
-      filename: "advantage-installation.jpg",
-      mimeType: "image/jpeg",
+      alt: "Mahraj Arabia modular installation",
+      filename: "modular-crane-install.png",
+      mimeType: "image/png",
       filesize: 0,
       width: null as number | null,
       height: null as number | null,
-      url: "/images/advantage-installation.jpg",
-      thumbnailUrl: "/images/advantage-installation.jpg",
+      url: "/images/profile/modular-crane-install.png",
+      thumbnailUrl: "/images/profile/modular-crane-install.png",
       createdAt: now,
     },
   ];

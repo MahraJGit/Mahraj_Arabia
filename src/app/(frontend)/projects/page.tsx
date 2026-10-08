@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { Media } from "@/components/media";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
@@ -7,6 +6,7 @@ import { PageHero } from "@/components/layout/page-hero";
 import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { Section } from "@/components/layout/section";
 import { projects } from "@/content/home";
+import { cardGridClass, cardGridItemClass } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Projects",
@@ -25,10 +25,10 @@ export default function ProjectsPage() {
         breadcrumb={[{ label: "Projects", href: "/projects" }]}
       />
       <Section>
-        <Stagger className="grid gap-px overflow-hidden border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
+        <Stagger className={`${cardGridClass} md:grid-cols-2 lg:grid-cols-3`}>
           {projects.map((project, index) => (
-            <StaggerItem key={project.slug} className="bg-background">
-              <Link href={`/projects/${project.slug}`} className="group block">
+            <StaggerItem key={project.slug} className={cardGridItemClass}>
+              <div className="block">
                 <Media
                   src={project.image}
                   alt={project.title}
@@ -39,14 +39,14 @@ export default function ProjectsPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
                     {String(index + 1).padStart(2, "0")} · {project.location}
                   </span>
-                  <h2 className="mt-3 text-xl font-semibold tracking-tight transition-colors group-hover:text-brand">
+                  <h2 className="mt-3 text-xl font-semibold tracking-tight">
                     {project.title}
                   </h2>
                   <p className="mt-2 text-sm text-body">
                     {project.application} · {project.product}
                   </p>
                 </div>
-              </Link>
+              </div>
             </StaggerItem>
           ))}
         </Stagger>

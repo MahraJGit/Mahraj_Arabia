@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 
 import { arabiaServices } from "@/content/arabia-services";
-import { industries, projects } from "@/content/home";
 import { site } from "@/content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -11,7 +10,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/",
     "/services",
     "/projects",
-    "/industries",
     "/about",
     "/contact",
     "/blog",
@@ -23,10 +21,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const servicePaths = arabiaServices.map((service) => `/services/${service.slug}`);
-  const projectPaths = projects.map((project) => `/projects/${project.slug}`);
-  const industryPaths = industries.map((industry) => `/industries/${industry.slug}`);
 
-  return [...staticPaths, ...servicePaths, ...projectPaths, ...industryPaths].map(
+  return [...staticPaths, ...servicePaths].map(
     (path) => ({
       url: `${site.url}${path}`,
       lastModified: now,

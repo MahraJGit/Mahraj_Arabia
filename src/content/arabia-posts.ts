@@ -353,7 +353,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
         "Logistics, site work and handover are planned together so temporary or permanent solutions arrive ready for daily operation."
       ),
       quote(
-        "Call +966 55 434 6336 or message us on WhatsApp with your project brief to start the same route."
+        "Call +966 56 602 1891 or +971 50 882 2414, or message us on WhatsApp with your project brief to start the same route."
       )
     ),
   },

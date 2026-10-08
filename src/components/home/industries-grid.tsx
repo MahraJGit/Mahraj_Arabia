@@ -23,13 +23,10 @@ export function IndustriesGrid() {
       <Stagger className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {homeIndustriesCompact.map(({ slug, label, icon: Icon }) => (
           <StaggerItem key={slug}>
-            <Link
-              href={`/industries/${slug}`}
-              className="flex h-full flex-col items-center justify-center gap-2 border border-border bg-background px-4 py-6 text-center transition-colors hover:border-brand/40"
-            >
+            <div className="flex h-full flex-col items-center justify-center gap-2 border border-border bg-background px-4 py-6 text-center">
               <Icon className="size-5 text-brand" />
               <span className="text-xs font-medium text-ink">{label}</span>
-            </Link>
+            </div>
           </StaggerItem>
         ))}
       </Stagger>

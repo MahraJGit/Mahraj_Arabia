@@ -11,7 +11,7 @@ import { contactFaqs, contactFaqIntro } from "@/content/contact";
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Call, visit or send your project brief through WhatsApp. Mahraj Arabia — Office No 9, 1st Floor, 5207, Al Malqa, Riyadh.",
+    "Call or WhatsApp KSA +966 56 602 1891 or UAE +971 50 882 2414. Visit Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia.",
 };
 
 export default function ContactPage() {

@@ -8,6 +8,7 @@ import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { Section } from "@/components/layout/section";
 import { Media } from "@/components/media";
 import { getServiceGroups } from "@/lib/public/services";
+import { cardGridClass, cardGridItemClass } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Our Solutions",
@@ -23,7 +24,7 @@ export default async function ServicesPage() {
       <PageHero
         title="A connected range of solutions."
         description="Practical, adaptable modular, portable, fencing and steel solutions for worksites, operations, businesses and events."
-        image="/images/advantage-installation.png"
+        image="/images/profile/modular-office-complex.jpg"
         eyebrow="Our solutions"
         breadcrumb={[{ label: "Services", href: "/services" }]}
       />
@@ -33,7 +34,7 @@ export default async function ServicesPage() {
             <section key={group.id} aria-labelledby={`service-group-${group.slug}`}>
               <div className="mb-8 max-w-2xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-                  Solution family
+                  Our solutions
                 </p>
                 <h2
                   id={`service-group-${group.slug}`}
@@ -47,9 +48,9 @@ export default async function ServicesPage() {
                 </p>
               </div>
 
-              <Stagger className="grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+              <Stagger className={`${cardGridClass} sm:grid-cols-2 lg:grid-cols-3`}>
                 {group.children.map((service, index) => (
-                  <StaggerItem key={service.slug} className="bg-background">
+                  <StaggerItem key={service.slug} className={cardGridItemClass}>
                     <Link href={service.href} className="group flex h-full flex-col">
                       <Media
                         src={service.image}

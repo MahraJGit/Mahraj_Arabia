@@ -18,6 +18,7 @@ import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { TopicScroller } from "@/components/catalogues/topic-scroller";
 import { cataloguePage } from "@/content/catalogues";
+import { cardGridClass, cardGridItemClass, cn } from "@/lib/utils";
 
 function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
@@ -192,11 +193,11 @@ export function ExploreCollections({ query }: { query?: string }) {
           {cataloguePage.explore.title}
         </h2>
       </div>
-      <Stagger className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      <Stagger className={`mt-10 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-4`}>
         {collections.map((col, index) => (
           <StaggerItem
             key={col.title}
-            className="overflow-hidden bg-background"
+            className={cn("overflow-hidden", cardGridItemClass)}
           >
             <div className="relative">
               <Media
@@ -262,11 +263,14 @@ export function ChooseByMatters() {
           {cataloguePage.matters.title}
         </h2>
       </div>
-      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+      <ul className={`mt-10 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-3`}>
         {cards.map((card, index) => (
           <li
             key={card.title}
-            className="group flex flex-col bg-background px-5 py-8 transition-colors hover:bg-brand"
+            className={cn(
+              cardGridItemClass,
+              "group flex flex-col px-5 py-8 transition-colors hover:bg-brand"
+            )}
           >
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand transition-colors group-hover:text-white/80">
               {String(index + 1).padStart(2, "0")}
@@ -310,11 +314,11 @@ function IndustryGrid({
           {title}
         </h2>
       </div>
-      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+      <ul className={`mt-10 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-3`}>
         {cards.map((card, i) => (
           <li
             key={`${card.title}-${i}`}
-            className="overflow-hidden bg-background"
+            className={cn("overflow-hidden", cardGridItemClass)}
           >
             <Media
               src={card.image}

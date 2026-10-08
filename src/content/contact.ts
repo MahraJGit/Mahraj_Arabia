@@ -1,4 +1,4 @@
-import { MapPin, MessageCircle, Phone, type LucideIcon } from "lucide-react";
+import { Mail, MapPin, MessageCircle, type LucideIcon } from "lucide-react";
 
 import { site } from "@/content/site";
 
@@ -13,7 +13,7 @@ export type ContactChannel = {
 };
 
 export const contactHero = {
-  image: "/images/profile/modular-offices-parking.jpg",
+  image: "/images/profile/steel-plant-yard.jpg",
   deviceImage: null,
   title: "Let’s discuss your requirement.",
 };
@@ -26,23 +26,38 @@ export const contactIntro = {
 
 export const contactChannels: ContactChannel[] = [
   {
-    title: "WhatsApp",
-    description: "Share drawings, references and your project brief.",
-    action: "Start Chat",
-    href: site.whatsapp,
+    title: "WhatsApp KSA",
+    description: `Share your project brief with our Saudi team: ${site.phones[0].number}`,
+    action: "Message KSA",
+    href: site.phones[0].whatsapp,
     icon: MessageCircle,
     external: true,
   },
   {
-    title: "Call",
-    description: "Speak with our team.",
-    action: site.phone,
-    href: site.phoneHref,
-    icon: Phone,
+    title: "WhatsApp UAE",
+    description: `Contact our UAE team: ${site.phones[1].number}`,
+    action: "Message UAE",
+    href: site.phones[1].whatsapp,
+    icon: MessageCircle,
+    external: true,
+  },
+  {
+    title: "Email Waseem",
+    description: site.emails[0],
+    action: "Send email",
+    href: `mailto:${site.emails[0]}`,
+    icon: Mail,
+  },
+  {
+    title: "Email KSA Events",
+    description: site.emails[1],
+    action: "Send email",
+    href: `mailto:${site.emails[1]}`,
+    icon: Mail,
   },
   {
     title: "Visit",
-    description: "Office No 9, 1st Floor, 5207, Al Malqa, Riyadh.",
+    description: `${site.address.line1}, ${site.address.line2}, ${site.address.line3}.`,
     action: "Get directions",
     href: site.address.mapsHref,
     icon: MapPin,
@@ -52,8 +67,9 @@ export const contactChannels: ContactChannel[] = [
 
 export const currentLocation = {
   title: "Riyadh Office",
-  embedUrl:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3622.4!2d46.64!3d24.79!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjTCsDQ3JzI0LjAiTiA0NsKwMzgnMjQuMCJF!5e0!3m2!1sen!2ssa!4v1700000000000!5m2!1sen!2ssa",
+  embedUrl: `https://www.google.com/maps?q=${encodeURIComponent(
+    `${site.address.line1}, ${site.address.line2}, ${site.address.line3}`
+  )}&output=embed`,
 };
 
 export const regionalOfficesIntro = {
@@ -69,7 +85,7 @@ export type RegionalOffice = {
   address: string;
   phone: string;
   phoneHref: string;
-  email: string;
+  emails: readonly string[];
   hours: string;
   mapsHref: string;
 };
@@ -82,7 +98,7 @@ export const regionalOffices: RegionalOffice[] = [
     address: `${site.address.line1}, ${site.address.line2}, ${site.address.line3}`,
     phone: site.phone,
     phoneHref: site.phoneHref,
-    email: site.email,
+    emails: site.emails,
     hours: "9:00am - 7:00pm",
     mapsHref: site.address.mapsHref,
   },

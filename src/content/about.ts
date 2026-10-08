@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 export const aboutHero = {
-  image: "/images/profile/portable-cabins-skyline.jpg",
+  image: "/images/profile/modular-offices-parking.jpg",
   title: "Modular spaces. Steel built.",
   description:
     "Mahraj Arabia brings practical planning, fabrication and site coordination together for modular, portable, fencing and steel solutions across Saudi Arabia.",
@@ -187,7 +187,7 @@ export const aboutFaqs = [
   {
     question: "Where are you based?",
     answer:
-      "Our office is at Office No 9, 1st Floor, 5207, Al Malqa, Riyadh. Call or WhatsApp +966 55 434 6336.",
+      "Our office is at Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia. Call or WhatsApp +966 56 602 1891 or +971 50 882 2414.",
   },
   {
     question: "What should we prepare before discussing a project?",

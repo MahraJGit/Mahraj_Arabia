@@ -29,7 +29,6 @@ export function PageHero({
       breadcrumb={crumbs}
       image={image}
       eyebrow={eyebrow}
-      compact
     />
   );
 }

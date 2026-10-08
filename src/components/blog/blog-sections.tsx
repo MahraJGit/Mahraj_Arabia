@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { blogPage } from "@/content/blog";
 import type { BlogCard, BlogCategory } from "@/lib/public/blog";
-import { cn } from "@/lib/utils";
+import { cardGridClass, cardGridItemClass, cn } from "@/lib/utils";
 
 export function FeaturedBlogs({ posts }: { posts: BlogCard[] }) {
   if (posts.length === 0) return null;
@@ -49,7 +49,7 @@ export function ExploreByTopic({ categories }: { categories: BlogCategory[] }) {
           Explore by topic.
         </h2>
       </div>
-      <ul className="mt-8 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+      <ul className={`mt-8 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-5`}>
         {categories.map((topic) => {
           const hasArticles = topic.postCount > 0;
           const href = `/blog?category=${topic.slug}#latest-insights`;
@@ -92,7 +92,8 @@ export function ExploreByTopic({ categories }: { categories: BlogCategory[] }) {
             <li
               key={topic.id}
               className={cn(
-                "group relative overflow-hidden bg-background",
+                "group relative overflow-hidden",
+                cardGridItemClass,
                 !hasArticles && "opacity-80"
               )}
             >
@@ -301,9 +302,9 @@ export function LatestInsights({
           ) : null}
         </div>
       ) : (
-        <Stagger className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+        <Stagger className={`mt-10 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-3`}>
           {posts.map((post) => (
-            <StaggerItem key={post.id} className="bg-background">
+            <StaggerItem key={post.id} className={cardGridItemClass}>
               <BlogPostCard post={post} />
             </StaggerItem>
           ))}

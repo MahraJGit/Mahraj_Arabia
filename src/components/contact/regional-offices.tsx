@@ -17,6 +17,8 @@ const buttonTextClass = {
 } as const;
 
 export function RegionalOffices() {
+  const multiOffice = regionalOffices.length > 1;
+
   return (
     <Section tone="alt">
       <div className="max-w-3xl">
@@ -31,13 +33,13 @@ export function RegionalOffices() {
         </p>
       </div>
 
-      <div className="mt-12 grid items-stretch gap-px overflow-hidden border border-border bg-border lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
-        <div className="relative overflow-hidden bg-background">
+      <div className="mt-12 grid items-stretch overflow-hidden border border-border lg:grid-cols-2">
+        <div className="relative min-h-[18rem] overflow-hidden bg-surface-alt sm:min-h-[22rem] lg:min-h-full">
           <Media
             src="/images/gcc-map.jpg"
             alt="GCC regional offices map"
-            className="aspect-[4/5] grayscale sm:aspect-[16/11] lg:aspect-auto lg:min-h-[28rem]"
-            sizes="(min-width: 1024px) 45vw, 90vw"
+            className="absolute inset-0 size-full grayscale"
+            sizes="(min-width: 1024px) 50vw, 90vw"
           />
 
           <div
@@ -66,12 +68,17 @@ export function RegionalOffices() {
           </div>
         </div>
 
-        <div className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+        <div
+          className={cn(
+            "grid border-t border-border lg:border-t-0 lg:border-l",
+            multiOffice && "sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
+          )}
+        >
           {regionalOffices.map((office) => (
             <article
               key={office.slug}
               className={cn(
-                "flex min-h-full flex-col p-6 text-white",
+                "flex h-full min-h-full flex-col p-6 text-white sm:p-8",
                 officeToneClass[office.tone]
               )}
             >
@@ -90,15 +97,17 @@ export function RegionalOffices() {
                     {office.phone}
                   </a>
                 </li>
-                <li className="flex gap-3">
-                  <Mail className="mt-0.5 size-4 shrink-0" />
-                  <a
-                    href={`mailto:${office.email}`}
-                    className="transition-opacity hover:opacity-80"
-                  >
-                    {office.email}
-                  </a>
-                </li>
+                {office.emails.map((email) => (
+                  <li key={email} className="flex gap-3">
+                    <Mail className="mt-0.5 size-4 shrink-0" />
+                    <a
+                      href={`mailto:${email}`}
+                      className="transition-opacity hover:opacity-80"
+                    >
+                      {email}
+                    </a>
+                  </li>
+                ))}
                 <li className="flex gap-3">
                   <Clock className="mt-0.5 size-4 shrink-0" />
                   <span>{office.hours}</span>

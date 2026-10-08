@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Mail, MapPin, MessageCircle } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/layout/logo";
@@ -7,9 +7,7 @@ import { site } from "@/content/site";
 
 const exploreLinks = [
   { label: "Services", href: "/services" },
-  { label: "Catalogues", href: "/catalogues" },
   { label: "Projects", href: "/projects" },
-  { label: "Industries", href: "/industries" },
   { label: "Reviews", href: "/reviews" },
   { label: "Blogs", href: "/blog" },
 ];
@@ -17,15 +15,32 @@ const exploreLinks = [
 const companyLinks = [
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
-  { label: "Privacy", href: "/privacy-policy" },
-  { label: "Terms", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Service", href: "/terms" },
 ];
 
-function WhatsAppIcon(props: React.ComponentProps<"svg">) {
+function InstagramIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden {...props}>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FacebookIcon(props: React.ComponentProps<"svg">) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
-      <path d="M17.47 14.38c-.27-.14-1.62-.8-1.87-.89-.25-.09-.43-.14-.62.14-.18.27-.71.89-.87 1.07-.16.18-.32.2-.59.07-.27-.14-1.15-.42-2.19-1.35-.81-.72-1.36-1.61-1.52-1.88-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.62-1.49-.85-2.04-.22-.53-.45-.46-.62-.46h-.53c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.29s.98 2.66 1.12 2.84c.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.57.65.2 1.25.18 1.72.11.52-.08 1.62-.66 1.85-1.3.23-.64.23-1.19.16-1.3-.07-.11-.25-.18-.52-.32Z" />
-      <path d="M12.04 2C6.58 2 2.15 6.43 2.15 11.89c0 1.96.57 3.78 1.56 5.33L2 22l4.92-1.63a9.86 9.86 0 0 0 5.12 1.41h.01c5.46 0 9.89-4.43 9.89-9.89C21.94 6.43 17.5 2 12.04 2Zm0 18.07h-.01a8.17 8.17 0 0 1-4.16-1.14l-.3-.18-3.1 1.02 1.04-3.02-.2-.31a8.18 8.18 0 0 1-1.26-4.36c0-4.52 3.68-8.2 8.2-8.2 4.52 0 8.2 3.68 8.2 8.2 0 4.52-3.68 8.19-8.21 8.19Z" />
+      <path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v7h3v-7h2.6l.4-3H14V9c0-.6.4-1 1-1Z" />
+    </svg>
+  );
+}
+
+function LinkedInIcon(props: React.ComponentProps<"svg">) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path d="M6.5 8.5A2 2 0 1 1 6.5 4.5a2 2 0 0 1 0 4ZM4.8 20V10h3.4v10H4.8Zm5.7 0V10h3.2v1.4c.5-.9 1.7-1.7 3.4-1.7 3.5 0 4.1 2.1 4.1 5.2V20h-3.4v-4.7c0-1.5-.1-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V20H10.5Z" />
     </svg>
   );
 }
@@ -34,7 +49,9 @@ const socialIcons: Record<
   string,
   (props: React.ComponentProps<"svg">) => React.ReactElement
 > = {
-  WhatsApp: WhatsAppIcon,
+  Instagram: InstagramIcon,
+  Facebook: FacebookIcon,
+  LinkedIn: LinkedInIcon,
 };
 
 export function SiteFooter() {
@@ -45,12 +62,17 @@ export function SiteFooter() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em]">
             Connect with sales today
           </p>
-          <a
-            href={site.phoneHref}
-            className="font-heading text-lg font-semibold transition-opacity hover:opacity-80"
-          >
-            {site.phone}
-          </a>
+          <div className="flex flex-wrap justify-center gap-x-5 gap-y-1">
+            {site.phones.map((phone) => (
+              <a
+                key={phone.label}
+                href={phone.href}
+                className="font-heading text-lg font-semibold transition-opacity hover:opacity-80"
+              >
+                {phone.label}: {phone.number}
+              </a>
+            ))}
+          </div>
         </Container>
       </div>
 
@@ -65,7 +87,8 @@ export function SiteFooter() {
               </p>
               <div className="mt-6 flex gap-3">
                 {site.social.map((item) => {
-                  const Icon = socialIcons[item.label] ?? MessageCircle;
+                  const Icon = socialIcons[item.label];
+                  if (!Icon) return null;
 
                   return (
                     <a
@@ -137,15 +160,17 @@ export function SiteFooter() {
                     {site.address.line3}
                   </a>
                 </li>
-                <li className="flex gap-3">
-                  <Mail className="mt-0.5 size-4 shrink-0 text-brand" />
-                  <a
-                    href={`mailto:${site.email}`}
-                    className="transition-colors hover:text-brand"
-                  >
-                    {site.email}
-                  </a>
-                </li>
+                {site.emails.map((email) => (
+                  <li key={email} className="flex gap-3">
+                    <Mail className="mt-0.5 size-4 shrink-0 text-brand" />
+                    <a
+                      href={`mailto:${email}`}
+                      className="transition-colors hover:text-brand"
+                    >
+                      {email}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

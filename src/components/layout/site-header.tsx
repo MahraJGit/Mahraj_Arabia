@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLayoutEffect, useRef, useState } from "react";
-import { Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { Logo } from "@/components/layout/logo";
@@ -22,19 +22,64 @@ import { mainNav, site } from "@/content/site";
 import type { MegaMenuColumn } from "@/lib/public/services";
 import { cn } from "@/lib/utils";
 
+function ContactDetails({ duplicate = false }: { duplicate?: boolean }) {
+  return (
+    <div
+      aria-hidden={duplicate}
+      inert={duplicate}
+      className="flex shrink-0 items-center gap-x-5 whitespace-nowrap py-2 text-[0.6875rem] text-white"
+    >
+      <span className="text-xs">{site.tagline}</span>
+      {site.phones.map((phone) => (
+        <a
+          key={phone.label}
+          href={phone.href}
+          className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
+        >
+          <Phone className="size-3.5 shrink-0" />
+          <span>{phone.label}: {phone.number}</span>
+        </a>
+      ))}
+      {site.emails.map((email) => (
+        <a
+          key={email}
+          href={`mailto:${email}`}
+          className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
+        >
+          <Mail className="size-3.5 shrink-0" />
+          {email}
+        </a>
+      ))}
+      <a
+        href={site.address.mapsHref}
+        target="_blank"
+        rel="noreferrer noopener"
+        className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
+      >
+        <MapPin className="size-3.5 shrink-0" />
+        <span>{site.address.line1}, {site.address.line2}, {site.address.line3}</span>
+      </a>
+    </div>
+  );
+}
+
 function TopBar() {
   return (
-    <div className="hidden border-b border-border bg-surface-alt md:block">
-      <Container className="flex h-9 items-center justify-between gap-6">
-        <p className="text-xs text-body">{site.tagline}</p>
-        <a
-          href={site.phoneHref}
-          className="flex items-center gap-1.5 text-xs text-body transition-colors hover:text-brand"
+    <div className="contact-ticker w-full border-b border-brand-dark bg-brand text-white">
+      <div className="flex min-h-9 w-full items-center">
+        <div
+          className="contact-ticker-viewport min-w-0 flex-1 overflow-hidden"
+          role="region"
+          aria-label="Contact details"
         >
-          <Phone className="size-3.5" />
-          {site.phone}
-        </a>
-      </Container>
+          <div
+            className="contact-ticker-track flex w-max items-center"
+          >
+            <ContactDetails />
+            <ContactDetails duplicate />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

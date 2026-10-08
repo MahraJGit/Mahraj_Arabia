@@ -201,7 +201,7 @@ export const blogHighlights = [
 ];
 
 export const profileToc = [
-  { label: "Introduction", href: "/#introduction" },
+  { label: "Introduction", href: "/about" },
   { label: "Our solutions", href: "/#solutions" },
   { label: "Project settings", href: "/#project-settings" },
   { label: "Working process", href: "/#working-process" },
@@ -249,7 +249,7 @@ export const faqs = [
   {
     question: "How do I request a quote?",
     answer:
-      "Use the contact form, call +966 55 434 6336, or message us on WhatsApp with your project brief.",
+      "Use the contact form, call +966 56 602 1891 or +971 50 882 2414, or message us on WhatsApp with your project brief.",
   },
 ];
 

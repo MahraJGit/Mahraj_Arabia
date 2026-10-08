@@ -65,6 +65,13 @@
   --body-text: #5c6066;
   --surface-alt: #f4f5f6;
 
+  /* Shared hero rhythm — page heroes + home hero */
+  --hero-min-h: 30rem;
+  --hero-min-h-sm: 32rem;
+  --hero-min-h-lg: 34rem;
+  --hero-media-h: 13.5rem;
+  --hero-media-h-sm: 16rem;
+
   --background: #ffffff;
   --foreground: var(--ink);
   --card: #ffffff;
@@ -166,3 +173,29 @@ section[data-section].bg-charcoal + section[data-section].bg-charcoal,
 section[data-section].bg-brand-dark + section[data-section].bg-brand-dark {
   padding-top: 0;
 }
+
+@keyframes contact-details-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.contact-ticker-track {
+  animation: contact-details-marquee 38s linear infinite;
+}
+
+.contact-ticker:hover .contact-ticker-track,
+.contact-ticker-viewport:focus-within .contact-ticker-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-ticker-viewport {
+    overflow-x: auto;
+  }
+
+  .contact-ticker-track {
+    animation: none;
+  }
+}
+

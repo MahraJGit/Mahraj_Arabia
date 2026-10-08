@@ -14,6 +14,10 @@ function hasPublicAsset(src: string) {
 
 export type ProfileBreadcrumb = { label: string; href?: string };
 
+/** Shared height shell for every page hero. */
+const heroShellClass =
+  "min-h-[var(--hero-min-h)] sm:min-h-[var(--hero-min-h-sm)] lg:min-h-[var(--hero-min-h-lg)]";
+
 export function ProfileHero({
   title,
   description,
@@ -22,7 +26,6 @@ export function ProfileHero({
   eyebrow,
   actions,
   footer,
-  compact = false,
 }: {
   title: string;
   description?: string;
@@ -31,6 +34,7 @@ export function ProfileHero({
   eyebrow?: string;
   actions?: ReactNode;
   footer?: ReactNode;
+  /** @deprecated Kept for call-site compatibility; height is unified. */
   compact?: boolean;
 }) {
   const showImage = Boolean(image && hasPublicAsset(image));
@@ -39,20 +43,43 @@ export function ProfileHero({
     <section className="relative isolate overflow-hidden border-b border-border bg-background">
       <div
         className={cn(
-          "grid",
-          showImage ? "lg:grid-cols-2" : "",
-          compact ? "min-h-[22rem]" : "min-h-[min(72vh,40rem)]"
+          "grid items-stretch",
+          heroShellClass,
+          showImage
+            ? "grid-rows-[auto_1fr] lg:grid-cols-2 lg:grid-rows-1"
+            : ""
         )}
       >
+        {showImage && image ? (
+          <div
+            className={cn(
+              "relative order-1 w-full overflow-hidden bg-surface-alt",
+              "h-[var(--hero-media-h)] sm:h-[var(--hero-media-h-sm)]",
+              "lg:order-2 lg:h-auto lg:min-h-full"
+            )}
+          >
+            <Image
+              src={image}
+              alt=""
+              fill
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover object-center"
+            />
+          </div>
+        ) : null}
+
         <div
           className={cn(
-            "relative flex flex-col justify-center bg-surface-alt px-4 py-14 sm:px-6 lg:px-8",
+            "relative order-2 flex flex-col justify-center bg-surface-alt",
+            "px-4 py-10 sm:px-6 sm:py-12 lg:px-10 lg:py-14",
+            showImage && "lg:order-1",
             !showImage && "mx-auto w-full max-w-site"
           )}
         >
-          <FadeIn className="relative z-10 max-w-xl">
+          <FadeIn className="relative z-10 w-full max-w-xl">
             {breadcrumb?.length ? (
-              <nav aria-label="Breadcrumb" className="mb-6">
+              <nav aria-label="Breadcrumb" className="mb-5">
                 <ol className="flex flex-wrap items-center gap-1.5 text-xs text-body">
                   <li>
                     <Link href="/" className="transition-colors hover:text-brand">
@@ -86,43 +113,25 @@ export function ProfileHero({
 
             <h1
               className={cn(
-                "font-heading font-semibold leading-[1.1] tracking-tight text-ink",
-                eyebrow ? "mt-3" : "",
-                compact
-                  ? "text-3xl sm:text-4xl"
-                  : "text-4xl sm:text-5xl lg:text-[3.25rem]"
+                "font-heading text-3xl font-semibold leading-[1.12] tracking-tight text-ink sm:text-4xl lg:text-[2.75rem]",
+                eyebrow && "mt-3"
               )}
             >
               {title}
             </h1>
 
             {description ? (
-              <p className="mt-5 max-w-md text-base leading-relaxed text-body">
+              <p className="mt-4 max-w-md text-base leading-relaxed text-body">
                 {description}
               </p>
             ) : null}
 
-            {actions ? <div className="mt-8 flex flex-col gap-3 sm:flex-row">{actions}</div> : null}
-            {footer ? <div className="mt-8">{footer}</div> : null}
+            {actions ? (
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">{actions}</div>
+            ) : null}
+            {footer ? <div className="mt-7">{footer}</div> : null}
           </FadeIn>
         </div>
-
-        {showImage && image ? (
-          <div className={cn("relative min-h-[16rem]", compact ? "lg:min-h-full" : "lg:min-h-full")}>
-            <Image
-              src={image}
-              alt=""
-              fill
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover object-center"
-            />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent lg:bg-gradient-to-l lg:from-transparent lg:to-black/5"
-            />
-          </div>
-        ) : null}
       </div>
     </section>
   );

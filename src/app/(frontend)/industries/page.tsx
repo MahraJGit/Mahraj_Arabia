@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHero } from "@/components/layout/page-hero";
 import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Section } from "@/components/layout/section";
 import { industries } from "@/content/home";
+import { cardGridClass, cardGridItemClass } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Industries We Serve",
@@ -19,18 +19,15 @@ export default function IndustriesPage() {
       <PageHero
         title="Solutions across project settings."
         description="Flexible modular, fencing and steel solutions for temporary, permanent and evolving operational needs."
-        image="/images/services/landscaping-outdoor-industry.png"
+        image="/images/profile/site-compound-fencing.jpg"
         eyebrow="Project settings"
         breadcrumb={[{ label: "Industries", href: "/industries" }]}
       />
       <Section>
-        <Stagger className="grid grid-cols-2 gap-px overflow-hidden border border-border bg-border sm:grid-cols-3 lg:grid-cols-6">
+        <Stagger className={`${cardGridClass} grid-cols-2 sm:grid-cols-3 lg:grid-cols-6`}>
           {industries.map(({ slug, label, icon: Icon }, index) => (
-            <StaggerItem key={slug} className="bg-background">
-              <Link
-                href={`/industries/${slug}`}
-                className="flex h-full flex-col items-start justify-between gap-10 px-4 py-6 transition-colors hover:bg-surface-alt sm:px-5 sm:py-8"
-              >
+            <StaggerItem key={slug} className={cardGridItemClass}>
+              <div className="flex h-full flex-col items-start justify-between gap-10 px-4 py-6 sm:px-5 sm:py-8">
                 <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
                   {String(index + 1).padStart(2, "0")}
                 </span>
@@ -40,7 +37,7 @@ export default function IndustriesPage() {
                     {label}
                   </span>
                 </div>
-              </Link>
+              </div>
             </StaggerItem>
           ))}
         </Stagger>

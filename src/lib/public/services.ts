@@ -149,11 +149,11 @@ function resolveImage(
 ) {
   const doc = mediaFromMap(value, media);
   if (!doc) {
-    return { url: "/images/advantage-installation.jpg", alt: "" };
+    return { url: "/images/profile/modular-office-complex.jpg", alt: "" };
   }
   const resolved = resolveMediaUrl(doc, size);
   return {
-    url: resolved.url || "/images/advantage-installation.jpg",
+    url: resolved.url || "/images/profile/modular-office-complex.jpg",
     alt: resolved.alt,
   };
 }

@@ -75,9 +75,7 @@ export function SolutionFeedbackGrid({
                 ))}
               </span>
               <Button asChild variant="brand" size="lg" className="mt-5 w-full">
-                <Link href={`/projects/${project.slug}`}>
-                  View Project Details
-                </Link>
+                <Link href="/contact#quote-form">Request a quotation</Link>
               </Button>
             </div>
           </li>

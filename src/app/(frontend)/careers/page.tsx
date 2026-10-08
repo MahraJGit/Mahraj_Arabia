@@ -12,7 +12,7 @@ export default function CareersPage() {
       <PageHero
         title="Build with Mahraj Arabia."
         description="We are always interested in hearing from fabricators, site coordinators, and estimators for modular, fencing and steel projects."
-        image="/images/advantage-installation.jpg"
+        image="/images/profile/steel-fabrication-workshop.jpg"
         eyebrow="Careers"
         breadcrumb={[{ label: "Careers", href: "/careers" }]}
       />

@@ -237,8 +237,8 @@ export const termsDocument: LegalDocument = {
       title: "Contact Our Commercial Team",
       paragraphs: [],
       bullets: [
-        "Email: info@mahrajfloors.com",
-        "Phone: +971 50 882 0457",
+        "Email: Waseem@mahraj.com, KSAevents@mahraj.com",
+        "Phone: KSA +966 56 602 1891, UAE +971 50 882 2414",
       ],
     },
   ],
@@ -255,7 +255,7 @@ export const privacyDocument: LegalDocument = {
   highlights: [
     { label: "Last Updated", value: "23 September 2026" },
     { label: "Information Collected", value: "Enquiries & project details" },
-    { label: "Privacy Questions", value: "info@mahrajfloors.com" },
+    { label: "Privacy Questions", value: "Waseem@mahraj.com" },
   ],
   keyPointsTitle: "How We Use Your Data",
   keyPointsDescription:
@@ -299,8 +299,8 @@ export const privacyDocument: LegalDocument = {
       id: "who-we-are",
       title: "Who Manages Your Data",
       paragraphs: [
-        "Mahraj Arabia is responsible for the personal data collected through our website and enquiry channels. We're based at Office No 9, 1st Floor, 5207, Al Malqa, Riyadh, Saudi Arabia.",
-        'Got a privacy question or request? Email info@mahrajfloors.com with the subject "Privacy Request," and we\'ll get back to you promptly.',
+        "Mahraj Arabia is responsible for the personal data collected through our website and enquiry channels. We're based at Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia.",
+        'Got a privacy question or request? Email Waseem@mahraj.com or KSAevents@mahraj.com with the subject "Privacy Request," and we\'ll get back to you promptly.',
       ],
     },
     {
@@ -444,9 +444,9 @@ export const privacyDocument: LegalDocument = {
         "Have a question or request about your personal data? We're happy to help.",
       ],
       bullets: [
-        "Email: info@mahrajfloors.com",
-        "Phone: +971 50 882 0457",
-        "Address: Office No 9, 1st Floor, 5207, Al Malqa, Riyadh, Saudi Arabia",
+        "Email: Waseem@mahraj.com, KSAevents@mahraj.com",
+        "Phone: KSA +966 56 602 1891, UAE +971 50 882 2414",
+        "Address: Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia",
       ],
     },
   ],

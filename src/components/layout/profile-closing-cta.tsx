@@ -32,24 +32,28 @@ export function ProfileClosingCta({
         </div>
 
         <div className="flex flex-col justify-center bg-brand px-4 py-14 text-white sm:px-6 lg:px-8 lg:py-16">
-          <FadeIn>
+          <FadeIn className="flex flex-col">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
               Connect with sales
             </p>
             <a
               href={site.phoneHref}
-              className="mt-4 font-heading text-3xl font-semibold tracking-tight transition-opacity hover:opacity-90 sm:text-4xl"
+              className="mt-4 block font-heading text-2xl font-semibold tracking-tight transition-opacity hover:opacity-90 sm:text-3xl lg:text-4xl"
             >
               {site.phone}
             </a>
             <a
               href={`mailto:${site.email}`}
-              className="mt-3 text-base text-white/90 transition-opacity hover:opacity-80"
+              className="mt-3 block break-all text-base text-white/90 transition-opacity hover:opacity-80"
             >
               {site.email}
             </a>
             <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/80">
-              {site.address.line1}, {site.address.line2}, {site.address.line3}
+              {site.address.line1}
+              <br />
+              {site.address.line2}
+              <br />
+              {site.address.line3}
             </p>
             <div className="mt-8">
               <Button

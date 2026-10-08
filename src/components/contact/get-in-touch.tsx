@@ -1,6 +1,7 @@
 import { Section } from "@/components/layout/section";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { contactChannels, contactIntro } from "@/content/contact";
+import { cardGridClass, cardGridItemClass } from "@/lib/utils";
 
 export function GetInTouch() {
   return (
@@ -22,13 +23,13 @@ export function GetInTouch() {
         </p>
       </div>
 
-      <Stagger className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 xl:grid-cols-4">
+      <Stagger className={`mt-10 ${cardGridClass} sm:grid-cols-2 xl:grid-cols-5`}>
         {contactChannels.map(
           (
             { title, description, action, href, icon: Icon, external, note },
             index
           ) => (
-            <StaggerItem key={title} className="bg-background">
+            <StaggerItem key={title} className={cardGridItemClass}>
               <a
                 href={href}
                 {...(external

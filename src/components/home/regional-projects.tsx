@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { projects } from "@/content/home";
@@ -12,7 +10,7 @@ export function RegionalProjects() {
       <ul className="mt-10 grid gap-6 md:grid-cols-3">
         {projects.map((project) => (
           <li key={project.slug}>
-            <Link href={`/projects/${project.slug}`} className="group block">
+            <div>
               <Media
                 src={project.image}
                 alt={project.title}
@@ -22,13 +20,11 @@ export function RegionalProjects() {
               <p className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-brand">
                 {project.location}
               </p>
-              <h3 className="mt-2 text-lg font-semibold transition-colors group-hover:text-brand">
-                {project.title}
-              </h3>
+              <h3 className="mt-2 text-lg font-semibold">{project.title}</h3>
               <p className="mt-1.5 text-sm text-body">
                 Application: {project.application} | Product: {project.product}
               </p>
-            </Link>
+            </div>
           </li>
         ))}
       </ul>

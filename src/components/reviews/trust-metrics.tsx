@@ -1,6 +1,7 @@
 import { Section } from "@/components/layout/section";
 import { Button } from "@/components/ui/button";
 import { trustMetrics } from "@/content/reviews";
+import { cardGridClass, cardGridItemClass, cn } from "@/lib/utils";
 
 export function TrustMetrics() {
   return (
@@ -14,11 +15,11 @@ export function TrustMetrics() {
         </h2>
       </div>
 
-      <ul className="mt-10 grid gap-px overflow-hidden border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      <ul className={`mt-10 ${cardGridClass} sm:grid-cols-2 lg:grid-cols-4`}>
         {trustMetrics.map(({ label, value, note, icon: Icon }, index) => (
           <li
             key={`${label}-${value}`}
-            className="flex flex-col bg-background px-5 py-8"
+            className={cn(cardGridItemClass, "flex flex-col px-5 py-8")}
           >
             <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
               {String(index + 1).padStart(2, "0")}
