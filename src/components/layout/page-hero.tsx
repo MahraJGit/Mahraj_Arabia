@@ -9,12 +9,14 @@ export function PageHero({
   breadcrumb,
   image,
   eyebrow,
+  fullBleed = false,
 }: {
   title: string;
   description?: string;
   breadcrumb?: { label: string; href: string }[];
   image?: string;
   eyebrow?: string;
+  fullBleed?: boolean;
 }) {
   const crumbs: ProfileBreadcrumb[] | undefined = breadcrumb?.map((crumb, index) =>
     index === breadcrumb.length - 1
@@ -29,6 +31,7 @@ export function PageHero({
       breadcrumb={crumbs}
       image={image}
       eyebrow={eyebrow}
+      fullBleed={fullBleed}
     />
   );
 }

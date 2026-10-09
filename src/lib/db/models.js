@@ -64,7 +64,7 @@ const PostSchema = new Schema(
     coverImage: { type: Schema.Types.ObjectId, ref: "Media" },
     seoTitle: String,
     seoDescription: String,
-    category: { type: Schema.Types.ObjectId, ref: "Category" },
+    category: { type: String, index: true },
     author: String,
     authorImage: { type: Schema.Types.ObjectId, ref: "Media" },
     readTime: String,
@@ -91,7 +91,7 @@ const ServiceSchema = new Schema(
   {
     title: String,
     slug: { type: String, index: true },
-    parent: { type: Schema.Types.ObjectId, ref: "MainService" },
+    parent: { type: String, index: true },
     sortOrder: Number,
     showInMegaMenu: Boolean,
     detailReady: Boolean,

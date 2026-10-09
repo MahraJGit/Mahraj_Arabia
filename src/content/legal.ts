@@ -15,6 +15,8 @@ export type LegalSection = {
   title: string;
   paragraphs: string[];
   bullets?: string[];
+  /** Shown after the bullet list when present. */
+  afterBullets?: string[];
 };
 
 export type LegalKeyPoint = {
@@ -48,197 +50,273 @@ export const termsDocument: LegalDocument = {
   title: "Terms of Service",
   breadcrumb: "Terms of Service",
   description:
-    "By using our website or working with us on a project, you agree to these terms. They explain your rights, our responsibilities, and what to expect at every step, from your first quote to final installation.",
-  heroImage: "/images/legal/terms-hero.png",
-  lastUpdated: "23 September 2026",
+    "These terms cover website use, quotations, project coordination, delivery, installation, and our responsibilities when supplying modular, portable fencing, and steel solutions through Mahraj Arabia.",
+  heroImage: "/images/heroes/terms-hero.jpg",
+  lastUpdated: "9 October 2026",
   highlights: [
-    { label: "Last Updated", value: "23 September 2026" },
-    { label: "Covers", value: "Website use & modular and steel services" },
-    { label: "Governed By", value: "Kingdom of Saudi Arabia Law" },
+    { label: "Last Updated", value: "9 October 2026" },
+    {
+      label: "Covers",
+      value: "Website use and modular, portable fencing and steel services",
+    },
+    { label: "Governed By", value: "Laws of the Kingdom of Saudi Arabia" },
   ],
   keyPointsTitle: "The Key Points",
   keyPointsDescription:
-    "A quick summary of what matters most once your project is underway. The full terms below add the details behind each point.",
+    "These points provide a quick overview. Your signed quotation, purchase order, or project contract takes priority where it sets out different terms.",
   keyPoints: [
     {
       icon: FileSignature,
       title: "Your Contract Comes First",
       description:
-        "If anything here conflicts with your signed quotation or contract, your signed project document takes priority.",
+        "The written quotation or project agreement confirms the agreed scope, price, responsibilities, and delivery arrangements.",
     },
     {
       icon: HandCoins,
-      title: "Online Prices Are Estimates",
+      title: "Online Information Is a Guide",
       description:
-        "Prices, timelines, and stock shown online are estimates only. A written quotation stays legally binding for you.",
+        "Website descriptions and images help explain our solutions. Final specifications, pricing, availability, and timelines depend on the written project quotation.",
     },
     {
       icon: Truck,
       title: "Your Site Must Be Ready",
       description:
-        "Subfloor moisture, levelling, and site access must meet requirements before installation work can proceed smoothly.",
+        "You are responsible for providing suitable site access, working space, and required site preparations unless these are included in our agreed scope.",
     },
     {
       icon: BadgeCheck,
-      title: "Follow Care Guidelines",
+      title: "Follow the Agreed Requirements",
       description:
-        "Product and workmanship warranties always remain valid only when the solution is used and cared for correctly.",
+        "Use and maintain supplied products according to the relevant instructions and project documents to help preserve their condition and any applicable warranty.",
     },
   ],
   intro:
-    "These terms of service apply whenever you visit m-arabia.vercel.app, download our catalogues, request a quotation, or work with Mahraj Arabia on supply, specification, or installation. If anything here conflicts with a signed quotation, purchase order, or contract, that project document always takes priority.",
+    "These terms apply when you visit our website, request a quotation, discuss a project, or engage Mahraj Arabia to supply or provide agreed services. A signed quotation, purchase order, or project contract will take priority over these general terms wherever it specifies different conditions.",
   related: { label: "Privacy Policy", href: "/privacy-policy" },
   cta: {
     title: "Still Have a Question About Your Project Terms?",
     description:
-      "Whether it's pricing, delivery, or warranty coverage, our team is ready to clarify anything before you sign.",
+      "Contact our team to discuss your requirements, clarify the agreed scope, or understand the next steps for your project.",
   },
   sections: [
     {
       id: "acceptance",
       title: "Agreeing to These Terms",
       paragraphs: [
-        "By using this website or submitting a project enquiry, you confirm you've read and accepted these terms. If you're acting on behalf of a company, consultant, or contractor, you're confirming you have the authority to agree on their behalf.",
-        'We may revise these terms occasionally, and the "Last updated" date will reflect any changes. Continuing to use our website after an update means you accept the revised version.',
+        "By using our website or proceeding with our services, you agree to the terms that apply to your activity or project.",
+      ],
+      bullets: [
+        "If you are acting on behalf of a company, you confirm that you are authorized to make enquiries or enter into relevant agreements for that organization.",
+        "We may update these terms when necessary. The version published on our website applies to website use, while any signed project agreement remains subject to its own terms.",
       ],
     },
     {
       id: "definitions",
       title: "A Few Key Terms",
       paragraphs: [
-        "To keep things clear, here's what some words mean throughout this page:",
+        'In these terms, "we," "us," and "our" refer to Mahraj Arabia. "You" and "client" refer to the person or organization enquiring about or purchasing our services.',
       ],
       bullets: [
-        '"We," "us," and "our" refer to Mahraj Arabia and our authorized regional offices',
-        '"You" and "client" refer to anyone browsing our site, requesting a quote, or hiring us for a project',
-        '"Works" means supply, subfloor prep, installation, and any related services outlined in a quotation or contract',
-        '"Project documents" means the quotation, specification, drawings, purchase order, or signed contract tied to your job',
+        '"Solutions" or "works" means the modular units, portable structures, fencing, steel products, fabrication, delivery, installation, and related services included in the agreed quotation.',
+        '"Project documents" means the written quotation, specifications, drawings, purchase order, agreement, and other documents confirmed for your project.',
       ],
     },
     {
       id: "quotes",
       title: "How Orders Are Confirmed",
       paragraphs: [
-        "Your order becomes binding once we issue written confirmation or once you accept a quotation in writing. Any changes to quantity, product, or timeline after confirmation may affect pricing and delivery.",
-        "Color samples, photos, and digital renders are meant as a guide only. Batch variation, lighting, and subfloor condition can all affect the final look, so we recommend approving physical samples for important spaces.",
+        "An order becomes binding when we confirm it in writing or accept it through the agreed purchasing process.",
+        "The written quotation identifies the agreed scope, specifications, quantities, pricing, and relevant delivery or installation arrangements. Any changes may affect the cost, schedule, materials, or work required.",
+        "Website photographs, illustrations, and product descriptions are provided as general guidance. Final dimensions, finishes, configurations, and technical requirements should be confirmed in the project documents before work begins.",
       ],
     },
     {
       id: "payment",
       title: "Pricing and Payment",
       paragraphs: [
-        "Unless stated otherwise on your quotation, prices exclude VAT and other applicable duties, added at the current rate. Payment terms, deposits, and milestone stages are detailed in your project documents.",
-        "If a deposit is required, materials are only ordered once payment is received. Late payments may delay delivery or installation, and where the contract allows it, may result in interest charges or a pause in work until payment is resolved.",
+        "Our prices and payment terms are set out in the relevant quotation or project agreement. Unless stated otherwise, applicable taxes, duties, transport, installation, or additional work may be charged separately.",
+      ],
+      bullets: [
+        "Deposits and Advance Payments: These apply where specified in the agreed terms.",
+        "Payment Before Work Begins: We may require payment before ordering materials, starting fabrication, or scheduling delivery.",
+        "Late or Incomplete Payments: These may affect project progress and delivery schedules. Any applicable charges, work pauses, or revised timelines will be handled according to the agreed terms and applicable law.",
       ],
     },
     {
       id: "delivery",
       title: "Delivery and Ownership",
       paragraphs: [
-        "Delivery dates are estimates, based on manufacturer lead times, shipping, and customs clearance. We'll keep you updated on any major changes, but we're not responsible for indirect losses caused by delays outside our control.",
-        "Once materials are delivered to your site or a nominated storage location, the risk transfers to you. Ownership of the materials only passes once we've received payment in full. You're responsible for keeping delivered materials stored securely, dry, and level.",
+        "Delivery dates are estimates unless expressly confirmed as binding in the project agreement. Scheduling may depend on material availability, fabrication, transport, site access, and other project requirements.",
+      ],
+      bullets: [
+        "We will communicate material changes to delivery arrangements where reasonably possible.",
+        "You are responsible for ensuring the delivery location is accessible and prepared to receive the agreed items.",
+        "Responsibility for goods and transfer of ownership will follow the terms in your quotation or contract and applicable law.",
+        "Where goods are delivered before installation, you must take reasonable care of them after responsibility has transferred to you.",
       ],
     },
     {
       id: "installation",
       title: "Your Responsibilities On-Site",
       paragraphs: [
-        "If we're handling installation, you're responsible for providing safe access, power, proper storage, and enough time for materials to cure and acclimatize. Please disclose any existing site services, moisture issues, or structural concerns before work begins.",
-        "If site conditions don't meet manufacturer requirements, we may need to pause installation and issue a variation until the subfloor is properly prepared.",
+        "You must provide suitable site access, accurate project information, and a safe working area for the agreed delivery or installation activities.",
+        "Unless included in our scope, you are responsible for:",
+      ],
+      bullets: [
+        "Obtaining required site permissions and arranging access.",
+        "Preparing the location for the agreed work.",
+        "Informing us of relevant site restrictions, underground services, structural concerns, or other conditions that could affect delivery or installation.",
+      ],
+      afterBullets: [
+        "If the site is not ready or safe, work may need to be postponed until the issue is resolved. Any resulting additional costs or schedule changes will be addressed under the agreed project terms.",
       ],
     },
     {
       id: "variations",
       title: "Changes, Delays, and Cancellations",
       paragraphs: [
-        "Any change in scope, product, area, or sequencing is documented as a written variation, showing its impact on cost and timeline. If instructions are given verbally on-site, we'll confirm them in writing before acting on them.",
-        "If a project is postponed or cancelled after materials are ordered, you remain responsible for non-returnable items, manufacturer restocking fees, and any work already completed. Custom or cut-to-size products generally can't be returned.",
+        "Requests to change the design, dimensions, quantities, materials, finishes, delivery arrangements, or installation scope must be confirmed in writing.",
+      ],
+      bullets: [
+        "Changes to the Project: These may affect pricing and completion dates.",
+        "Cancellations After Work Begins: You may be responsible for committed costs, completed work, and other charges permitted under your agreement.",
+        "Custom Made Items: Project specific products may not be eligible for cancellation or return once production has begun, subject to the agreed terms and applicable law.",
       ],
     },
     {
       id: "warranties",
       title: "Warranties and Ongoing Care",
       paragraphs: [
-        "Manufacturer warranties apply based on the specific solution used in your project. If installation workmanship warranties are included, their coverage and duration are detailed in your project documents.",
-        "Warranties don't cover damage caused by misuse, wrong cleaning products, unauthorized repairs, building movement, water damage from other trades, or skipping the maintenance guide provided at handover.",
-        "If you notice a possible defect, please report it in writing as soon as possible so we can assess it before further wear affects our evaluation.",
+        "Any product warranty or workmanship warranty will be governed by the relevant manufacturer documentation and the terms stated in your quotation or project agreement.",
+        "Warranty coverage may exclude damage caused by:",
+      ],
+      bullets: [
+        "Misuse or improper handling.",
+        "Unauthorized modifications.",
+        "Improper maintenance or care.",
+        "Accidents or conditions outside the agreed scope.",
+      ],
+      afterBullets: [
+        "Specific exclusions and claim requirements depend on the product and applicable warranty.",
+        "Please report suspected defects promptly and provide relevant details or photographs where helpful. We will review the matter against the applicable project documents and warranty terms.",
       ],
     },
     {
       id: "website",
       title: "Using Our Website",
       paragraphs: [
-        "You're welcome to browse our site, download catalogues for project use, and reach out with enquiries. Please don't misuse the website, attempt to access restricted areas, scrape content in bulk, or present our materials as your own specification library.",
-        "We work hard to keep our website accurate and available, but we can't guarantee it will always be uninterrupted. Product details and downloads may change as our offerings are updated.",
+        "You agree to use our website lawfully and responsibly. You must not attempt to disrupt its operation, access restricted systems without permission, misuse its content, or submit misleading information.",
+      ],
+      bullets: [
+        "We aim to keep website information useful and up to date, but we do not guarantee uninterrupted availability or that every page will always be free from errors.",
+        "Product details, service descriptions, and downloadable materials may change as our offerings develop.",
+        "Confirm project specific requirements with our team before making purchasing decisions.",
       ],
     },
     {
       id: "ip",
       title: "Ownership of Our Content",
       paragraphs: [
-        "All trademarks, photos, drawings, catalogues, and written content on this site belong to Mahraj Arabia or our licensors. You're free to share pages or documents for genuine project communication, but you may not reproduce, resell, or remove attribution from them without our written permission.",
+        "Unless stated otherwise, our website text, branding, graphics, photographs, drawings, catalogues, and other content belong to Mahraj Arabia or the relevant rights holders.",
+        "You may use shared materials for legitimate discussions about a project, where permitted. You must not reproduce, modify, publish, sell, or redistribute our content without the required permission.",
+        "Our company names, logos, and other marks must not be used in a way that suggests an unauthorized partnership or endorsement.",
       ],
     },
     {
       id: "confidentiality",
       title: "Keeping Information Confidential",
       paragraphs: [
-        "Drawings, tender details, and pricing shared during a project are treated as confidential and only shared internally with people who need them to complete the work. We expect the same discretion from clients regarding our rates and technical proposals.",
+        "Project quotations, drawings, specifications, tender information, pricing, and other non-public details may be confidential.",
+      ],
+      bullets: [
+        "You agree to use confidential information only for the purpose for which it was shared.",
+        "You must not disclose confidential information to unauthorized parties, except where disclosure is required by law or agreed in writing.",
+        "Where necessary, you may share project information with authorized colleagues or professional advisers who need it for the relevant work and are subject to appropriate confidentiality obligations.",
       ],
     },
     {
       id: "liability",
       title: "Limits on Our Responsibility",
       paragraphs: [
-        "Information on our website is shared in good faith to guide you, but it doesn't replace a site-specific specification, moisture survey, or structural assessment. We're not responsible for decisions made based solely on website content.",
-        "To the extent allowed by law, our liability for any claim related to website use is limited to what you've paid us (if anything) for that specific service. Liability tied to an actual project is governed by your signed project documents.",
-        "Nothing here limits liability that can't legally be excluded under Saudi law, including liability for fraud or personal injury caused by negligence.",
+        "Website information is general guidance and does not replace a project specific assessment, confirmed specification, or professional advice where required.",
+        "Our responsibilities for supply, fabrication, delivery, and installation are determined by the agreed project documents. To the extent permitted by applicable law, we are not responsible for indirect losses arising from matters outside our agreed obligations.",
+        "Nothing in these terms excludes or limits liability that cannot lawfully be excluded or limited under the laws of the Kingdom of Saudi Arabia.",
       ],
     },
     {
       id: "indemnity",
       title: "Your Responsibility to Us",
       paragraphs: [
-        "You agree to cover any claims that arise from misusing our website, breaching these terms, or providing inaccurate information that leads to loss, rework, or third-party claims.",
+        "You are responsible for providing accurate project information, obtaining required permissions within your control, and complying with the agreed terms.",
+        "Where your breach of these terms, misuse of our website, or inaccurate information causes any of the following, you may be responsible to the extent permitted by the project agreement and applicable law:",
+      ],
+      bullets: [
+        "Loss or damage.",
+        "Additional work or associated costs.",
+        "Third party claims arising from the relevant breach or conduct.",
+      ],
+      afterBullets: [
+        "We will assess any such matter in light of the circumstances, the agreed responsibilities, and relevant legal requirements.",
       ],
     },
     {
       id: "force-majeure",
       title: "When Things Are Out of Our Control",
       paragraphs: [
-        "Neither of us is responsible for delays caused by events beyond reasonable control, such as extreme weather, port or customs disruptions, manufacturer shutdowns, utility failures, civil unrest, or new laws. Affected obligations are paused during the event, and timelines are adjusted accordingly.",
+        "Some events may delay or prevent performance despite reasonable planning. These may include:",
+      ],
+      bullets: [
+        "Severe weather.",
+        "Transport or port disruption.",
+        "Customs delays or material shortages.",
+        "Manufacturer delays.",
+        "Utility interruptions.",
+        "Government restrictions or civil unrest.",
+        "Changes in applicable law.",
+      ],
+      afterBullets: [
+        "Where such an event affects a project, we will take reasonable steps to communicate its impact and review the schedule.",
+        "Our affected obligations may be suspended or timelines adjusted to the extent permitted by the agreement and applicable law.",
       ],
     },
     {
       id: "third-parties",
       title: "Links and Partner Services",
       paragraphs: [
-        "Our website may link to maps, social platforms, or manufacturer resources. These sites operate under their own terms, and we're not responsible for their content or availability.",
-        "We may also work with authorized partners, logistics providers, or specialist installers to complete your project. They're required to follow the same confidentiality and quality standards we uphold.",
+        "Our website may contain links to third-party websites or services for additional information. We do not control their content, availability, or privacy practices.",
+        "Some projects may involve manufacturers, delivery partners, specialist installers, or other service providers. Their responsibilities will depend on the agreed project arrangements.",
+        "Where third parties are involved in our work, we will coordinate their role as appropriate to the scope we have accepted. Separate third party terms may also apply.",
       ],
     },
     {
       id: "general",
       title: "If Part of These Terms Doesn't Apply",
       paragraphs: [
-        "If any part of these terms is found to be unenforceable, the rest will still remain valid. If we don't immediately enforce a right, that doesn't mean we've given it up.",
-        "Together with your project documents, these terms make up our complete agreement regarding website use, replacing any earlier discussions on the same topic.",
+        "If any part of these terms is found to be invalid or unenforceable, the remaining provisions will continue to apply to the extent permitted by law.",
+        "A delay or failure to enforce a provision does not automatically waive our right to enforce it later.",
+        "These terms, together with the applicable quotation, purchase order, and project agreement, set out the relevant understanding between the parties. Where project documents contain specific conditions, those conditions take priority for that project.",
       ],
     },
     {
       id: "law",
       title: "Which Laws Apply",
       paragraphs: [
-        "These terms are governed by the laws of the Kingdom of Saudi Arabia. Any disputes related to website use fall under the exclusive jurisdiction of Riyadh courts, unless your signed project contract states otherwise.",
+        "These terms are governed by the laws of the Kingdom of Saudi Arabia.",
+        "Any dispute will be handled by the competent courts of Saudi Arabia, subject to applicable law and any dispute resolution provisions expressly stated in the relevant project agreement.",
       ],
     },
     {
       id: "contact-terms",
       title: "Contact Our Commercial Team",
-      paragraphs: [],
+      paragraphs: [
+        "For questions about these terms, quotations, or project requirements, contact our team.",
+      ],
       bullets: [
-        "Email: Waseem@mahraj.com, KSAevents@mahraj.com",
-        "Phone: KSA +966 56 602 1891, UAE +971 50 882 2414",
+        "Email: Waseem@mahraj.com",
+        "Additional Email: KSAevents@mahraj.com",
+        "Saudi Arabia: +966 56 602 1891",
+        "UAE: +971 50 882 2414",
+        "Address: Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia",
       ],
     },
   ],
@@ -249,203 +327,237 @@ export const privacyDocument: LegalDocument = {
   title: "Privacy Policy",
   breadcrumb: "Privacy Policy",
   description:
-    "We explain clearly how Mahraj Arabia collects, stores, and safeguards your personal details whenever you reach out, request a quote, or work with us on a project.",
-  heroImage: "/images/legal/privacy-hero.png",
-  lastUpdated: "23 September 2026",
+    "We explain how Mahraj Arabia collects, uses, stores, and protects your information when you contact us, request a quotation, or work with us on a modular, portable, or steel project.",
+  heroImage: "/images/heroes/privacy-hero.jpg",
+  lastUpdated: "9 October 2026",
   highlights: [
-    { label: "Last Updated", value: "23 September 2026" },
-    { label: "Information Collected", value: "Enquiries & project details" },
+    { label: "Last Updated", value: "9 October 2026" },
+    {
+      label: "Information Collected",
+      value: "Contact details, enquiries, and project requirements",
+    },
     { label: "Privacy Questions", value: "Waseem@mahraj.com" },
   ],
   keyPointsTitle: "How We Use Your Data",
   keyPointsDescription:
-    "A quick overview of how we collect, use, and protect your information. You can find the full details further down this page.",
+    "We use your information to respond to enquiries, prepare quotations, coordinate projects, and improve our services.",
   keyPoints: [
     {
       icon: UserCheck,
       title: "What We Collect",
       description:
-        "Your name, company details, contact information, and anything you share through our enquiry or quotation forms.",
+        "We may collect your name, company details, contact information, project requirements, and website usage data.",
     },
     {
       icon: ShieldCheck,
       title: "Why We Use It",
       description:
-        "To prepare quotes, arrange site surveys, manage installation, and follow up with aftercare. We never sell your data to anyone.",
+        "We use your data to understand needs, prepare proposals, coordinate delivery and installation, and support projects. We never sell it.",
     },
     {
       icon: Lock,
       title: "Who We Share It With",
       description:
-        "Only with installation teams, delivery partners, manufacturers handling warranties, and trusted providers that support our systems.",
+        "Where necessary, we share relevant details with delivery partners, installation teams, manufacturers, and trusted service providers involved in our work.",
     },
     {
       icon: Mail,
       title: "Your Rights & Choices",
       description:
-        "You can request access, corrections, or deletion of your data, or unsubscribe from emails anytime using the link provided.",
+        "You have the option to access your data, request changes or deletion where allowed, and stop non-essential communications.",
     },
   ],
   intro:
-    "At Mahraj Arabia, we understand that sharing your personal or project details takes trust. This policy explains, in simple terms, what information we collect when you visit our website, request a quote, sign up for updates, or work with us on a project, and exactly how we handle it.",
+    "At Mahraj Arabia, we understand that sharing personal or project information requires trust. This policy explains what we collect when you visit our website, request a quote, contact our team, or work with us, and how we handle that information.",
   related: { label: "Terms of Service", href: "/terms" },
   cta: {
     title: "Have a Question About Your Data?",
     description:
-      "Whether you want to access, correct, or delete your information, our team is here to help, just reach out anytime.",
+      "Contact our team for help with your information or privacy request. We will review your enquiry and respond as appropriate.",
   },
   sections: [
     {
       id: "who-we-are",
       title: "Who Manages Your Data",
       paragraphs: [
-        "Mahraj Arabia is responsible for the personal data collected through our website and enquiry channels. We're based at Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia.",
-        'Got a privacy question or request? Email Waseem@mahraj.com or KSAevents@mahraj.com with the subject "Privacy Request," and we\'ll get back to you promptly.',
+        "Mahraj Arabia manages the personal information collected through our website and business communications. We use this information to respond to enquiries and support projects involving modular spaces, portable units, fencing, and steel solutions across Saudi Arabia.",
+        'For privacy related requests, contact Waseem@mahraj.com or KSAevents@mahraj.com with the subject line "Privacy Request."',
       ],
     },
     {
       id: "what-we-collect",
       title: "What Information We Collect",
       paragraphs: [
-        "We only collect what's needed to serve you well, nothing more:",
+        "The information we collect depends on how you contact us and the services you request.",
+        "Please share only the information needed to discuss your requirements.",
       ],
       bullets: [
-        "Contact details: Your name, company, email, and phone number",
-        "Project information: The solution you're interested in, location, area size, and any message you send us",
-        "Newsletter details: If you subscribe to our project insights",
-        "Technical data: Browser type, device, IP address, and pages you visit on our site",
-        "Conversation records: From email, WhatsApp, or phone calls with our team",
+        "Contact Details: Your name, company name, email address, and phone number.",
+        "Project Information: Required solutions, project location, dimensions, site conditions, timelines, and details shared in your enquiry.",
+        "Communication Records: Relevant emails, messages, calls, and discussions about quotations or projects.",
+        "Technical Data: Where collected, your browser type, device information, IP address, and pages visited.",
+        "Marketing Preferences: Your preferences for receiving updates or other communications, where applicable.",
       ],
     },
     {
       id: "how-we-collect",
       title: "How We Collect Your Information",
       paragraphs: [
-        "There are only a few simple ways your data gets to us:",
+        "We collect information through the following channels:",
       ],
       bullets: [
-        "You submit it directly through a form, email, call, or message.",
-        "Our website collects some technical data automatically through cookies and server logs.",
-        "A colleague or contractor on your project team shares it with us on your behalf.",
-        "We occasionally verify publicly available business details.",
+        "You provide details through website forms, emails, phone calls, or messages.",
+        "Our website may collect technical information automatically through cookies, server logs, and similar technologies.",
+        "A project colleague or contractor may provide relevant information when coordinating a request on your behalf.",
+        "We may consult publicly available business information when necessary for legitimate business purposes.",
       ],
     },
     {
       id: "how-we-use",
       title: "Why We Use Your Data",
       paragraphs: [
-        "We only use your information for genuine business reasons connected to your project:",
+        "We use personal information for purposes related to our services and business operations:",
       ],
       bullets: [
-        "Responding to quote requests, site surveys, and technical questions",
-        "Preparing specifications, proposals, and documentation",
-        "Managing material delivery, installation, and aftercare",
-        "Sending catalogs or insight emails you've asked for",
-        "Improving our website's performance and content",
-        "Meeting legal, accounting, and warranty obligations",
+        "Responding to quotation requests, site surveys, and technical enquiries.",
+        "Preparing specifications, proposals, and project documentation.",
+        "Coordinating material delivery, installation, and aftercare.",
+        "Sending requested catalogs or project updates, where applicable.",
+        "Maintaining and improving website functionality and content.",
+        "Meeting applicable legal, accounting, warranty, and record keeping requirements.",
       ],
     },
     {
       id: "legal-basis",
       title: "The Legal Basis Behind Our Processing",
       paragraphs: [
-        "Depending on the situation, we process your data based on the following grounds (and if we're relying on your consent, you're free to withdraw it anytime without affecting anything we've already processed):",
+        "Where applicable, we process personal information based on:",
       ],
       bullets: [
-        "Your consent, such as subscribing to our newsletter",
-        "Contractual necessity, like preparing quotes or managing installations",
-        "Legitimate business interest, such as running and securing our operations",
-        "Legal obligation, like tax and record-keeping requirements",
+        "Consent: When you agree to a specific use of your information.",
+        "Pre-contractual Steps: When processing is necessary to respond to your request before agreeing.",
+        "Contractual Requirements: When information is needed to fulfill an agreement or provide agreed services.",
+        "Legitimate Business Interests: When processing supports our operations and does not override your applicable rights.",
+        "Legal Obligations: When we must process or retain information to comply with applicable laws.",
+      ],
+      afterBullets: [
+        "The appropriate basis depends on the information involved and the purpose for which we use it.",
+        "Where required, you may withdraw your consent, subject to any applicable legal or contractual obligations.",
       ],
     },
     {
       id: "marketing",
       title: "Your Communication Choices",
       paragraphs: [
-        "We only send project insights and updates to people who've asked for them or clients working with us on relevant projects.",
-        "Every marketing email includes a simple unsubscribe link. Note that opting out of marketing won't stop essential updates, like delivery notices or installation scheduling. Those are part of your active project.",
+        "We may contact you to answer an enquiry, provide a quotation, confirm project details, or share important delivery and installation updates.",
+        "We send promotional updates only where appropriate and permitted. If we offer marketing emails, you can unsubscribe using the available option or contact us directly.",
+        "Unsubscribing from promotional communications does not stop essential messages relating to an active enquiry, quotation, or project.",
       ],
     },
     {
       id: "sharing",
       title: "Who We Share Your Data With",
       paragraphs: [
-        "We never sell your personal information. We only share it with trusted parties who help deliver the service you've requested:",
+        "We do not sell your personal information. We share relevant details only where needed to support our business operations or meet legal requirements.",
+        "Depending on the project, recipients may include:",
       ],
       bullets: [
-        "Installation crews, logistics partners, and our regional offices",
-        "Manufacturers, when a warranty claim or technical query needs it",
-        "IT, hosting, email, and analytics providers working on our instructions",
-        "Legal advisors or authorities, only where required by law",
+        "Delivery and Logistics Partners: To coordinate material transportation and delivery.",
+        "Installation Teams: To arrange site access, installation, and project coordination.",
+        "Manufacturers: To handle product related enquiries, warranties, or technical matters.",
+        "Service Providers: To support our website, communications, and business systems.",
+        "Legal or Regulatory Authorities: When disclosure is required by law or necessary to protect our legal rights.",
+      ],
+      afterBullets: [
+        "Where appropriate, we limit shared information to what is necessary for the relevant purpose.",
       ],
     },
     {
       id: "cookies",
       title: "Cookies on Our Website",
       paragraphs: [
-        "We use essential cookies to keep our website running smoothly and optional analytics cookies to understand which pages help our visitors most.",
-        "You can manage or change your cookie preferences at any time through your browser settings. Just know that blocking some cookies may affect how forms or search features work on our site.",
+        "Our website may use essential cookies or similar technologies to support its basic functions. Analytics or other optional cookies may also be used if those tools are enabled.",
+        "You can manage cookies through your browser settings. Disabling certain cookies may affect how parts of the website function.",
+        "Where required, we will seek consent before using non-essential cookies.",
       ],
     },
     {
       id: "retention",
       title: "How Long We Keep Your Data",
       paragraphs: [
-        "We keep enquiry data until your project is complete, plus extra time for warranty and accounting needs. Newsletter data stays until you unsubscribe, and technical logs are kept only as long as needed for security and troubleshooting purposes.",
+        "We retain personal information only for as long as reasonably necessary for the purpose for which it was collected.",
+        "Retention periods may vary by information type:",
+      ],
+      bullets: [
+        "Enquiry and Project Records: For the duration of the project and any applicable warranty, accounting, or legal period.",
+        "Marketing Information: Until you unsubscribe or the information is no longer needed.",
+        "Technical Records: According to operational, security, and legal requirements.",
+      ],
+      afterBullets: [
+        "When information is no longer required, we take appropriate steps to delete or securely dispose of it.",
       ],
     },
     {
       id: "security",
       title: "Keeping Your Data Safe",
       paragraphs: [
-        "We take real steps to protect your information, including access controls, secure hosting, and strict staff data handling practices.",
-        "That said, no online transmission is ever 100% secure. Please avoid sending sensitive payment details through email, and reach out to us directly if anyone contacts you asking for unexpected payment information.",
+        "We take reasonable measures to protect personal information against unauthorized access, loss, misuse, or disclosure.",
+        "These measures may include access controls, secure systems, and appropriate internal practices. Access is limited to people and service providers who need the information for legitimate business purposes.",
+        "No method of online transmission or electronic storage is completely secure. Please avoid sending unnecessary sensitive information through general enquiry channels.",
       ],
     },
     {
       id: "breach",
       title: "If Something Ever Goes Wrong",
       paragraphs: [
-        "In the rare event of a security incident affecting your data, we'll act quickly by investigating the issue, containing it, and notifying you (and relevant authorities, where legally required) without unnecessary delay.",
+        "If we become aware of a personal data incident, we will assess the issue and take appropriate steps to contain it, investigate its cause, and reduce potential harm.",
+        "Where notification is required by applicable law, we will notify the relevant individuals or authorities in accordance with those requirements.",
       ],
     },
     {
       id: "rights",
       title: "Your Privacy Rights",
       paragraphs: [
-        "You have the right to access the personal data we hold, ask us to correct or delete it, restrict or object to certain processing, and opt out of marketing. We may verify your identity before completing requests and retain limited records for legal reasons. If unhappy with our response, contact your local data protection authority.",
+        "Depending on applicable law, you may have the right to request access to your personal information, correct inaccurate details, request deletion, or object to or restrict certain processing.",
+        "You can also opt out of promotional communications. We may need to verify your identity before acting on a request.",
+        "Some information may need to be retained to meet legal obligations, resolve disputes, or fulfill contractual requirements. If you have a concern about how your information is handled, contact us using the details below.",
       ],
     },
     {
       id: "international",
       title: "International Data Transfers",
       paragraphs: [
-        "Since we operate across the GCC and work with cloud services and manufacturer partners, your data may sometimes be processed in a different country than where you submitted it. Wherever it goes, we make sure it's handled with the same level of protection outlined in this policy.",
+        "Some service providers, manufacturers, or business partners may process information outside the location where it was collected. This may occur when we use cloud based systems or coordinate projects across regions.",
+        "Where international transfers take place, we will take appropriate steps to protect the information in accordance with applicable legal requirements.",
       ],
     },
     {
       id: "children",
       title: "A Note About Children's Privacy",
       paragraphs: [
-        "Our website is built for businesses, consultants, and contractors, not children. We don't knowingly collect data from minors. If you believe a child has shared information with us, please let us know, and we'll remove it right away.",
+        "Mahraj Arabia's website and services are intended for business customers, project teams, contractors, and other professional contacts.",
+        "We do not knowingly collect personal information from children through our business services. If you believe a child has provided personal information to us, please contact us so we can review the matter and take appropriate action.",
       ],
     },
     {
       id: "updates",
       title: "Updates to This Policy",
       paragraphs: [
-        "As our services and tools evolve, we may update this policy to reflect those changes. You'll always find the most current version right here, along with the date it was last updated.",
+        "We may update this Privacy Policy when our business practices, website features, or legal requirements change.",
+        "The latest version will appear on this page with its updated date. We encourage you to review this page occasionally to understand how we handle personal information.",
       ],
     },
     {
       id: "contact-privacy",
       title: "Get in Touch About Privacy",
       paragraphs: [
-        "Have a question or request about your personal data? We're happy to help.",
+        "If you have questions about this policy or want to make a privacy-related request, contact our team.",
       ],
       bullets: [
-        "Email: Waseem@mahraj.com, KSAevents@mahraj.com",
-        "Phone: KSA +966 56 602 1891, UAE +971 50 882 2414",
+        "Email: Waseem@mahraj.com",
+        "Additional Email: KSAevents@mahraj.com",
+        "Saudi Arabia: +966 56 602 1891",
+        "UAE: +971 50 882 2414",
         "Address: Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia",
       ],
     },

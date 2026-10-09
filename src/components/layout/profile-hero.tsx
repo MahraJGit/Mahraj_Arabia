@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { FadeIn } from "@/components/motion/reveal";
+import { Container } from "@/components/layout/container";
 import { cn } from "@/lib/utils";
 
 function hasPublicAsset(src: string) {
@@ -14,9 +15,13 @@ function hasPublicAsset(src: string) {
 
 export type ProfileBreadcrumb = { label: string; href?: string };
 
-/** Shared height shell for every page hero. */
+/** Shared height shell for split page heroes. */
 const heroShellClass =
   "min-h-[var(--hero-min-h)] sm:min-h-[var(--hero-min-h-sm)] lg:min-h-[var(--hero-min-h-lg)]";
+
+/** Matches the home hero: full viewport below the header. */
+const fullBleedHeight =
+  "min-h-[max(34rem,calc(100svh-6.25rem))] lg:min-h-[max(38rem,calc(100svh-6.75rem))]";
 
 export function ProfileHero({
   title,
@@ -26,6 +31,7 @@ export function ProfileHero({
   eyebrow,
   actions,
   footer,
+  fullBleed = false,
 }: {
   title: string;
   description?: string;
@@ -34,10 +40,127 @@ export function ProfileHero({
   eyebrow?: string;
   actions?: ReactNode;
   footer?: ReactNode;
+  /** Full-viewport cover image with copy overlaid, like the home hero. */
+  fullBleed?: boolean;
   /** @deprecated Kept for call-site compatibility; height is unified. */
   compact?: boolean;
 }) {
   const showImage = Boolean(image && hasPublicAsset(image));
+
+  const copy = (
+    <FadeIn className={cn("relative z-10 w-full", fullBleed ? "max-w-3xl" : "max-w-xl")}>
+      {breadcrumb?.length ? (
+        <nav aria-label="Breadcrumb" className="mb-5">
+          <ol
+            className={cn(
+              "flex flex-wrap items-center gap-1.5 text-xs",
+              fullBleed ? "text-white/75" : "text-body"
+            )}
+          >
+            <li>
+              <Link
+                href="/"
+                className={cn(
+                  "transition-colors",
+                  fullBleed ? "hover:text-white" : "hover:text-brand"
+                )}
+              >
+                Home
+              </Link>
+            </li>
+            {breadcrumb.map((crumb) => (
+              <li key={crumb.label} className="flex items-center gap-1.5">
+                <ChevronRight className="size-3.5" />
+                {crumb.href ? (
+                  <Link
+                    href={crumb.href}
+                    className={cn(
+                      "transition-colors",
+                      fullBleed ? "hover:text-white" : "hover:text-brand"
+                    )}
+                  >
+                    {crumb.label}
+                  </Link>
+                ) : (
+                  <span className={fullBleed ? "text-white" : "text-ink"}>
+                    {crumb.label}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      ) : null}
+
+      {eyebrow ? (
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
+          {eyebrow}
+        </p>
+      ) : null}
+
+      <h1
+        className={cn(
+          "font-heading text-3xl font-semibold leading-[1.12] tracking-tight sm:text-4xl lg:text-[2.75rem]",
+          fullBleed ? "text-white" : "text-ink",
+          eyebrow && "mt-3"
+        )}
+      >
+        {title}
+      </h1>
+
+      {description ? (
+        <p
+          className={cn(
+            "mt-4 text-base leading-relaxed",
+            fullBleed ? "max-w-2xl text-white/90" : "max-w-md text-body"
+          )}
+        >
+          {description}
+        </p>
+      ) : null}
+
+      {actions ? (
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">{actions}</div>
+      ) : null}
+      {footer ? <div className="mt-7">{footer}</div> : null}
+    </FadeIn>
+  );
+
+  if (fullBleed) {
+    return (
+      <section
+        className={cn(
+          "relative isolate flex overflow-hidden bg-ink",
+          fullBleedHeight
+        )}
+      >
+        {showImage && image ? (
+          <Image
+            src={image}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="absolute inset-0 z-0 object-cover object-center"
+          />
+        ) : (
+          <div
+            aria-hidden
+            className="absolute inset-0 z-0 bg-gradient-to-br from-neutral-700 via-neutral-800 to-neutral-900"
+          />
+        )}
+
+        <div
+          aria-hidden
+          className="absolute inset-0 z-[1] bg-gradient-to-r from-black/85 via-black/55 to-black/20"
+        />
+
+        <Container className="relative z-10 flex w-full flex-1 flex-col justify-center py-16 sm:py-20 lg:py-24">
+          {copy}
+        </Container>
+      </section>
+    );
+  }
 
   return (
     <section className="relative isolate overflow-hidden border-b border-border bg-background">
@@ -77,60 +200,7 @@ export function ProfileHero({
             !showImage && "mx-auto w-full max-w-site"
           )}
         >
-          <FadeIn className="relative z-10 w-full max-w-xl">
-            {breadcrumb?.length ? (
-              <nav aria-label="Breadcrumb" className="mb-5">
-                <ol className="flex flex-wrap items-center gap-1.5 text-xs text-body">
-                  <li>
-                    <Link href="/" className="transition-colors hover:text-brand">
-                      Home
-                    </Link>
-                  </li>
-                  {breadcrumb.map((crumb) => (
-                    <li key={crumb.label} className="flex items-center gap-1.5">
-                      <ChevronRight className="size-3.5" />
-                      {crumb.href ? (
-                        <Link
-                          href={crumb.href}
-                          className="transition-colors hover:text-brand"
-                        >
-                          {crumb.label}
-                        </Link>
-                      ) : (
-                        <span className="text-ink">{crumb.label}</span>
-                      )}
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            ) : null}
-
-            {eyebrow ? (
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-                {eyebrow}
-              </p>
-            ) : null}
-
-            <h1
-              className={cn(
-                "font-heading text-3xl font-semibold leading-[1.12] tracking-tight text-ink sm:text-4xl lg:text-[2.75rem]",
-                eyebrow && "mt-3"
-              )}
-            >
-              {title}
-            </h1>
-
-            {description ? (
-              <p className="mt-4 max-w-md text-base leading-relaxed text-body">
-                {description}
-              </p>
-            ) : null}
-
-            {actions ? (
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">{actions}</div>
-            ) : null}
-            {footer ? <div className="mt-7">{footer}</div> : null}
-          </FadeIn>
+          {copy}
         </div>
       </div>
     </section>

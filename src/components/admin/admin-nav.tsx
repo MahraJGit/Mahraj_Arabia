@@ -11,11 +11,9 @@ import {
   Layers3,
   Tags,
   UserRound,
-  Users,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import type { UserRole } from "@/lib/cms/types";
 
 const content = [
   { href: "/admin", label: "Overview", icon: Home, exact: true },
@@ -28,20 +26,15 @@ const content = [
 
 const settings = [
   { href: "/admin/profile", label: "Profile", icon: UserRound },
-  { href: "/admin/users", label: "Users", icon: Users, adminOnly: true },
 ];
 
-export function AdminNav({ role }: { role: UserRole }) {
+export function AdminNav() {
   const pathname = usePathname();
 
   return (
     <nav className="flex flex-1 flex-col gap-6 px-3 py-4">
       <NavGroup title="Content" items={content} pathname={pathname} />
-      <NavGroup
-        title="Settings"
-        items={settings.filter((item) => !item.adminOnly || role === "admin")}
-        pathname={pathname}
-      />
+      <NavGroup title="Settings" items={settings} pathname={pathname} />
     </nav>
   );
 }

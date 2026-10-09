@@ -7,8 +7,9 @@ import { demoWriteBlockedMessage } from "@/lib/cms/demo-data";
 import { requireEditor } from "@/lib/cms/permissions";
 import { revalidateBlogPaths } from "@/lib/cms/revalidate";
 import { isLexicalDoc, normalizeLexicalDoc } from "@/lib/cms/lexical";
-import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
+import { asObjectId, isContentId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
+import { getBlogCategory, isSupabaseContentEnabled } from "@/lib/supabase/content";
 import { flattenZod } from "@/lib/validation/flatten";
 import { postDraftSchema, type PostInput } from "@/lib/validation/post";
 
@@ -69,12 +70,21 @@ export async function savePost(
   const { Post, Category, Media } = await getModels();
 
   if (data._status === "published" || data.category) {
-    if (!data.category || !isObjectId(data.category)) {
+    if (!data.category || !isContentId(data.category)) {
       return { fieldErrors: { category: "Please choose a category." } };
     }
-    const category = await Category.findById(data.category).select("_id").lean();
-    if (!category) {
-      return { fieldErrors: { category: "That category is no longer available." } };
+    if (isSupabaseContentEnabled()) {
+      const category = await getBlogCategory(data.category);
+      if (!category) {
+        return { fieldErrors: { category: "That category is no longer available." } };
+      }
+    } else if (isObjectId(data.category)) {
+      const category = await Category.findById(data.category).select("_id").lean();
+      if (!category) {
+        return { fieldErrors: { category: "That category is no longer available." } };
+      }
+    } else {
+      return { fieldErrors: { category: "Please choose a category." } };
     }
   }
 
@@ -124,8 +134,8 @@ export async function savePost(
   };
   const $unset: Record<string, number> = {};
 
-  if (data.category && isObjectId(data.category)) {
-    $set.category = asObjectId(data.category);
+  if (data.category && isContentId(data.category)) {
+    $set.category = data.category;
   } else if (id) {
     $unset.category = 1;
   }

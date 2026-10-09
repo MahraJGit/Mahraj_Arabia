@@ -1,8 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import { Logo } from "@/components/layout/logo";
 import { site } from "@/content/site";
 
 const exploreLinks = [
@@ -80,7 +80,16 @@ export function SiteFooter() {
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
             <div>
-              <Logo onDark />
+              <Link href="/" className="inline-flex" aria-label="Mahraj Arabia">
+                <Image
+                  src="/brand/mahraj-arabia-footer-logo.png"
+                  alt="Mahraj Arabia"
+                  width={286}
+                  height={64}
+                  unoptimized
+                  className="h-12 w-auto sm:h-14"
+                />
+              </Link>
               <p className="mt-4 max-w-xs text-sm leading-relaxed">
                 Modular, portable, fencing and steel solutions for construction,
                 events and industrial sites across Saudi Arabia.

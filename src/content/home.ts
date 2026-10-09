@@ -72,7 +72,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Construction",
     product: "Site-ready portable facilities",
-    image: "/images/profile/porta-cabin-site-office.png",
+    image: "/images/projects/porta-cabins-site-offices.jpg",
   },
   {
     slug: "modular-offices-meeting-rooms",
@@ -80,7 +80,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Commercial",
     product: "Flexible modular workplaces",
-    image: "/images/profile/modular-meeting-room.png",
+    image: "/images/projects/modular-offices-meeting-rooms.jpg",
   },
   {
     slug: "ablution-sanitary-units",
@@ -88,7 +88,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Construction",
     product: "Portable welfare facilities",
-    image: "/images/profile/ablution-sanitary-units.png",
+    image: "/images/projects/ablution-sanitary-units.jpg",
   },
   {
     slug: "car-parking-shades",
@@ -96,7 +96,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Commercial",
     product: "Engineered shade structures",
-    image: "/images/profile/car-parking-shades.jpg",
+    image: "/images/projects/car-parking-shades.jpg",
   },
   {
     slug: "event-tents-temporary-structures",
@@ -104,7 +104,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Events",
     product: "Temporary event infrastructure",
-    image: "/images/profile/event-tent-luxury.jpg",
+    image: "/images/projects/event-tents-temporary-structures.jpg",
   },
   {
     slug: "steel-structures-fabrication",
@@ -112,7 +112,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Industrial",
     product: "Structural steelwork",
-    image: "/images/profile/steel-structure-frame.jpg",
+    image: "/images/projects/steel-structures-fabrication-works.jpg",
   },
   {
     slug: "custom-steel-fabrication",
@@ -120,7 +120,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Industrial",
     product: "Made-to-order steel components",
-    image: "/images/profile/steel-fabrication-workshop.jpg",
+    image: "/images/projects/custom-steel-fabrication.jpg",
   },
   {
     slug: "customized-modular-solutions",
@@ -128,7 +128,7 @@ export const projects: Project[] = [
     location: "Riyadh, KSA",
     application: "Institutional",
     product: "Purpose-built modular environments",
-    image: "/images/profile/modular-office-complex.jpg",
+    image: "/images/projects/customized-modular-solutions.jpg",
   },
 ];
 

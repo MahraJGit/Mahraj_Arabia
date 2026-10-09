@@ -216,9 +216,9 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
   }
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
-      <Card>
-        <CardContent className="flex flex-col items-center px-5 py-6 text-center sm:items-start sm:text-left lg:items-center lg:text-center">
+    <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-stretch">
+      <Card className="h-full lg:min-h-full">
+        <CardContent className="flex h-full flex-col items-center px-5 py-6 text-center sm:items-start sm:text-left lg:items-center lg:text-center">
           <span className="flex size-16 items-center justify-center rounded-full bg-muted font-heading text-lg font-semibold text-ink">
             {initials(profile.name)}
           </span>
@@ -231,7 +231,7 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
           <Badge variant="muted" className="mt-3 normal-case tracking-normal">
             {roleLabel}
           </Badge>
-          <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+          <p className="mt-auto pt-6 text-xs leading-relaxed text-muted-foreground">
             Role is managed by an administrator and cannot be changed here.
           </p>
         </CardContent>
@@ -239,16 +239,17 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
 
       <div className="grid gap-6">
         <Card>
-          <CardHeader>
+          <CardHeader className="gap-1.5 pb-4">
             <CardTitle>Account details</CardTitle>
             <CardDescription>
-              This name appears in the dashboard. Email is what you use to sign in.
+              Your display name appears in the dashboard. Your email is used to
+              sign in — changing it updates your login address.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form action={saveProfile} className="grid gap-4">
+          <CardContent className="pt-0">
+            <form action={saveProfile} className="space-y-5">
               <StatusAlert error={profileState.error} success={profileState.success} />
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid items-start gap-x-4 gap-y-4 sm:grid-cols-2">
                 <Field label="Name" htmlFor="profile-name">
                   <Input
                     id="profile-name"
@@ -264,11 +265,7 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
                     className="h-10"
                   />
                 </Field>
-                <Field
-                  label="Email"
-                  htmlFor="profile-email"
-                  hint="Changing email updates your sign-in address."
-                >
+                <Field label="Email" htmlFor="profile-email">
                   <Input
                     id="profile-email"
                     name="email"
@@ -284,9 +281,9 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
                   />
                 </Field>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col-reverse gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
                 <p className="text-xs text-muted-foreground">
-                  Signed in as {roleLabel.toLowerCase()}.
+                  Signed in as {roleLabel}.
                 </p>
                 <Button type="submit" className="h-10 sm:min-w-36" disabled={profilePending}>
                   {profilePending ? <Loader2 className="animate-spin" /> : null}
@@ -298,14 +295,15 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
         </Card>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="gap-1.5 pb-4">
             <CardTitle>Change password</CardTitle>
             <CardDescription>
-              Enter your current password, then choose a new one and confirm it.
+              Enter your current password, then choose a new password (at least 8
+              characters) and confirm it.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form id={passwordFormId} action={submitPassword} className="grid gap-4">
+          <CardContent className="pt-0">
+            <form id={passwordFormId} action={submitPassword} className="space-y-5">
               <StatusAlert
                 error={shownPassword.error}
                 success={passwordError ? null : passwordState.success}
@@ -318,13 +316,12 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
                 error={shownPassword.field === "current"}
                 disabled={passwordPending}
               />
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid items-start gap-x-4 gap-y-4 sm:grid-cols-2">
                 <PasswordField
                   id="new-password"
                   name="newPassword"
                   label="New password"
                   autoComplete="new-password"
-                  hint="At least 8 characters."
                   error={shownPassword.field === "new"}
                   disabled={passwordPending}
                 />
@@ -337,7 +334,7 @@ export function ProfileAccount({ user }: { user: AdminUser }) {
                   disabled={passwordPending}
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end border-t border-border pt-4">
                 <Button
                   type="submit"
                   variant="outline"

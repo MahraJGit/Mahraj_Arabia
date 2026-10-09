@@ -9,6 +9,7 @@ export function LegalHero({ doc }: { doc: LegalDocument }) {
       image={doc.heroImage}
       breadcrumb={[{ label: doc.breadcrumb }]}
       eyebrow="Legal"
+      fullBleed
       footer={
         <dl className="flex flex-wrap gap-3">
           {doc.highlights.map((item) => (

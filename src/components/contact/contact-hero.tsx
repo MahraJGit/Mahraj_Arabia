@@ -9,6 +9,7 @@ export function ContactHero() {
       image={contactHero.image}
       breadcrumb={[{ label: "Contact Us" }]}
       eyebrow="Contact"
+      fullBleed
     />
   );
 }

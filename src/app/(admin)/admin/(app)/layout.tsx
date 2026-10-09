@@ -40,7 +40,7 @@ export default async function ManageAppLayout({
             <p className="text-[11px] text-muted-foreground">CMS</p>
           </div>
         </div>
-        <AdminNav role={user.role} />
+        <AdminNav />
         <div className="border-t border-border p-3">
           <p className="truncate px-2 text-sm font-medium text-ink">{user.name}</p>
           <p className="truncate px-2 text-xs capitalize text-muted-foreground">

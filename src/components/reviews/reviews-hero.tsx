@@ -13,6 +13,7 @@ export function ReviewsHero() {
       image={reviewsHero.image}
       breadcrumb={[{ label: "Reviews" }]}
       eyebrow="Client reviews"
+      fullBleed
       actions={
         <Button asChild variant="brand" size="xl">
           <Link href="/contact#quote-form">Request a Quote</Link>

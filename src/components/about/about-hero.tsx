@@ -12,12 +12,13 @@ export function AboutHero() {
       image={aboutHero.image}
       breadcrumb={[{ label: "About Us" }]}
       eyebrow="About Mahraj Arabia"
+      fullBleed
       actions={
         <>
           <Button asChild variant="brand" size="xl">
             <Link href="/contact#quote-form">Request a Quote</Link>
           </Button>
-          <Button asChild variant="brandOutline" size="xl">
+          <Button asChild variant="inverseOutline" size="xl">
             <Link href="/services">Explore Our Services</Link>
           </Button>
         </>

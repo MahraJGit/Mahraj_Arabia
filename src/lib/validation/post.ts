@@ -72,7 +72,12 @@ export const postInputSchema = z.object({
 });
 
 export const postDraftSchema = postInputSchema.superRefine((value, ctx) => {
-  if (value.category && !/^[a-f0-9]{24}$/i.test(value.category)) {
+  if (
+    value.category &&
+    !/^(?:[a-f0-9]{24}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i.test(
+      value.category
+    )
+  ) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ["category"],

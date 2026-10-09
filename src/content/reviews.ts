@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 export const reviewsHero = {
-  image: "/images/profile/steel-fabrication-workshop.jpg",
+  image: "/images/heroes/reviews-hero.jpg",
   title: "What Our Clients Say About Us",
   description:
     "Real feedback from project teams across Saudi Arabia who trusted Mahraj Arabia for modular, portable, fencing and steel solutions.",

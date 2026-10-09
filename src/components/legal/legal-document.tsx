@@ -118,6 +118,15 @@ export function LegalBody({ doc }: { doc: LegalDocument }) {
                     ))}
                   </ul>
                 ) : null}
+
+                {section.afterBullets?.map((paragraph) => (
+                  <p
+                    key={paragraph}
+                    className="mt-4 max-w-[68ch] text-sm leading-relaxed text-body sm:text-base"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
               </section>
             ))}
           </div>
@@ -140,36 +149,19 @@ export function LegalCta({ doc }: { doc: LegalDocument }) {
   return (
     <section className="bg-background py-16 md:py-20 lg:py-24">
       <Container>
-        <div className="grid overflow-hidden rounded-md md:grid-cols-2">
-          <div className="bg-brand px-8 py-10 text-white lg:px-12 lg:py-12">
-            <h2 className="text-3xl font-semibold leading-tight text-white">
-              {doc.cta.title}
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
-              {doc.cta.description}
-            </p>
-            <Button asChild variant="inverse" size="xl" className="mt-6">
-              <Link href="/contact#get-in-touch">
-                Contact Us
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-          {/* <div className="bg-charcoal px-8 py-10 text-white lg:px-12 lg:py-12">
-            <h2 className="text-3xl font-semibold leading-tight text-white">
-              Looking for catalogues instead?
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/75 sm:text-base">
-              Browse collections, technical resources, and downloadable product
-              documentation from the catalogues library.
-            </p>
-            <Button asChild variant="brand" size="xl" className="mt-6">
-              <Link href="/catalogues">
-                View Catalogues
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div> */}
+        <div className="overflow-hidden rounded-md bg-brand px-8 py-10 text-white lg:px-12 lg:py-12">
+          <h2 className="text-3xl font-semibold leading-tight text-white">
+            {doc.cta.title}
+          </h2>
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base">
+            {doc.cta.description}
+          </p>
+          <Button asChild variant="inverse" size="xl" className="mt-6">
+            <Link href="/contact#get-in-touch">
+              Contact Us
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
         </div>
       </Container>
     </section>

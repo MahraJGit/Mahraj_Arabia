@@ -26,6 +26,18 @@ export function isObjectId(value: string) {
   return /^[a-f0-9]{24}$/i.test(value);
 }
 
+/** UUID v1–v8 (Postgres `gen_random_uuid()` / Supabase ids). */
+export function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    value
+  );
+}
+
+/** Content primary keys may be Mongo ObjectIds or Supabase UUIDs. */
+export function isContentId(value: string) {
+  return isObjectId(value) || isUuid(value);
+}
+
 export function asObjectId(value: string) {
   return value;
 }

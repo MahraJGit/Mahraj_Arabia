@@ -22,13 +22,9 @@ import { mainNav, site } from "@/content/site";
 import type { MegaMenuColumn } from "@/lib/public/services";
 import { cn } from "@/lib/utils";
 
-function ContactDetails({ duplicate = false }: { duplicate?: boolean }) {
+function ContactItems() {
   return (
-    <div
-      aria-hidden={duplicate}
-      inert={duplicate}
-      className="flex shrink-0 items-center gap-x-5 whitespace-nowrap py-2 text-[0.6875rem] text-white"
-    >
+    <>
       <span className="text-xs">{site.tagline}</span>
       {site.phones.map((phone) => (
         <a
@@ -37,7 +33,9 @@ function ContactDetails({ duplicate = false }: { duplicate?: boolean }) {
           className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
         >
           <Phone className="size-3.5 shrink-0" />
-          <span>{phone.label}: {phone.number}</span>
+          <span>
+            {phone.label}: {phone.number}
+          </span>
         </a>
       ))}
       {site.emails.map((email) => (
@@ -57,26 +55,73 @@ function ContactDetails({ duplicate = false }: { duplicate?: boolean }) {
         className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
       >
         <MapPin className="size-3.5 shrink-0" />
-        <span>{site.address.line1}, {site.address.line2}, {site.address.line3}</span>
+        <span>
+          {site.address.line1}, {site.address.line2}, {site.address.line3}
+        </span>
       </a>
-    </div>
+    </>
   );
 }
 
 function TopBar() {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const probeRef = useRef<HTMLDivElement>(null);
+  const [copies, setCopies] = useState(2);
+
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    const probe = probeRef.current;
+    if (!viewport || !probe) return;
+
+    const sync = () => {
+      const itemWidth = probe.scrollWidth;
+      const viewWidth = viewport.clientWidth;
+      if (itemWidth <= 0 || viewWidth <= 0) return;
+      // Each marquee half must be at least one viewport wide so the
+      // -50% loop never exposes empty red between copies.
+      setCopies(Math.max(2, Math.ceil(viewWidth / itemWidth) + 1));
+    };
+
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(viewport);
+    observer.observe(probe);
+    return () => observer.disconnect();
+  }, []);
+
+  const sequence = Array.from({ length: copies }, (_, i) => (
+    <div
+      key={i}
+      className="flex shrink-0 items-center gap-x-5 whitespace-nowrap text-[0.6875rem] text-white"
+    >
+      <ContactItems />
+      <span aria-hidden className="px-5 text-white/40">
+        |
+      </span>
+    </div>
+  ));
+
   return (
     <div className="contact-ticker w-full border-b border-brand-dark bg-brand text-white">
-      <div className="flex min-h-9 w-full items-center">
+      <div
+        ref={viewportRef}
+        className="contact-ticker-viewport relative w-full overflow-hidden py-1.5"
+        role="region"
+        aria-label="Contact details"
+      >
+        {/* Off-flow probe: measures one sequence so we can fill wide viewports */}
         <div
-          className="contact-ticker-viewport min-w-0 flex-1 overflow-hidden"
-          role="region"
-          aria-label="Contact details"
+          ref={probeRef}
+          aria-hidden
+          className="pointer-events-none absolute -z-10 flex items-center gap-x-5 whitespace-nowrap text-[0.6875rem] opacity-0"
         >
-          <div
-            className="contact-ticker-track flex w-max items-center"
-          >
-            <ContactDetails />
-            <ContactDetails duplicate />
+          <ContactItems />
+          <span className="px-5">|</span>
+        </div>
+        <div className="contact-ticker-track flex w-max items-center">
+          <div className="flex shrink-0 items-center">{sequence}</div>
+          <div className="flex shrink-0 items-center" aria-hidden inert>
+            {sequence}
           </div>
         </div>
       </div>
@@ -112,7 +157,7 @@ export function SiteHeader({
   }
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-40 bg-background">
+    <header ref={headerRef} className="sticky top-0 z-40 w-full bg-background">
       <TopBar />
       <div className="relative border-b border-border">
         <Container className="flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">

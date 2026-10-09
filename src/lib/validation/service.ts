@@ -15,6 +15,13 @@ const objectId = z
   .string()
   .regex(/^[a-f0-9]{24}$/i, "Please choose a valid item.");
 
+const contentId = z
+  .string()
+  .regex(
+    /^(?:[a-f0-9]{24}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i,
+    "Please choose a valid family."
+  );
+
 const applicationPoint = z.object({
   label: z.string().trim().min(1, "Enter a point."),
 });
@@ -67,7 +74,7 @@ const serviceBase = z.object({
       }
       return next;
     }),
-  parent: objectId,
+  parent: contentId,
   excerpt: z.string().trim().max(300, "Keep the summary to 300 characters or fewer."),
   image: z.string().optional().or(z.literal("")),
   overviewImage: z.string().optional().or(z.literal("")),

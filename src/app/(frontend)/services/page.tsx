@@ -24,8 +24,9 @@ export default async function ServicesPage() {
       <PageHero
         title="A connected range of solutions."
         description="Practical, adaptable modular, portable, fencing and steel solutions for worksites, operations, businesses and events."
-        image="/images/profile/modular-office-complex.jpg"
+        image="/images/heroes/services-hero.jpg"
         eyebrow="Our solutions"
+        fullBleed
         breadcrumb={[{ label: "Services", href: "/services" }]}
       />
       <Section>

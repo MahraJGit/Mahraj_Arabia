@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 export const aboutHero = {
-  image: "/images/profile/modular-offices-parking.jpg",
+  image: "/images/heroes/about-hero.jpg",
   title: "Modular spaces. Steel built.",
   description:
     "Mahraj Arabia brings practical planning, fabrication and site coordination together for modular, portable, fencing and steel solutions across Saudi Arabia.",

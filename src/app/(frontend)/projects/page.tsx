@@ -20,8 +20,9 @@ export default function ProjectsPage() {
       <PageHero
         title="From concept to completion."
         description="A selection of modular, portable, fencing and steel capabilities planned for construction, industrial, commercial and event sites."
-        image="/images/projects/global-tech-hq.jpg"
+        image="/images/heroes/projects-hero.jpg"
         eyebrow="Projects"
+        fullBleed
         breadcrumb={[{ label: "Projects", href: "/projects" }]}
       />
       <Section>

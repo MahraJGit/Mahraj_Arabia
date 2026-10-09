@@ -1,6 +1,6 @@
 export const blogPage = {
   hero: {
-    image: "/images/profile/modular-office-complex.jpg",
+    image: "/images/heroes/blog-hero.jpg",
     title: "Practical guidance for Saudi project briefs.",
     description:
       "Short guides from Mahraj Arabia on modular buildings, portable facilities, fencing and steel fabrication.",

@@ -1,4 +1,4 @@
-import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
+import { asObjectId, isContentId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { isDemoMode } from "@/lib/auth/demo";
 import {
@@ -21,6 +21,13 @@ import {
   SPACE_COLUMN_LABELS,
   columnLabels,
 } from "@/lib/services/table-labels";
+import {
+  getServiceFamily,
+  getServiceFamilyTitles,
+  isSupabaseContentEnabled,
+  listServiceFamilies,
+  nextServiceFamilySortOrder,
+} from "@/lib/supabase/content";
 
 export type ServiceGroupListItem = {
   id: string;
@@ -156,10 +163,23 @@ function when(value: unknown) {
   return "";
 }
 
+async function serviceCountsByParent(parentIds: string[]) {
+  if (parentIds.length === 0) return new Map<string, number>();
+  if (isDemoMode()) return new Map<string, number>();
+
+  const { Service } = await getModels();
+  const counts = await Service.aggregate<{ _id: unknown; total: number }>([
+    { $match: { parent: { $in: parentIds } } },
+    { $group: { _id: "$parent", total: { $sum: 1 } } },
+  ]);
+  return new Map(counts.map((row) => [toId(row._id), row.total]));
+}
+
 export async function listServiceGroups(query: ListQuery = {}) {
+  const page = Math.max(1, query.page ?? 1);
+  const limit = query.limit ?? 50;
+
   if (isDemoMode()) {
-    const page = Math.max(1, query.page ?? 1);
-    const limit = query.limit ?? 50;
     let items = getDemoServiceGroups();
     if (query.q?.trim()) {
       const q = query.q.trim().toLowerCase();
@@ -188,9 +208,37 @@ export async function listServiceGroups(query: ListQuery = {}) {
     };
   }
 
+  if (isSupabaseContentEnabled()) {
+    const families = await listServiceFamilies({
+      q: query.q,
+      status: query.status,
+      menu: query.menu,
+    });
+    const total = families.length;
+    const start = (page - 1) * limit;
+    const pageItems = families.slice(start, start + limit);
+    const countMap = await serviceCountsByParent(pageItems.map((item) => item.id));
+
+    const items: ServiceGroupListItem[] = pageItems.map((family) => ({
+      id: family.id,
+      title: family.title || "Untitled",
+      slug: family.slug,
+      sortOrder: family.sortOrder,
+      showInMegaMenu: family.showInMegaMenu,
+      status: family.status,
+      serviceCount: countMap.get(family.id) ?? 0,
+      updatedAt: family.updatedAt,
+    }));
+
+    return {
+      items,
+      total,
+      page,
+      pageCount: Math.max(1, Math.ceil(total / limit)),
+    };
+  }
+
   const { MainService, Service } = await getModels();
-  const page = Math.max(1, query.page ?? 1);
-  const limit = query.limit ?? 50;
   const filter: Record<string, unknown> = {};
 
   if (query.q?.trim()) {
@@ -237,6 +285,22 @@ export async function getServiceGroup(id: string): Promise<ServiceGroupRecord | 
   if (isDemoMode()) {
     return getDemoServiceGroup(id);
   }
+  if (!isContentId(id)) return null;
+
+  if (isSupabaseContentEnabled()) {
+    const family = await getServiceFamily(id);
+    if (!family) return null;
+    return {
+      id: family.id,
+      title: family.title,
+      slug: family.slug,
+      menuDescription: family.menuDescription,
+      sortOrder: family.sortOrder,
+      showInMegaMenu: family.showInMegaMenu,
+      status: family.status,
+    };
+  }
+
   if (!isObjectId(id)) return null;
   const { MainService } = await getModels();
   const doc = await MainService.findById(id).lean();
@@ -257,8 +321,9 @@ export async function countServicesInGroup(groupId: string) {
     if (groupId === "demo-group-1") return getDemoServicesList().length;
     return 0;
   }
+  if (!isContentId(groupId)) return 0;
   const { Service } = await getModels();
-  return Service.countDocuments({ parent: asObjectId(groupId) });
+  return Service.countDocuments({ parent: groupId });
 }
 
 export async function listGroupOptions() {
@@ -266,6 +331,13 @@ export async function listGroupOptions() {
     return getDemoServiceGroups().map((group) => ({
       id: group.id,
       title: group.title,
+    }));
+  }
+  if (isSupabaseContentEnabled()) {
+    const families = await listServiceFamilies();
+    return families.map((family) => ({
+      id: family.id,
+      title: family.title || "Untitled",
     }));
   }
   const { MainService } = await getModels();
@@ -331,8 +403,8 @@ export async function listServices(query: ListQuery = {}) {
   if (query.status === "draft" || query.status === "published") {
     filter._status = query.status;
   }
-  if (query.group && isObjectId(query.group)) {
-    filter.parent = asObjectId(query.group);
+  if (query.group && isContentId(query.group)) {
+    filter.parent = query.group;
   }
   if (query.ready === "ready") filter.detailReady = true;
   if (query.ready === "soon") {
@@ -354,22 +426,40 @@ export async function listServices(query: ListQuery = {}) {
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate("parent", "title")
       .lean(),
     Service.countDocuments(filter),
   ]);
 
+  const parentIds = docs.map((doc) => toId(doc.parent)).filter(Boolean);
+  const parentTitles = isSupabaseContentEnabled()
+    ? await getServiceFamilyTitles(parentIds)
+    : await (async () => {
+        const { MainService } = await getModels();
+        const objectIds = parentIds.filter(isObjectId);
+        const map = new Map<string, { id: string; title: string }>();
+        if (objectIds.length === 0) return map;
+        const parents = await MainService.find({
+          _id: { $in: objectIds.map(asObjectId) },
+        })
+          .select("title")
+          .lean();
+        for (const parent of parents) {
+          map.set(toId(parent._id), {
+            id: toId(parent._id),
+            title: String(parent.title ?? "—"),
+          });
+        }
+        return map;
+      })();
+
   const items: ServiceListItem[] = docs.map((doc) => {
-    const parent = doc.parent as { _id?: unknown; title?: string } | null;
+    const parentId = toId(doc.parent);
     return {
       id: toId(doc._id),
       title: String(doc.title ?? "Untitled"),
       slug: String(doc.slug ?? ""),
-      parentId: toId(parent?._id ?? doc.parent),
-      parentTitle:
-        parent && typeof parent === "object"
-          ? String(parent.title ?? "—")
-          : "—",
+      parentId,
+      parentTitle: parentTitles.get(parentId)?.title ?? "—",
       sortOrder: Number(doc.sortOrder ?? 0),
       detailReady: Boolean(doc.detailReady),
       showInMegaMenu: doc.showInMegaMenu !== false,
@@ -541,11 +631,14 @@ export async function nextSortOrder(
     );
     return services.length * 10 + 10;
   }
+  if (collection === "main-services" && isSupabaseContentEnabled()) {
+    return nextServiceFamilySortOrder();
+  }
   const { MainService, Service } = await getModels();
   const Model = collection === "main-services" ? MainService : Service;
   const filter =
-    collection === "services" && parentId && isObjectId(parentId)
-      ? { parent: asObjectId(parentId) }
+    collection === "services" && parentId && isContentId(parentId)
+      ? { parent: parentId }
       : {};
   const last = await Model.findOne(filter).sort({ sortOrder: -1 }).select("sortOrder").lean();
   const current = Number(last?.sortOrder ?? 0);

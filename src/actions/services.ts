@@ -9,7 +9,7 @@ import { requireServiceEditor } from "@/lib/cms/permissions";
 import { revalidateServicePaths } from "@/lib/cms/revalidate";
 import { swapAdjacentSortOrder } from "@/lib/cms/reorder";
 import { slugify } from "@/lib/cms/slug";
-import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
+import { asObjectId, isContentId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { readBrandColors } from "@/lib/services/colors";
 import { nextSortOrder } from "@/lib/services/queries";
@@ -18,6 +18,10 @@ import {
   SPACE_COLUMN_LABELS,
   columnLabels,
 } from "@/lib/services/table-labels";
+import {
+  getServiceFamily,
+  isSupabaseContentEnabled,
+} from "@/lib/supabase/content";
 import { flattenZod } from "@/lib/validation/flatten";
 import { serviceDraftSchema, type ServiceInput } from "@/lib/validation/service";
 
@@ -81,7 +85,7 @@ function toDocument(data: ServiceInput) {
   return {
     title: data.title,
     slug: data.slug,
-    parent: asObjectId(data.parent),
+    parent: data.parent,
     excerpt: data.excerpt,
     relatedServices: related.map(asObjectId),
     sortOrder: data.sortOrder,
@@ -202,9 +206,16 @@ export async function saveService(
   }
 
   const { Service, MainService } = await getModels();
-  const parent = await MainService.findById(data.parent).select("_id").lean();
-  if (!parent) {
-    return { fieldErrors: { parent: "Please choose a family." } };
+  if (isSupabaseContentEnabled()) {
+    const parent = await getServiceFamily(data.parent);
+    if (!parent) {
+      return { fieldErrors: { parent: "Please choose a family." } };
+    }
+  } else {
+    const parent = await MainService.findById(data.parent).select("_id").lean();
+    if (!parent) {
+      return { fieldErrors: { parent: "Please choose a family." } };
+    }
   }
 
   const previous =
@@ -335,12 +346,15 @@ export async function reorderServices(
 ): Promise<ActionResult> {
   await requireServiceEditor();
   if (isDemoMode()) return { error: demoWriteBlockedMessage()! };
+  if (!isContentId(parentId)) {
+    return { error: "The service order could not be saved." };
+  }
   const { Service } = await getModels();
   const ids = orderedIds.filter(isObjectId);
   await Promise.all(
     ids.map((id, index) =>
       Service.updateOne(
-        { _id: asObjectId(id), parent: asObjectId(parentId) },
+        { _id: asObjectId(id), parent: parentId },
         { $set: { sortOrder: (index + 1) * 10 } }
       )
     )

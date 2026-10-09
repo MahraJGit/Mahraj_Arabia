@@ -16,6 +16,7 @@ export function BlogHero({
       image={blogPage.hero.image}
       breadcrumb={[{ label: "Blogs" }]}
       eyebrow="Project blogs"
+      fullBleed
       footer={<BlogSearchForm query={query} category={category} />}
     />
   );

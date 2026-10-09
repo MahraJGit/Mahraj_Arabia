@@ -5,8 +5,13 @@ import {
   getArabiaServiceMegaMenu,
   getArabiaServiceSlugs,
 } from "@/content/arabia-services";
-import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
+import { asObjectId, isContentId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
+import {
+  getServiceFamilyTitles,
+  isSupabaseContentEnabled,
+  listServiceFamilies,
+} from "@/lib/supabase/content";
 import { readBrandColors, type BrandColor } from "@/lib/services/colors";
 import {
   loadMediaMap,
@@ -203,12 +208,19 @@ function collectMediaIds(docs: LeanDoc[]) {
 }
 
 async function loadParents(ids: string[]) {
-  const unique = [...new Set(ids.filter((id) => isObjectId(id)))];
+  const unique = [...new Set(ids.filter(Boolean))];
   const map = new Map<string, { id: string; title: string }>();
   if (unique.length === 0) return map;
 
+  if (isSupabaseContentEnabled()) {
+    return getServiceFamilyTitles(unique);
+  }
+
+  const objectIds = unique.filter(isObjectId);
+  if (objectIds.length === 0) return map;
+
   const { MainService } = await getModels();
-  const docs = await MainService.find({ _id: { $in: unique.map(asObjectId) } })
+  const docs = await MainService.find({ _id: { $in: objectIds.map(asObjectId) } })
     .select("title")
     .lean();
   for (const doc of docs) {
@@ -385,15 +397,34 @@ export async function getServices(limit = 100): Promise<ServiceCard[]> {
 
 export async function getServiceGroups(): Promise<ServiceGroup[]> {
   try {
-    const { MainService, Service } = await getModels();
-    const [mains, subs] = await Promise.all([
-      MainService.find(published).sort({ sortOrder: 1, title: 1 }).limit(50).lean(),
-      Service.find(published).sort({ sortOrder: 1 }).limit(200).lean(),
-    ]);
+    const { Service } = await getModels();
+    const subs = await Service.find(published)
+      .sort({ sortOrder: 1 })
+      .limit(200)
+      .lean();
 
-    const [media, parents] = await Promise.all([
+    const [media, parents, mains] = await Promise.all([
       loadMediaMap(collectMediaIds(subs)),
       loadParents(subs.map((doc) => toId(doc.parent))),
+      isSupabaseContentEnabled()
+        ? listServiceFamilies({ publishedOnly: true })
+        : (async () => {
+            const { MainService } = await getModels();
+            const docs = await MainService.find(published)
+              .sort({ sortOrder: 1, title: 1 })
+              .limit(50)
+              .lean();
+            return docs.map((main) => ({
+              id: toId(main._id),
+              slug: typeof main.slug === "string" ? main.slug : "",
+              title: typeof main.title === "string" ? main.title : "",
+              sortOrder: sortOrder(main.sortOrder),
+              menuDescription: "",
+              showInMegaMenu: true,
+              status: "published" as const,
+              updatedAt: "",
+            }));
+          })(),
     ]);
 
     const childrenByParent = new Map<string, ServiceCard[]>();
@@ -407,11 +438,11 @@ export async function getServiceGroups(): Promise<ServiceGroup[]> {
 
     const groups = mains
       .map((main) => ({
-        id: toId(main._id),
-        slug: typeof main.slug === "string" ? main.slug : "",
-        title: typeof main.title === "string" ? main.title : "",
-        sortOrder: sortOrder(main.sortOrder),
-        children: childrenByParent.get(toId(main._id)) ?? [],
+        id: main.id,
+        slug: main.slug,
+        title: main.title,
+        sortOrder: main.sortOrder,
+        children: childrenByParent.get(main.id) ?? [],
       }))
       .filter((group) => group.children.length > 0);
 
@@ -445,10 +476,10 @@ export async function getServiceBySlug(
             _id: { $in: relatedIds.map(asObjectId) },
           }).lean()
         : Promise.resolve([] as LeanDoc[]),
-      parentId && isObjectId(parentId)
+      parentId && isContentId(parentId)
         ? Service.find({
             ...published,
-            parent: asObjectId(parentId),
+            parent: parentId,
             slug: { $ne: slug },
           })
             .sort({ sortOrder: 1 })
@@ -498,13 +529,31 @@ export async function getServiceSlugs(): Promise<string[]> {
 
 export async function getServiceMegaMenu(): Promise<MegaMenuColumn[]> {
   try {
-    const { MainService, Service } = await getModels();
+    const { Service } = await getModels();
     const [mains, subs] = await Promise.all([
-      MainService.find({ ...published, showInMegaMenu: true })
-        .sort({ sortOrder: 1, title: 1 })
-        .limit(50)
-        .select("title")
-        .lean(),
+      isSupabaseContentEnabled()
+        ? listServiceFamilies({ publishedOnly: true, menu: "visible" })
+        : (async () => {
+            const { MainService } = await getModels();
+            const docs = await MainService.find({
+              ...published,
+              showInMegaMenu: true,
+            })
+              .sort({ sortOrder: 1, title: 1 })
+              .limit(50)
+              .select("title")
+              .lean();
+            return docs.map((main) => ({
+              id: toId(main._id),
+              title: typeof main.title === "string" ? main.title : "",
+              slug: "",
+              menuDescription: "",
+              sortOrder: 0,
+              showInMegaMenu: true,
+              status: "published" as const,
+              updatedAt: "",
+            }));
+          })(),
       Service.find({ ...published, showInMegaMenu: true })
         .sort({ sortOrder: 1 })
         .limit(200)
@@ -527,8 +576,8 @@ export async function getServiceMegaMenu(): Promise<MegaMenuColumn[]> {
 
     const columns = mains
       .map((main) => ({
-        title: typeof main.title === "string" ? main.title : "",
-        links: linksByParent.get(toId(main._id)) ?? [],
+        title: main.title,
+        links: linksByParent.get(main.id) ?? [],
       }))
       .filter((column) => column.links.length > 0);
 

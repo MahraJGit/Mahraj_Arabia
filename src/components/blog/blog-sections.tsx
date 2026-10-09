@@ -391,7 +391,7 @@ export function LessonsAndCta() {
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/80">
             Stay updated
           </p>
-          <h3 className="mt-3 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h3 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-white sm:text-4xl">
             {blogPage.ctaPanels.subscribe.title}
           </h3>
           <p className="mt-4 max-w-md text-base leading-relaxed text-white/80">

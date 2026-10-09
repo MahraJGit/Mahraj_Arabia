@@ -1,4 +1,4 @@
-import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
+import { asObjectId, isContentId, isObjectId, toId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
 import { isDemoMode } from "@/lib/auth/demo";
 import {
@@ -11,6 +11,12 @@ import {
 import { collectUploadIds, type InlineMedia } from "@/lib/cms/lexical";
 import { publishStatus } from "@/lib/cms/status";
 import type { PublishStatus } from "@/lib/cms/types";
+import {
+  getBlogCategory,
+  getBlogCategoryOptions,
+  isSupabaseContentEnabled,
+  listBlogCategories,
+} from "@/lib/supabase/content";
 
 export type PostListItem = {
   id: string;
@@ -207,8 +213,8 @@ export async function listPosts(query: ListQuery = {}) {
   if (query.status === "draft" || query.status === "published") {
     filter._status = query.status;
   }
-  if (query.category && isObjectId(query.category)) {
-    filter.category = asObjectId(query.category);
+  if (query.category && isContentId(query.category)) {
+    filter.category = query.category;
   }
   if (query.featured === "featured") filter.featured = true;
   if (query.featured === "standard") {
@@ -233,7 +239,6 @@ export async function listPosts(query: ListQuery = {}) {
       .sort(sort)
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate("category", "title")
       .populate("coverImage", "url alt filename")
       .lean(),
     Post.countDocuments(filter),
@@ -242,17 +247,39 @@ export async function listPosts(query: ListQuery = {}) {
     Post.countDocuments({ ...statusless, _status: "draft" }),
   ]);
 
+  const categoryIds = [
+    ...new Set(docs.map((doc) => toId(doc.category)).filter(Boolean)),
+  ];
+  const categoryTitles = new Map<string, string>();
+  if (isSupabaseContentEnabled()) {
+    const categories = await listBlogCategories();
+    for (const category of categories) {
+      categoryTitles.set(category.id, category.title);
+    }
+  }
+  const unresolved = categoryIds.filter(
+    (id) => isObjectId(id) && !categoryTitles.has(id)
+  );
+  if (unresolved.length > 0) {
+    const { Category } = await getModels();
+    const categories = await Category.find({
+      _id: { $in: unresolved.map(asObjectId) },
+    })
+      .select("title")
+      .lean();
+    for (const category of categories) {
+      categoryTitles.set(toId(category._id), String(category.title ?? "—"));
+    }
+  }
+
   const items: PostListItem[] = docs.map((doc) => {
-    const category = doc.category as { title?: string } | null;
+    const categoryId = toId(doc.category);
     const cover = mediaRef(doc.coverImage);
     return {
       id: toId(doc._id),
       title: String(doc.title ?? "Untitled"),
       slug: String(doc.slug ?? ""),
-      categoryTitle:
-        category && typeof category === "object"
-          ? String(category.title ?? "—")
-          : "—",
+      categoryTitle: categoryTitles.get(categoryId) ?? "—",
       author: String(doc.author ?? "By Mahraj Engineering Team"),
       featured: Boolean(doc.featured),
       status: publishStatus(doc._status),
@@ -279,6 +306,9 @@ export async function listCategoryOptions(): Promise<CategoryOption[]> {
   if (isDemoMode()) {
     return getDemoCategoryOptions();
   }
+  if (isSupabaseContentEnabled()) {
+    return getBlogCategoryOptions();
+  }
   const { Category } = await getModels();
   const docs = await Category.find().sort({ title: 1 }).select("title slug").lean();
   return docs.map((doc) => ({
@@ -292,16 +322,31 @@ export async function listCategories(): Promise<CategoryListItem[]> {
   if (isDemoMode()) {
     return getDemoCategories();
   }
-  const { Category, Post } = await getModels();
-  const docs = await Category.find()
-    .sort({ title: 1 })
-    .populate("image", "url")
-    .lean();
 
+  const { Post } = await getModels();
   const counts = await Post.aggregate<{ _id: unknown; count: number }>([
     { $group: { _id: "$category", count: { $sum: 1 } } },
   ]);
   const countById = new Map(counts.map((row) => [toId(row._id), row.count]));
+
+  if (isSupabaseContentEnabled()) {
+    const categories = await listBlogCategories();
+    return categories.map((category) => ({
+      id: category.id,
+      title: category.title || "Untitled",
+      slug: category.slug,
+      subtitle: category.subtitle,
+      postCount: countById.get(category.id) ?? 0,
+      updatedAt: category.updatedAt,
+      imageUrl: category.imageUrl,
+    }));
+  }
+
+  const { Category } = await getModels();
+  const docs = await Category.find()
+    .sort({ title: 1 })
+    .populate("image", "url")
+    .lean();
 
   return docs.map((doc) => {
     const image = mediaRef(doc.image);
@@ -321,6 +366,25 @@ export async function getCategory(id: string): Promise<CategoryRecord | null> {
   if (isDemoMode()) {
     return getDemoCategory(id);
   }
+  if (!isContentId(id)) return null;
+
+  if (isSupabaseContentEnabled()) {
+    const category = await getBlogCategory(id);
+    if (!category) return null;
+    return {
+      id: category.id,
+      title: category.title,
+      slug: category.slug,
+      subtitle: category.subtitle,
+      image: category.image,
+      imageUrl: category.imageUrl,
+      imageAlt: category.imageAlt,
+      imageFilename: category.imageFilename,
+      imageWidth: category.imageWidth,
+      imageHeight: category.imageHeight,
+    };
+  }
+
   if (!isObjectId(id)) return null;
   const { Category } = await getModels();
   const doc = await Category.findById(id).populate("image").lean();
@@ -349,9 +413,9 @@ export async function countPostsForCategory(id: string) {
       return full?.category === category.id;
     }).length;
   }
-  if (!isObjectId(id)) return 0;
+  if (!isContentId(id)) return 0;
   const { Post } = await getModels();
-  return Post.countDocuments({ category: asObjectId(id) });
+  return Post.countDocuments({ category: id });
 }
 
 export async function getPost(id: string): Promise<PostRecord | null> {

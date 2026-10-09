@@ -13,7 +13,7 @@ export type ContactChannel = {
 };
 
 export const contactHero = {
-  image: "/images/profile/steel-plant-yard.jpg",
+  image: "/images/heroes/contact-hero.jpg",
   deviceImage: null,
   title: "Let’s discuss your requirement.",
 };

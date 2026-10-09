@@ -9,6 +9,11 @@ import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
 import { asObjectId, isObjectId } from "@/lib/db/ids";
 import { getModels } from "@/lib/db/models";
+import {
+  changeAdminPassword,
+  isSupabaseAdminEnabled,
+  updateAdminProfile,
+} from "@/lib/supabase/content";
 
 export type ProfileState = {
   error: string | null;
@@ -70,33 +75,50 @@ export async function updateProfile(
     };
   }
 
-  if (!isObjectId(user.id)) {
-    return {
-      error: "Your account could not be found.",
-      field: null,
-      success: null,
-      savedAt: null,
-    };
+  if (isSupabaseAdminEnabled()) {
+    const result = await updateAdminProfile({
+      userId: user.id,
+      name,
+      email,
+      role: user.role,
+    });
+    if (result.error) {
+      return {
+        error: result.error,
+        field: result.field ?? null,
+        success: null,
+        savedAt: null,
+      };
+    }
+  } else {
+    if (!isObjectId(user.id)) {
+      return {
+        error: "Your account could not be found.",
+        field: null,
+        success: null,
+        savedAt: null,
+      };
+    }
+
+    const { User } = await getModels();
+    const taken = await User.findOne({
+      _id: { $ne: asObjectId(user.id) },
+      email: { $regex: `^${escapeRegex(email)}$`, $options: "i" },
+    })
+      .select("_id")
+      .lean();
+
+    if (taken) {
+      return {
+        error: "Another account already uses this email.",
+        field: "email",
+        success: null,
+        savedAt: null,
+      };
+    }
+
+    await User.updateOne({ _id: asObjectId(user.id) }, { $set: { name, email } });
   }
-
-  const { User } = await getModels();
-  const taken = await User.findOne({
-    _id: { $ne: asObjectId(user.id) },
-    email: { $regex: `^${escapeRegex(email)}$`, $options: "i" },
-  })
-    .select("_id")
-    .lean();
-
-  if (taken) {
-    return {
-      error: "Another account already uses this email.",
-      field: "email",
-      success: null,
-      savedAt: null,
-    };
-  }
-
-  await User.updateOne({ _id: asObjectId(user.id) }, { $set: { name, email } });
 
   await createSession({
     userId: user.id,
@@ -168,6 +190,30 @@ export async function changePassword(
       field: "new",
       success: null,
       savedAt: null,
+    };
+  }
+
+  if (isSupabaseAdminEnabled()) {
+    const result = await changeAdminPassword({
+      email: user.email,
+      currentPassword,
+      newPassword,
+      userId: user.id,
+    });
+    if (result.error) {
+      return {
+        error: result.error,
+        field: result.field ?? null,
+        success: null,
+        savedAt: null,
+      };
+    }
+
+    return {
+      error: null,
+      field: null,
+      success: "Password changed.",
+      savedAt: Date.now(),
     };
   }
 

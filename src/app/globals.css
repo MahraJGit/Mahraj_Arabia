@@ -148,8 +148,11 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-sans overflow-x-clip;
     scroll-behavior: smooth;
+  }
+  body {
+    @apply overflow-x-clip;
   }
   h1,
   h2,
@@ -184,8 +187,7 @@ section[data-section].bg-brand-dark + section[data-section].bg-brand-dark {
   animation: contact-details-marquee 38s linear infinite;
 }
 
-.contact-ticker:hover .contact-ticker-track,
-.contact-ticker-viewport:focus-within .contact-ticker-track {
+.contact-ticker-viewport:hover .contact-ticker-track {
   animation-play-state: paused;
 }
 

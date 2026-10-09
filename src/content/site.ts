@@ -23,9 +23,9 @@ export const site = {
       "https://www.google.com/maps/search/?api=1&query=Building+5207%2C+Street+392%2C+Al+Malqa+District%2C+Riyadh+13525%2C+Saudi+Arabia",
   },
   social: [
-    { label: "Instagram", href: "https://www.instagram.com/mahrajarabia" },
-    { label: "Facebook", href: "https://www.facebook.com/mahrajarabia" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/company/mahrajarabia" },
+    { label: "Instagram", href: "https://www.instagram.com/mahrajarabia/" },
+    { label: "Facebook", href: "https://www.facebook.com/mahrajarabia/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/mahrajarabia/" },
   ],
 } as const;
 
