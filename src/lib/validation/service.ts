@@ -46,6 +46,7 @@ const caseStudySchema = z.object({
 
 const serviceBase = z.object({
   title: z.string().trim().min(1, "Please enter a service name."),
+  heroTitle: z.string().trim().max(160).optional().or(z.literal("")),
   slug: z
     .string()
     .trim()

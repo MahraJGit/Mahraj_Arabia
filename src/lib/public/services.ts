@@ -182,7 +182,7 @@ export async function getServiceBySlug(slug: string): Promise<ServiceDetailView 
       seoTitle: service.metaTitle || service.title,
       seoDescription: service.metaDescription || service.excerpt,
       detailReady: true,
-      heroTitle: service.title,
+      heroTitle: service.heroTitle || service.title,
       heroDescription: service.excerpt,
       overviewTitle: "",
       overviewDescription: "",

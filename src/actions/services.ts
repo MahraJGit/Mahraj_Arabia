@@ -64,6 +64,7 @@ export async function saveService(
 
   const write = {
     title: data.title,
+    heroTitle: data.heroTitle || "",
     slug: data.slug,
     excerpt: data.excerpt || "",
     content: normalizeLexicalDoc(data.content),
@@ -207,6 +208,7 @@ export async function duplicateService(id: string): Promise<ActionResult> {
 
   const created = await insertCmsService({
     title: `Copy of ${doc.title}`,
+    heroTitle: doc.heroTitle || "",
     slug,
     excerpt: doc.excerpt,
     content: doc.content,

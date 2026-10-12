@@ -129,6 +129,7 @@ export type BlogPostWrite = CoverImageFields & {
 export type ServiceRow = {
   id: string;
   title: string;
+  hero_title: string;
   slug: string;
   excerpt: string;
   content: unknown;
@@ -160,6 +161,7 @@ export type ServiceRow = {
 
 export type ServiceWrite = CoverImageFields & {
   title: string;
+  heroTitle: string;
   slug: string;
   excerpt: string;
   content: unknown;

@@ -121,7 +121,7 @@ export function asServiceRecord(row: ServiceRow, familyTitle = "") {
     overviewImageUrl: "",
     relatedServices: [] as string[],
     detailReady: row.status === "published",
-    heroTitle: String(row.title ?? ""),
+    heroTitle: String(row.hero_title ?? ""),
     heroDescription: String(row.excerpt ?? ""),
     overviewTitle: "",
     overviewDescription: "",
@@ -146,6 +146,7 @@ export function asServiceRecord(row: ServiceRow, familyTitle = "") {
 function toWriteRow(input: ServiceWrite) {
   return {
     title: input.title,
+    hero_title: input.heroTitle || "",
     slug: input.slug,
     excerpt: input.excerpt || "",
     content: input.content ?? emptyLexicalDoc(),

@@ -32,6 +32,7 @@ import type { ServiceInput } from "@/lib/validation/service";
 function emptyService(): ServiceInput {
   return {
     title: "",
+    heroTitle: "",
     slug: "",
     excerpt: "",
     content: emptyLexicalDoc(),
@@ -76,6 +77,7 @@ function fromRecord(service: ServiceRecord): ServiceInput {
   return {
     ...emptyService(),
     title: service.title,
+    heroTitle: service.heroTitle || "",
     slug: service.slug,
     excerpt: service.excerpt,
     content: (service as { content?: unknown }).content ?? emptyLexicalDoc(),
@@ -202,7 +204,12 @@ export function ServiceForm({
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_19rem] xl:grid-cols-[minmax(0,1fr)_21rem]">
         <FormPanel title="Content" description="Write the service page visitors will read.">
-          <Field label="Title" htmlFor="title" error={errors.title}>
+          <Field
+            label="Service name"
+            htmlFor="title"
+            hint="Shown in menus, cards, and listings."
+            error={errors.title}
+          >
             <Input
               id="title"
               placeholder="Porta cabins & site offices"
@@ -212,6 +219,21 @@ export function ServiceForm({
                 update("title", event.target.value);
                 if (!slugLocked) update("slug", slugify(event.target.value));
               }}
+            />
+          </Field>
+
+          <Field
+            label="Hero title"
+            htmlFor="heroTitle"
+            hint="Headline on the service page hero. Leave blank to use the service name."
+            error={errors.heroTitle}
+          >
+            <Input
+              id="heroTitle"
+              placeholder="Portable site offices built for KSA projects"
+              value={values.heroTitle ?? ""}
+              className="h-11 rounded-xl text-base"
+              onChange={(event) => update("heroTitle", event.target.value)}
             />
           </Field>
 
