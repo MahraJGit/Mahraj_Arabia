@@ -4,29 +4,27 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { deletePost, savePost } from "@/actions/posts";
+import { CoverUpload, type CoverValue } from "@/components/admin/cover-upload";
 import { CharCount, Field } from "@/components/admin/field";
+import { FaqEditor } from "@/components/admin/faq-editor";
+import {
+  FormActionBar,
+  FormPanel,
+  FormSelect,
+  FormShell,
+  FormSidebar,
+  SidebarBlock,
+} from "@/components/admin/form-shell";
 import { LexicalEditor } from "@/components/admin/lexical-editor";
-import { MediaPicker } from "@/components/admin/media-picker";
 import { PublishStatusBanner } from "@/components/admin/publish-banner";
+import { TagsInput } from "@/components/admin/tags-input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { emptyLexicalDoc } from "@/lib/cms/lexical";
 import { slugify } from "@/lib/cms/slug";
 import type { CategoryOption, PostRecord } from "@/lib/blog/queries";
 import type { PostInput } from "@/lib/validation/post";
-import { cn } from "@/lib/utils";
-
-const TABS = ["Basic", "Content", "SEO"] as const;
-type Tab = (typeof TABS)[number];
-
-function todayDateInput() {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${now.getFullYear()}-${month}-${day}`;
-}
 
 function emptyPost(): PostInput {
   return {
@@ -34,15 +32,18 @@ function emptyPost(): PostInput {
     slug: "",
     excerpt: "",
     content: emptyLexicalDoc(),
-    coverImage: "",
-    seoTitle: "",
-    seoDescription: "",
+    coverImageId: "",
+    coverImageUrl: "",
+    coverImageAlt: "",
+    coverImageFilename: "",
+    coverImageWidth: null,
+    coverImageHeight: null,
     category: "",
-    author: "By Mahraj Engineering Team",
-    authorImage: "",
-    readTime: "",
-    publishedAt: "",
-    featured: false,
+    tags: [],
+    metaTitle: "",
+    metaDescription: "",
+    focusKeyword: "",
+    faqs: [],
     _status: "draft",
   };
 }
@@ -54,15 +55,23 @@ function fromRecord(post: PostRecord): PostInput {
     slug: post.slug,
     excerpt: post.excerpt,
     content: post.content ?? emptyLexicalDoc(),
-    coverImage: post.coverImage,
-    seoTitle: post.seoTitle,
-    seoDescription: post.seoDescription,
+    coverImageId: post.coverImage,
+    coverImageUrl: post.coverUrl,
+    coverImageAlt: post.coverAlt,
+    coverImageFilename: post.coverFilename,
+    coverImageWidth: post.coverWidth,
+    coverImageHeight: post.coverHeight,
     category: post.category,
-    author: post.author,
-    authorImage: post.authorImage,
-    readTime: post.readTime,
-    publishedAt: post.publishedAt,
-    featured: post.featured,
+    tags: Array.isArray((post as { tags?: string[] }).tags)
+      ? ((post as { tags?: string[] }).tags ?? [])
+      : [],
+    metaTitle: post.seoTitle || (post as { metaTitle?: string }).metaTitle || "",
+    metaDescription:
+      post.seoDescription || (post as { metaDescription?: string }).metaDescription || "",
+    focusKeyword: (post as { focusKeyword?: string }).focusKeyword || "",
+    faqs: Array.isArray((post as { faqs?: PostInput["faqs"] }).faqs)
+      ? ((post as { faqs?: PostInput["faqs"] }).faqs ?? [])
+      : [],
     _status: post.status,
   };
 }
@@ -75,23 +84,8 @@ export function PostForm({
   categories: CategoryOption[];
 }) {
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("Basic");
   const [values, setValues] = useState<PostInput>(post ? fromRecord(post) : emptyPost());
   const [slugLocked, setSlugLocked] = useState(Boolean(post?.slug));
-  const [coverPreview, setCoverPreview] = useState({
-    url: post?.coverUrl ?? "",
-    alt: post?.coverAlt ?? "",
-    filename: post?.coverFilename ?? "",
-    width: post?.coverWidth ?? null,
-    height: post?.coverHeight ?? null,
-  });
-  const [authorPreview, setAuthorPreview] = useState({
-    url: post?.authorImageUrl ?? "",
-    alt: post?.authorImageAlt ?? "",
-    filename: post?.authorImageFilename ?? "",
-    width: post?.authorImageWidth ?? null,
-    height: post?.authorImageHeight ?? null,
-  });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -100,8 +94,7 @@ export function PostForm({
   const [confirmUnpublish, setConfirmUnpublish] = useState(false);
   const published = post?.status === "published";
   const generated = useMemo(() => slugify(values.title), [values.title]);
-  const slugChanged = Boolean(post?.slug && values.slug && values.slug !== post.slug);
-  const today = useMemo(() => todayDateInput(), []);
+  const slug = slugLocked ? values.slug : generated;
 
   useEffect(() => {
     const onLeave = (event: BeforeUnloadEvent) => {
@@ -117,141 +110,129 @@ export function PostForm({
     setDirty(true);
   }
 
-  function submit(status: "draft" | "published", leave = false) {
+  function setCover(next: CoverValue | null) {
+    update("coverImageId", next?.id ?? "");
+    update("coverImageUrl", next?.url ?? "");
+    update("coverImageAlt", next?.alt ?? "");
+    update("coverImageFilename", next?.filename ?? "");
+    update("coverImageWidth", next?.width ?? null);
+    update("coverImageHeight", next?.height ?? null);
+  }
+
+  function submit(status: "draft" | "published") {
     const payload: PostInput = {
       ...values,
-      slug: slugLocked ? values.slug : generated,
+      slug,
       _status: status,
     };
     start(async () => {
       setError(null);
       setErrors({});
       const result = await savePost(post?.id ?? null, payload);
-      if (result.fieldErrors) {
-        setErrors(result.fieldErrors);
-        if (result.fieldErrors.content) setTab("Content");
-        else if (result.fieldErrors.seoTitle || result.fieldErrors.seoDescription) setTab("SEO");
-        else setTab("Basic");
-        return;
+      if (result?.error) setError(result.error);
+      if (result?.fieldErrors) setErrors(result.fieldErrors);
+      if (result?.href) {
+        setDirty(false);
+        router.push(result.href);
+        router.refresh();
       }
-      if (result.error) {
-        setError(result.error);
-        return;
-      }
-      setDirty(false);
-      if (leave) {
-        router.push("/admin/blog?saved=published");
-        return;
-      }
-      if (result.href) router.push(result.href);
     });
   }
 
-  function remove() {
-    if (!post) return;
-    start(async () => {
-      const result = await deletePost(post.id);
-      if (result.error) {
-        setError(result.error);
-        return;
-      }
-      setDirty(false);
-      if (result.href) router.push(result.href);
-    });
+  function cancel() {
+    if (dirty && !window.confirm("You have unsaved changes. Leave this page?")) return;
+    router.push("/admin/blog");
   }
+
+  const cover: CoverValue | null = values.coverImageUrl
+    ? {
+        id: values.coverImageId || "",
+        url: values.coverImageUrl,
+        alt: values.coverImageAlt || "",
+        filename: values.coverImageFilename || "",
+        width: values.coverImageWidth ?? null,
+        height: values.coverImageHeight ?? null,
+      }
+    : null;
 
   return (
-    <div className="space-y-6">
+    <FormShell>
       <PublishStatusBanner
         status={post?.status ?? "draft"}
         kind="post"
-        liveHref={published && post?.slug ? `/blog/${post.slug}` : undefined}
+        liveHref={published && slug ? `/blog/${slug}` : undefined}
       />
 
-      <div className="flex flex-wrap gap-1 border-b border-border">
-        {TABS.map((item) => (
-          <button
-            key={item}
-            type="button"
-            onClick={() => setTab(item)}
-            className={cn(
-              "px-3 py-2 text-sm font-medium",
-              tab === item
-                ? "border-b-2 border-brand text-ink"
-                : "text-muted-foreground hover:text-ink"
-            )}
-          >
-            {item}
-          </button>
-        ))}
-      </div>
-
-      {tab === "Basic" ? (
-        <div className="grid max-w-2xl gap-5">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_19rem] xl:grid-cols-[minmax(0,1fr)_21rem]">
+        <FormPanel title="Content" description="Write the article visitors will read.">
           <Field label="Title" htmlFor="title" error={errors.title}>
             <Input
               id="title"
+              placeholder="Dubai property market trends"
               value={values.title}
+              className="h-11 rounded-xl text-base"
               onChange={(event) => {
                 update("title", event.target.value);
                 if (!slugLocked) update("slug", slugify(event.target.value));
               }}
             />
           </Field>
+
           <Field
             label="URL slug"
             htmlFor="slug"
-            hint={
-              published
-                ? "Changing a published URL can break existing links and search results."
-                : "Generated from the title until you edit it."
-            }
+            hint={slug ? `Public URL: /blog/${slug}` : "Used in the public URL"}
             error={errors.slug}
           >
-            <div className="flex gap-2">
-              <Input
-                id="slug"
-                value={slugLocked ? values.slug : generated}
-                onChange={(event) => {
-                  setSlugLocked(true);
-                  update("slug", event.target.value);
-                }}
-              />
-              {slugLocked ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  onClick={() => {
-                    setSlugLocked(false);
-                    update("slug", generated);
-                  }}
-                >
-                  Reset
-                </Button>
-              ) : null}
-            </div>
-            {published && slugChanged ? (
-              <p className="mt-2 text-xs text-amber-800">
-                This will change the live URL from /blog/{post?.slug} to /blog/{values.slug}.
-                Existing links will stop working unless you keep the original slug.
-              </p>
-            ) : null}
+            <Input
+              id="slug"
+              value={slug}
+              className="rounded-xl font-mono text-sm"
+              onChange={(event) => {
+                setSlugLocked(true);
+                update("slug", event.target.value);
+              }}
+            />
           </Field>
-          <Field label="Excerpt" htmlFor="excerpt" error={errors.excerpt}>
+
+          <Field
+            label="Excerpt"
+            htmlFor="excerpt"
+            error={errors.excerpt}
+            meta={<CharCount value={values.excerpt ?? ""} max={300} />}
+          >
             <Textarea
               id="excerpt"
+              placeholder="A short summary for listing cards."
               maxLength={300}
               value={values.excerpt ?? ""}
+              className="min-h-24 rounded-xl"
               onChange={(event) => update("excerpt", event.target.value)}
             />
-            <CharCount value={values.excerpt ?? ""} max={300} />
           </Field>
-          <Field label="Category" htmlFor="category" error={errors.category}>
-            <select
+
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-ink">Article body</p>
+            <LexicalEditor
+              value={values.content}
+              mediaById={post?.inlineMedia}
+              onChange={(content) => update("content", content)}
+              error={errors.content}
+            />
+          </div>
+        </FormPanel>
+
+        <FormSidebar>
+          <SidebarBlock title="Cover image">
+            <CoverUpload value={cover} error={errors.coverImageUrl} onChange={setCover} />
+          </SidebarBlock>
+
+          <SidebarBlock title="Category">
+            <FormSelect
               id="category"
-              className="h-9 w-full rounded-lg border border-input bg-transparent px-2 text-sm"
               value={values.category ?? ""}
-              onChange={(event) => update("category", event.target.value)}
+              error={errors.category}
+              onChange={(value) => update("category", value)}
             >
               <option value="">Select a category</option>
               {categories.map((category) => (
@@ -259,131 +240,80 @@ export function PostForm({
                   {category.title}
                 </option>
               ))}
-            </select>
-          </Field>
-          <Field label="Author" htmlFor="author" error={errors.author}>
-            <Input
-              id="author"
-              value={values.author ?? ""}
-              onChange={(event) => update("author", event.target.value)}
-            />
-          </Field>
-          <MediaPicker
-            label="Author image"
-            value={values.authorImage ?? ""}
-            previewUrl={authorPreview.url}
-            previewAlt={authorPreview.alt}
-            previewFilename={authorPreview.filename}
-            previewWidth={authorPreview.width}
-            previewHeight={authorPreview.height}
-            error={errors.authorImage}
-            onChange={(next) => {
-              update("authorImage", next.id);
-              setAuthorPreview({
-                url: next.url,
-                alt: next.alt,
-                filename: next.filename ?? "",
-                width: next.width ?? null,
-                height: next.height ?? null,
-              });
-            }}
-          />
-          <MediaPicker
-            label="Cover image"
-            value={values.coverImage ?? ""}
-            previewUrl={coverPreview.url}
-            previewAlt={coverPreview.alt}
-            previewFilename={coverPreview.filename}
-            previewWidth={coverPreview.width}
-            previewHeight={coverPreview.height}
-            error={errors.coverImage}
-            onChange={(next) => {
-              update("coverImage", next.id);
-              setCoverPreview({
-                url: next.url,
-                alt: next.alt,
-                filename: next.filename ?? "",
-                width: next.width ?? null,
-                height: next.height ?? null,
-              });
-            }}
-          />
-          <Field
-            label="Read time"
-            htmlFor="readTime"
-            hint="For example: 9 min read"
-            error={errors.readTime}
-          >
-            <Input
-              id="readTime"
-              value={values.readTime ?? ""}
-              onChange={(event) => update("readTime", event.target.value)}
-            />
-          </Field>
-          <Field
-            label="Published date"
-            htmlFor="publishedAt"
-            hint="Today or a future date. Past dates are unavailable. Left empty, the date is set on first publish."
-            error={errors.publishedAt}
-          >
-            <Input
-              id="publishedAt"
-              type="date"
-              min={today}
-              value={values.publishedAt ?? ""}
-              onChange={(event) => {
-                const next = event.target.value;
-                if (next && next < today) return;
-                update("publishedAt", next);
-              }}
-            />
-          </Field>
-          <label className="flex items-center gap-2 text-sm">
-            <Checkbox
-              checked={Boolean(values.featured)}
-              onChange={(event) => update("featured", event.target.checked)}
-            />
-            Featured on the blog listing
-          </label>
-        </div>
-      ) : null}
+            </FormSelect>
+          </SidebarBlock>
 
-      {tab === "Content" ? (
-        <LexicalEditor
-          value={values.content}
-          mediaById={post?.inlineMedia}
-          onChange={(content) => update("content", content)}
-          error={errors.content}
-        />
-      ) : null}
+          <SidebarBlock title="Status">
+            <FormSelect
+              id="status"
+              value={values._status}
+              onChange={(value) => update("_status", value as "draft" | "published")}
+            >
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </FormSelect>
+            <p className="text-xs text-muted-foreground">
+              Draft stays private. Published appears on the website.
+            </p>
+          </SidebarBlock>
 
-      {tab === "SEO" ? (
-        <div className="grid max-w-xl gap-5">
+          <SidebarBlock title="Tags">
+            <TagsInput value={values.tags} onChange={(tags) => update("tags", tags)} />
+          </SidebarBlock>
+        </FormSidebar>
+      </div>
+
+      <FormPanel title="SEO" description="Search title, description, and focus keyword.">
+        <div className="grid gap-5 md:grid-cols-2">
           <Field
-            label="SEO title"
-            hint="Overrides the post title in search results. Open Graph uses this and the cover image."
-            error={errors.seoTitle}
+            label="Meta title"
+            error={errors.metaTitle}
+            meta={<CharCount value={values.metaTitle ?? ""} max={60} />}
           >
             <Input
-              value={values.seoTitle ?? ""}
-              onChange={(event) => update("seoTitle", event.target.value)}
+              value={values.metaTitle ?? ""}
+              placeholder="Leave blank to use the article title"
+              className="rounded-xl"
+              onChange={(event) => update("metaTitle", event.target.value)}
             />
           </Field>
-          <Field label="SEO description" error={errors.seoDescription}>
+          <Field label="Focus keyword" error={errors.focusKeyword}>
+            <Input
+              value={values.focusKeyword ?? ""}
+              placeholder="e.g. modular offices Riyadh"
+              className="rounded-xl"
+              onChange={(event) => update("focusKeyword", event.target.value)}
+            />
+          </Field>
+          <Field
+            className="md:col-span-2"
+            label="Meta description"
+            error={errors.metaDescription}
+            meta={<CharCount value={values.metaDescription ?? ""} max={160} />}
+          >
             <Textarea
               maxLength={200}
-              value={values.seoDescription ?? ""}
-              onChange={(event) => update("seoDescription", event.target.value)}
+              value={values.metaDescription ?? ""}
+              placeholder="Leave blank to use the excerpt"
+              className="min-h-28 rounded-xl"
+              onChange={(event) => update("metaDescription", event.target.value)}
             />
-            <CharCount value={values.seoDescription ?? ""} max={200} />
           </Field>
         </div>
-      ) : null}
+      </FormPanel>
+
+      <FaqEditor
+        value={values.faqs}
+        onChange={(faqs) => update("faqs", faqs)}
+        errors={errors}
+      />
 
       {confirmUnpublish ? (
-        <div className="max-w-xl rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
-          <p className="font-medium">Unpublish this post?</p>
-          <p className="mt-1">The public article will no longer be visible until you publish it again.</p>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950">
+          <p className="font-medium">Unpublish this blog?</p>
+          <p className="mt-1 text-amber-900/80">
+            It will disappear from the public website until you publish again.
+          </p>
           <div className="mt-3 flex gap-2">
             <Button
               type="button"
@@ -405,17 +335,40 @@ export function PostForm({
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
 
-      <div className="flex flex-wrap gap-2 border-t border-border pt-5">
-        {published ? (
-          <Button type="button" variant="outline" disabled={pending} onClick={() => submit("published")}>
-            {pending ? "Saving…" : "Save changes"}
-          </Button>
-        ) : (
-          <Button type="button" variant="outline" disabled={pending} onClick={() => submit("draft")}>
-            {pending ? "Saving…" : "Save draft"}
-          </Button>
-        )}
-        <Button type="button" disabled={pending} onClick={() => submit("published", true)}>
+      {post && confirmDelete ? (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3">
+          <p className="text-sm font-medium">Delete this blog permanently?</p>
+          <div className="mt-3 flex gap-2">
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={pending}
+              onClick={() =>
+                start(async () => {
+                  const result = await deletePost(post.id);
+                  if (result?.error) setError(result.error);
+                  if (result?.href) {
+                    setDirty(false);
+                    router.push(result.href);
+                    router.refresh();
+                  }
+                })
+              }
+            >
+              Delete blog
+            </Button>
+            <Button type="button" variant="ghost" onClick={() => setConfirmDelete(false)}>
+              Keep blog
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      <FormActionBar>
+        <Button type="button" variant="outline" disabled={pending} onClick={() => submit("draft")}>
+          {pending ? "Saving…" : "Save draft"}
+        </Button>
+        <Button type="button" disabled={pending} onClick={() => submit("published")}>
           {pending ? "Saving…" : published ? "Update published" : "Publish"}
         </Button>
         {published ? (
@@ -428,35 +381,23 @@ export function PostForm({
             Unpublish
           </Button>
         ) : null}
-        <Button type="button" variant="ghost" onClick={() => router.push("/admin/blog")}>
-          Cancel
+        <Button type="button" variant="ghost" onClick={cancel}>
+          Back
         </Button>
-      </div>
-
-      {post ? (
-        <div>
-          {confirmDelete ? (
-            <div className="max-w-xl rounded-lg border border-destructive/30 bg-destructive/5 p-4">
-              <p className="text-sm font-medium">Delete this post?</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                The public URL will stop working. Images stay in Media.
-              </p>
-              <div className="mt-3 flex gap-2">
-                <Button type="button" variant="destructive" disabled={pending} onClick={remove}>
-                  Delete
-                </Button>
-                <Button type="button" variant="ghost" onClick={() => setConfirmDelete(false)}>
-                  Keep post
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <Button type="button" variant="ghost" onClick={() => setConfirmDelete(true)}>
-              Delete post
+        {dirty ? <span className="text-xs text-muted-foreground">Unsaved changes</span> : null}
+        <div className="ms-auto">
+          {post && !confirmDelete ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className="text-destructive"
+              onClick={() => setConfirmDelete(true)}
+            >
+              Delete
             </Button>
-          )}
+          ) : null}
         </div>
-      ) : null}
-    </div>
+      </FormActionBar>
+    </FormShell>
   );
 }

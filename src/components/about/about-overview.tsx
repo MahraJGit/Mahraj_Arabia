@@ -46,7 +46,7 @@ export function AboutOverview() {
             About Mahraj Arabia
           </p>
           <h2 className="mt-3 max-w-md font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
-            From first idea to a site-ready solution.
+            From first idea to a site ready solution.
           </h2>
           <p className="mt-4 max-w-md text-base leading-relaxed text-body">
             {aboutPromise}

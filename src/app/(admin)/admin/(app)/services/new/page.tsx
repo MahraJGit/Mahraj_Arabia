@@ -1,22 +1,19 @@
 import { AdminPageHeader } from "@/components/admin/page-chrome";
 import { ServiceForm } from "@/components/admin/service-form";
 import { requireUser } from "@/actions/auth";
-import { listGroupOptions, listServiceOptions } from "@/lib/services/queries";
+import { listGroupOptions } from "@/lib/services/queries";
 
 export default async function NewServicePage() {
   await requireUser();
-  const [groups, relatedOptions] = await Promise.all([
-    listGroupOptions(),
-    listServiceOptions(),
-  ]);
+  const groups = await listGroupOptions();
 
   return (
     <>
       <AdminPageHeader
-        title="New service"
-        description="Choose a family first. The service is listed on the right of that family in the Services menu."
+        title="Upload service"
+        description="Cover image, tags, SEO, rich content, and publishing state are stored in Supabase."
       />
-      <ServiceForm groups={groups} relatedOptions={relatedOptions} />
+      <ServiceForm groups={groups} />
     </>
   );
 }

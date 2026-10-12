@@ -1,4 +1,7 @@
+import { ExternalLink } from "lucide-react";
+
 import type { PublishStatus } from "@/lib/cms/types";
+import { cn } from "@/lib/utils";
 
 export function PublishStatusBanner({
   status,
@@ -10,50 +13,46 @@ export function PublishStatusBanner({
   liveHref?: string;
 }) {
   const published = status === "published";
+  const label = kind === "group" ? "family" : kind === "post" ? "blog" : "service";
 
   return (
     <div
-      className={
+      className={cn(
+        "flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3",
         published
-          ? "rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3"
-          : "rounded-xl border border-amber-200 bg-amber-50 px-4 py-3"
-      }
+          ? "border-emerald-200/80 bg-emerald-50/70"
+          : "border-border/80 bg-muted/40"
+      )}
     >
-      <p className="flex items-center gap-2 text-sm font-semibold">
+      <div className="flex items-center gap-3">
         <span
-          className={
-            published
-              ? "inline-block size-2.5 rounded-full bg-emerald-600"
-              : "inline-block size-2.5 rounded-full border-2 border-amber-700"
-          }
+          className={cn(
+            "inline-flex size-2.5 rounded-full",
+            published ? "bg-emerald-600" : "bg-amber-500"
+          )}
           aria-hidden
         />
-        {published ? "Published" : "Draft"}
-      </p>
-      <p className="mt-1 text-sm text-ink/80">
-        {published
-          ? "Changes made here will update the live website immediately."
-          : "This content is not visible on the public website until published."}
-      </p>
-      {(kind === "service" || kind === "post") && published && liveHref ? (
+        <div>
+          <p className="text-sm font-semibold text-ink">
+            {published ? "Published" : "Draft"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {published
+              ? `This ${label} is live on the website.`
+              : `This ${label} is private until you publish it.`}
+          </p>
+        </div>
+      </div>
+      {published && liveHref ? (
         <a
           href={liveHref}
           target="_blank"
           rel="noreferrer"
-          className="mt-2 inline-flex text-sm font-medium text-brand hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:underline"
         >
           View live
+          <ExternalLink className="size-3.5" />
         </a>
-      ) : null}
-      {(kind === "service" || kind === "post") && !published ? (
-        <p className="mt-2 text-xs text-muted-foreground">
-          Draft preview will be available in a later phase.
-        </p>
-      ) : null}
-      {kind === "group" ? (
-        <p className="mt-2 text-xs text-muted-foreground">
-          Service groups do not have their own page. When published, a family appears on the left of the Services menu.
-        </p>
       ) : null}
     </div>
   );

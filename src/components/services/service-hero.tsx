@@ -19,11 +19,17 @@ export function ServiceHero({ service }: { service: ServiceDetailView }) {
       description={service.heroDescription}
       image={service.image}
       breadcrumb={breadcrumb}
-      eyebrow={service.title}
+      eyebrow={service.parentTitle || "Our solutions"}
+      fullBleed
       actions={
-        <Button asChild variant="brand" size="xl">
-          <Link href="/contact#quote-form">Request a Quote</Link>
-        </Button>
+        <>
+          <Button asChild variant="brand" size="xl">
+            <Link href="/contact#quote-form">Request a Quote</Link>
+          </Button>
+          <Button asChild variant="inverseOutline" size="xl">
+            <Link href="/services">All solutions</Link>
+          </Button>
+        </>
       }
     />
   );

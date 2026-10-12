@@ -4,10 +4,8 @@ import { BlogHero } from "@/components/blog/blog-hero";
 import {
   ExploreByTopic,
   FeaturedBlogs,
-  KnowledgeHubBand,
   LatestInsights,
   LessonsAndCta,
-  WorkingOnSection,
 } from "@/components/blog/blog-sections";
 import { getCategories, getFeaturedPosts, getPosts } from "@/lib/public/blog";
 
@@ -42,7 +40,6 @@ export default async function BlogPage({
       <BlogHero query={query} category={categorySlug} />
       <FeaturedBlogs posts={featured} />
       <ExploreByTopic categories={categories} />
-      {/* <WorkingOnSection /> */}
       <LatestInsights
         posts={latest.docs}
         categories={categories}
@@ -51,7 +48,6 @@ export default async function BlogPage({
         page={latest.page}
         totalPages={latest.totalPages}
       />
-      {/* <KnowledgeHubBand /> */}
       <LessonsAndCta />
     </>
   );

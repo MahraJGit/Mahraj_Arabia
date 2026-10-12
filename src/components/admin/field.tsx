@@ -10,6 +10,7 @@ export function Field({
   htmlFor,
   children,
   className,
+  meta,
 }: {
   label: string;
   hint?: string;
@@ -17,13 +18,19 @@ export function Field({
   htmlFor?: string;
   children: ReactNode;
   className?: string;
+  meta?: ReactNode;
 }) {
   return (
-    <div className={cn("space-y-1.5", className)}>
-      <Label htmlFor={htmlFor}>{label}</Label>
+    <div className={cn("space-y-2", className)}>
+      <div className="flex items-center justify-between gap-2">
+        <Label htmlFor={htmlFor} className="text-sm font-medium text-ink">
+          {label}
+        </Label>
+        {meta ? <div className="shrink-0 text-xs tabular-nums text-muted-foreground">{meta}</div> : null}
+      </div>
       {children}
       {hint && !error ? (
-        <p className="text-xs text-muted-foreground">{hint}</p>
+        <p className="text-xs leading-relaxed text-muted-foreground">{hint}</p>
       ) : null}
       {error ? (
         <p className="text-xs text-destructive" role="alert">
@@ -54,9 +61,10 @@ export function SavedBanner({ value }: { value?: string }) {
 }
 
 export function CharCount({ value, max }: { value: string; max: number }) {
+  const over = value.length > max;
   return (
-    <p className="text-right text-[11px] text-muted-foreground">
+    <span className={cn(over && "font-medium text-destructive")}>
       {value.length}/{max}
-    </p>
+    </span>
   );
 }

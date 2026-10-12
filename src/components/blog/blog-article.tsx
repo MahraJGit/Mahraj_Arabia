@@ -1,21 +1,25 @@
 import { LexicalArticle } from "@/components/blog/lexical-article";
 import type { PublicMedia } from "@/lib/public/media";
+import { cn } from "@/lib/utils";
 
 export function BlogArticleBody({
   data,
   mediaById = {},
+  fullWidth = false,
 }: {
   data: unknown;
   mediaById?: Record<string, PublicMedia>;
+  fullWidth?: boolean;
 }) {
   return (
     <div
-      className={[
+      className={cn(
         "max-w-none text-base leading-relaxed text-body",
         "[&_h2]:mt-12 [&_h2]:font-heading [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-ink",
         "[&_h3]:mt-9 [&_h3]:font-heading [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-ink",
         "[&_h2+p]:mt-3 [&_h3+p]:mt-3",
-        "[&_p]:mt-5 [&_p]:max-w-[68ch]",
+        "[&_p]:mt-5",
+        !fullWidth && "[&_p]:max-w-[68ch]",
         "[&_ul]:mt-5 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:ps-6",
         "[&_ol]:mt-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:ps-6",
         "[&_li]:marker:text-brand [&_li]:ps-1",
@@ -28,8 +32,8 @@ export function BlogArticleBody({
         "[&_hr]:my-10 [&_hr]:border-border",
         "[&_strong]:font-semibold [&_strong]:text-ink",
         "[&_pre]:mt-6 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-ink [&_pre]:p-4 [&_pre]:text-sm [&_pre]:text-white",
-        "[&_figcaption]:mt-2 [&_figcaption]:text-sm [&_figcaption]:text-body",
-      ].join(" ")}
+        "[&_figcaption]:mt-2 [&_figcaption]:text-sm [&_figcaption]:text-body"
+      )}
     >
       <LexicalArticle data={data} mediaById={mediaById} />
     </div>

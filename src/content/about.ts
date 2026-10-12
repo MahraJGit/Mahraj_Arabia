@@ -141,7 +141,7 @@ export const aboutObjectives: Objective[] = [
     icon: Layers,
   },
   {
-    title: "Site-ready coordination",
+    title: "Site ready coordination",
     description:
       "We stay aligned with your programme so delivery fits the timeline.",
     icon: Handshake,
@@ -155,7 +155,7 @@ export const aboutObjectives: Objective[] = [
 ];
 
 export const aboutCompliance = [
-  { title: "Project-specific planning", icon: ShieldCheck },
+  { title: "Project specific planning", icon: ShieldCheck },
   { title: "Controlled fabrication quality", icon: FileCheck2 },
   { title: "Coordinated site delivery", icon: Truck },
 ];
@@ -200,5 +200,5 @@ export const aboutCta = {
   image: "/images/profile/steel-plant-yard.jpg",
   title: "Ready to discuss your requirement?",
   description:
-    "Call, visit or send your project brief through WhatsApp. Our team is ready to help from first idea to a site-ready solution.",
+    "Call, visit or send your project brief through WhatsApp. Our team is ready to help from first idea to a site ready solution.",
 };

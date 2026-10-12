@@ -6,7 +6,6 @@ import { BlogActionProvider, BlogPostActions } from "@/components/admin/blog-pos
 import { SavedBanner } from "@/components/admin/field";
 import { AdminPageHeader, EmptyState } from "@/components/admin/page-chrome";
 import { StatusBadge } from "@/components/admin/status-badge";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -30,7 +29,6 @@ export default async function BlogPage({
   const q = first(params.q);
   const status = first(params.status);
   const category = first(params.category);
-  const featured = first(params.featured);
   const sort = first(params.sort);
   const page = Number(first(params.page) ?? "1") || 1;
   const saved = first(params.saved);
@@ -41,7 +39,6 @@ export default async function BlogPage({
       q,
       status: statusFilter,
       category,
-      featured: featured === "featured" || featured === "standard" ? featured : "all",
       sort: sort === "title" || sort === "updated" ? sort : "published",
       page,
       limit: 25,
@@ -49,19 +46,19 @@ export default async function BlogPage({
     listCategoryOptions(),
   ]);
 
-  const filtered = Boolean(q || status || category || featured || (sort && sort !== "published"));
-  const query = { q, status, category, featured, sort };
+  const filtered = Boolean(q || status || category || (sort && sort !== "published"));
+  const query = { q, status, category, sort };
 
   return (
     <>
       <AdminPageHeader
-        title="Blog"
-        description="Published posts appear on the website. Drafts stay hidden until you publish them."
+        title="Blogs"
+        description="Create, edit, and publish articles. Only published posts appear on the website."
         action={
           <Button asChild>
             <Link href="/admin/blog/new">
               <Plus />
-              New post
+              New blog
             </Link>
           </Button>
         }
@@ -91,11 +88,10 @@ export default async function BlogPage({
 
       <div className="mb-4">
         <BlogFilters
-          key={[q, status, category, featured, sort].join("|")}
+          key={[q, status, category, sort].join("|")}
           q={q}
           status={statusFilter}
           category={category || "all"}
-          featured={featured}
           sort={sort}
           categories={categories}
           filtered={filtered}
@@ -104,11 +100,11 @@ export default async function BlogPage({
 
       {result.items.length === 0 ? (
         <EmptyState
-          title={filtered ? "No posts match" : "No blog posts yet"}
+          title={filtered ? "No blogs match" : "No blogs yet"}
           body={
             filtered
-              ? "Try another filter, or clear them to see every post."
-              : "Drafts stay private. Published posts appear on the website blog."
+              ? "Try another filter, or clear them to see every blog."
+              : "Start with a draft, then publish when the cover, category, and article are ready."
           }
           action={
             filtered ? (
@@ -119,7 +115,7 @@ export default async function BlogPage({
               <Button asChild>
                 <Link href="/admin/blog/new">
                   <Plus />
-                  New post
+                  New blog
                 </Link>
               </Button>
             )
@@ -130,7 +126,7 @@ export default async function BlogPage({
           <div className="overflow-hidden rounded-xl border border-border bg-card">
             <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
               <p className="text-sm text-muted-foreground">
-                {result.total === 1 ? "1 post" : `${result.total} posts`}
+                {result.total === 1 ? "1 blog" : `${result.total} blogs`}
               </p>
             </div>
             <BlogActionProvider>
@@ -138,19 +134,13 @@ export default async function BlogPage({
                 <TableHeader>
                   <TableRow className="hover:bg-transparent">
                     <TableHead className="h-11 bg-muted/60 px-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                      Post
+                      Blog
                     </TableHead>
                     <TableHead className="h-11 bg-muted/60 px-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                       Status
                     </TableHead>
                     <TableHead className="hidden h-11 bg-muted/60 px-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">
                       Category
-                    </TableHead>
-                    <TableHead className="hidden h-11 bg-muted/60 px-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground lg:table-cell">
-                      Featured
-                    </TableHead>
-                    <TableHead className="hidden h-11 bg-muted/60 px-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground xl:table-cell">
-                      Author
                     </TableHead>
                     <TableHead className="hidden h-11 bg-muted/60 px-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground md:table-cell">
                       Published
@@ -195,19 +185,12 @@ export default async function BlogPage({
                               </span>
                             )}
                             <div className="min-w-0">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <Link
-                                  href={`/admin/blog/${post.id}`}
-                                  className="line-clamp-2 font-medium text-ink hover:text-brand"
-                                >
-                                  {post.title}
-                                </Link>
-                                {post.featured ? (
-                                  <Badge variant="muted" className="lg:hidden">
-                                    Featured
-                                  </Badge>
-                                ) : null}
-                              </div>
+                              <Link
+                                href={`/admin/blog/${post.id}`}
+                                className="line-clamp-2 font-medium text-ink hover:text-brand"
+                              >
+                                {post.title}
+                              </Link>
                               <p className="truncate text-xs text-muted-foreground">
                                 {post.slug ? `/blog/${post.slug}` : "No public URL yet"}
                               </p>
@@ -218,7 +201,7 @@ export default async function BlogPage({
                           <div className="flex flex-col items-start gap-1">
                             <StatusBadge status={post.status} />
                             <span className="text-xs text-muted-foreground">
-                              {draft ? "Hidden from the website" : "On the website"}
+                              {draft ? "Hidden from website" : "Live on website"}
                             </span>
                           </div>
                         </TableCell>
@@ -228,16 +211,6 @@ export default async function BlogPage({
                           ) : (
                             post.categoryTitle
                           )}
-                        </TableCell>
-                        <TableCell className="hidden px-4 py-3 lg:table-cell">
-                          {post.featured ? (
-                            <Badge variant="muted">Featured</Badge>
-                          ) : (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="hidden max-w-40 truncate px-4 py-3 xl:table-cell">
-                          {displayAuthor(post.author)}
                         </TableCell>
                         <TableCell className="hidden px-4 py-3 whitespace-normal md:table-cell">
                           {post.publishedAt ? (
@@ -317,16 +290,12 @@ function BlogPagination({
 }) {
   if (pageCount <= 1) return null;
   const pages = pageWindow(page, pageCount);
-
   return (
-    <nav
-      className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
-      aria-label="Pagination"
-    >
+    <nav className="mt-4 flex flex-wrap items-center justify-between gap-3" aria-label="Pagination">
       <p className="text-sm text-muted-foreground">
         Page {page} of {pageCount}
       </p>
-      <div className="flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-2">
         {page > 1 ? (
           <Button asChild variant="outline" size="sm">
             <Link href={hrefFor(page - 1)}>Previous</Link>
@@ -336,19 +305,21 @@ function BlogPagination({
             Previous
           </Button>
         )}
-        {pages[0] > 1 ? (
-          <span className="inline-flex h-7 items-center px-1 text-sm text-muted-foreground">…</span>
-        ) : null}
-        {pages.map((next) => (
-          <Button key={next} asChild variant={next === page ? "default" : "outline"} size="sm">
-            <Link href={hrefFor(next)} aria-current={next === page ? "page" : undefined}>
-              {next}
-            </Link>
+        {pages.map((item) => (
+          <Button
+            key={item}
+            asChild={item !== page}
+            variant={item === page ? "default" : "outline"}
+            size="sm"
+            disabled={item === page}
+          >
+            {item === page ? (
+              <span>{item}</span>
+            ) : (
+              <Link href={hrefFor(item)}>{item}</Link>
+            )}
           </Button>
         ))}
-        {pages[pages.length - 1] < pageCount ? (
-          <span className="inline-flex h-7 items-center px-1 text-sm text-muted-foreground">…</span>
-        ) : null}
         {page < pageCount ? (
           <Button asChild variant="outline" size="sm">
             <Link href={hrefFor(page + 1)}>Next</Link>
@@ -375,14 +346,12 @@ function listingHref(
     q?: string;
     status?: string;
     category?: string;
-    featured?: string;
     sort?: string;
   },
   patch: {
     q?: string;
     status?: string;
     category?: string;
-    featured?: string;
     sort?: string;
     page?: string;
   }
@@ -392,18 +361,10 @@ function listingHref(
   if (next.q) params.set("q", next.q);
   if (next.status === "draft" || next.status === "published") params.set("status", next.status);
   if (next.category) params.set("category", next.category);
-  if (next.featured === "featured" || next.featured === "standard") {
-    params.set("featured", next.featured);
-  }
   if (next.sort === "title" || next.sort === "updated") params.set("sort", next.sort);
   if (next.page && next.page !== "1") params.set("page", next.page);
   const qs = params.toString();
   return qs ? `/admin/blog?${qs}` : "/admin/blog";
-}
-
-function displayAuthor(author: string) {
-  const name = author.replace(/^by\s+/i, "").trim();
-  return name || "—";
 }
 
 function formatDate(value: string) {

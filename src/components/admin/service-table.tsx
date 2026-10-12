@@ -82,14 +82,10 @@ export function ServiceTable({
         </p>
         <p className="text-xs text-muted-foreground">
           {canReorder
-            ? "Drag a service to set its order on the right of this family."
+            ? "Drag rows to set the menu order for this family."
             : ordering && total < 2
-              ? "Add another service in this family before you can change the order."
-              : groupId
-                ? "Clear the other filters to change this family’s order."
-                : filtered
-                  ? "Choose one family, with no other filters, to drag the order."
-                  : "Choose one family to drag the order of its services."}
+              ? "Add another service in this family to enable reordering."
+              : "Filter by one family to reorder its services."}
         </p>
       </div>
       {canReorder && groupId ? (
@@ -208,10 +204,9 @@ function ServiceRows({
     <Table className="min-w-[40rem] table-fixed">
       <TableHeader>
         <TableRow className="hover:bg-transparent">
-          <TableHead className={cn(headClass, "w-16")}>Order</TableHead>
+          <TableHead className={cn(headClass, "w-16")}>#</TableHead>
           <TableHead className={headClass}>Service</TableHead>
           <TableHead className={cn(headClass, "hidden w-40 md:table-cell")}>Family</TableHead>
-          <TableHead className={cn(headClass, "hidden w-28 sm:table-cell")}>Page</TableHead>
           <TableHead className={cn(headClass, "hidden w-28 lg:table-cell")}>Menu</TableHead>
           <TableHead className={cn(headClass, "w-36")}>Status</TableHead>
           <TableHead className={cn(headClass, "hidden w-28 xl:table-cell")}>Updated</TableHead>
@@ -315,11 +310,6 @@ function ServiceRowView({
         </div>
       </TableCell>
       <TableCell className="hidden truncate px-4 py-3 md:table-cell">{service.parentTitle}</TableCell>
-      <TableCell className="hidden px-4 py-3 sm:table-cell">
-        <Badge variant="muted" className="normal-case tracking-normal">
-          {service.detailReady ? "Full page" : "Coming soon"}
-        </Badge>
-      </TableCell>
       <TableCell className="hidden px-4 py-3 lg:table-cell">
         <Badge
           variant={service.showInMegaMenu ? "published" : "muted"}

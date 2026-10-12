@@ -13,6 +13,43 @@ function hasPublicAsset(src: string) {
   return existsSync(path.join(process.cwd(), "public", src.replace(/^\//, "")));
 }
 
+/** CMS / remote uploads — no local public file to stat. */
+function isManagedAsset(src: string) {
+  return /^https?:\/\//.test(src) || src.startsWith("/api/");
+}
+
+function HeroImage({
+  src,
+  sizes,
+  className,
+}: {
+  src: string;
+  sizes: string;
+  className?: string;
+}) {
+  if (isManagedAsset(src)) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt=""
+        className={cn("absolute inset-0 size-full object-cover object-center", className)}
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt=""
+      fill
+      priority
+      sizes={sizes}
+      className={cn("object-cover object-center", className)}
+    />
+  );
+}
+
 export type ProfileBreadcrumb = { label: string; href?: string };
 
 /** Shared height shell for split page heroes. */
@@ -45,7 +82,9 @@ export function ProfileHero({
   /** @deprecated Kept for call-site compatibility; height is unified. */
   compact?: boolean;
 }) {
-  const showImage = Boolean(image && hasPublicAsset(image));
+  const showImage = Boolean(
+    image && (isManagedAsset(image) || hasPublicAsset(image))
+  );
 
   const copy = (
     <FadeIn className={cn("relative z-10 w-full", fullBleed ? "max-w-3xl" : "max-w-xl")}>
@@ -135,14 +174,9 @@ export function ProfileHero({
         )}
       >
         {showImage && image ? (
-          <Image
-            src={image}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="absolute inset-0 z-0 object-cover object-center"
-          />
+          <div className="absolute inset-0 z-0">
+            <HeroImage src={image} sizes="100vw" />
+          </div>
         ) : (
           <div
             aria-hidden
@@ -181,13 +215,9 @@ export function ProfileHero({
               "lg:order-2 lg:h-auto lg:min-h-full"
             )}
           >
-            <Image
+            <HeroImage
               src={image}
-              alt=""
-              fill
-              priority
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover object-center"
             />
           </div>
         ) : null}

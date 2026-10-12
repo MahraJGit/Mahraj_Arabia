@@ -42,6 +42,7 @@ export default async function IndustryDetailPage({
         ]}
         image="/images/profile/steel-plant-yard.jpg"
         eyebrow="Project settings"
+        fullBleed
       />
       <ComingSoon note="Sector-specific guidance, recommended systems, and reference projects are being prepared for this industry." />
     </>

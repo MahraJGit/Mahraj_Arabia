@@ -180,8 +180,8 @@ export function LexicalEditor({
 
   return (
     <TooltipProvider delayDuration={400}>
-      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
-        <div className="sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b border-border bg-card/95 px-2 py-2 backdrop-blur-sm">
+      <div className="flex h-[28rem] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm sm:h-[32rem]">
+        <div className="sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-1 border-b border-border bg-card px-2 py-2">
           <select
             aria-label="Block style"
             className="h-8 rounded-lg border border-input bg-background px-2 text-sm"
@@ -212,21 +212,23 @@ export function LexicalEditor({
           <ToolbarButton icon={Minus} label="Divider" onClick={() => applyKind("hr")} />
         </div>
 
-        <div className="space-y-1 px-3 py-5 sm:px-8 sm:py-7">
-          {blocks.map((block) => (
-            <EditorBlockView
-              key={block.id}
-              block={block}
-              active={block.id === active?.id}
-              pickerOpen={pickerFor === block.id}
-              onFocus={() => setActiveId(block.id)}
-              onReplace={() => setPickerFor(block.id)}
-              onPickerClose={() => setPickerFor(null)}
-              onChange={(next) => replace(block.id, next)}
-              onRemove={() => remove(block.id)}
-              onInsertAfter={() => insert(block.id, emptyParagraph())}
-            />
-          ))}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6 sm:py-5">
+          <div className="min-h-full space-y-1">
+            {blocks.map((block) => (
+              <EditorBlockView
+                key={block.id}
+                block={block}
+                active={block.id === active?.id}
+                pickerOpen={pickerFor === block.id}
+                onFocus={() => setActiveId(block.id)}
+                onReplace={() => setPickerFor(block.id)}
+                onPickerClose={() => setPickerFor(null)}
+                onChange={(next) => replace(block.id, next)}
+                onRemove={() => remove(block.id)}
+                onInsertAfter={() => insert(block.id, emptyParagraph())}
+              />
+            ))}
+          </div>
         </div>
       </div>
       {error ? (
@@ -235,7 +237,7 @@ export function LexicalEditor({
         </p>
       ) : (
         <p className="mt-2 text-xs text-muted-foreground">
-          Select text to format it. Images are stored in Media and shown on the published article.
+          Select text to format it. Scroll inside the editor for longer articles.
         </p>
       )}
     </TooltipProvider>

@@ -1,4 +1,6 @@
-/** Demo CMS mode when MongoDB is unset. Auth uses Supabase when configured. */
+/** Demo CMS mode when Supabase CMS is not configured. */
+
+import { isSupabaseContentEnabled } from "@/lib/supabase/content/enabled";
 
 export const DEMO_ADMIN = {
   id: "demo-admin-001",
@@ -12,7 +14,7 @@ export const DEMO_AUTH_SECRET =
   "mahraj-arabia-demo-auth-secret-change-in-production";
 
 export function isDemoMode() {
-  return !process.env.DATABASE_URI?.trim();
+  return !isSupabaseContentEnabled();
 }
 
 export function isDemoAdminCredentials(email: string, password: string) {

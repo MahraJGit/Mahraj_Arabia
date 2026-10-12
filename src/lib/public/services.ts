@@ -5,30 +5,14 @@ import {
   getArabiaServiceMegaMenu,
   getArabiaServiceSlugs,
 } from "@/content/arabia-services";
-import { asObjectId, isContentId, isObjectId, toId } from "@/lib/db/ids";
-import { getModels } from "@/lib/db/models";
 import {
-  getServiceFamilyTitles,
+  getCmsServiceBySlug,
   isSupabaseContentEnabled,
+  listCmsSiblingServices,
+  listPublishedCmsServices,
+  listPublishedCmsServiceSlugs,
   listServiceFamilies,
 } from "@/lib/supabase/content";
-import { readBrandColors, type BrandColor } from "@/lib/services/colors";
-import {
-  loadMediaMap,
-  resolveMediaUrl,
-  type PublicMedia,
-} from "@/lib/public/media";
-import { readFaqIntro, readFaqs } from "@/lib/services/faqs";
-import {
-  DEFAULT_PROCESS_DESCRIPTION,
-  DEFAULT_PROCESS_TITLE,
-  readProcessSteps,
-} from "@/lib/services/process";
-import {
-  PERFORMANCE_COLUMN_LABELS,
-  SPACE_COLUMN_LABELS,
-  columnLabels,
-} from "@/lib/services/table-labels";
 
 export type ServiceCard = {
   id: string;
@@ -50,29 +34,24 @@ export type ServiceGroup = {
   children: ServiceCard[];
 };
 
-export type ServiceApplication = {
+export type ServiceCaseStudy = {
   title: string;
-  description: string;
-  icon: string;
-  points: string[];
-};
-
-export type PerformanceRow = {
-  useCase: string;
-  recommended: string;
-  forceReduction: string;
-};
-
-export type SpaceRow = {
-  useCase: string;
-  recommended: string;
-  impact: string;
-  slip: string;
-  acoustic: string;
-  maintenance: string;
+  imageUrl: string;
+  imageAlt: string;
+  meta: string;
+  badge: string;
+  price: string;
 };
 
 export type ServiceDetailView = ServiceCard & {
+  content: unknown;
+  tags: string[];
+  faqs: { question: string; answer: string }[];
+  focusKeyword: string;
+  related: ServiceCard[];
+  seoTitle: string;
+  seoDescription: string;
+  // compatibility for existing components during transition
   detailReady: boolean;
   heroTitle: string;
   heroDescription: string;
@@ -81,37 +60,16 @@ export type ServiceDetailView = ServiceCard & {
   overviewImage: string;
   guideTitle: string;
   guideDescription: string;
-  applications: ServiceApplication[];
-  showPerformanceMatrix: boolean;
-  performanceTitle: string;
-  performanceDescription: string;
-  performanceLabels: string[];
-  performanceRows: PerformanceRow[];
-  density: string;
-  warranty: string;
-  brandingTitle: string;
-  brandingDescription: string;
-  brandColorLabel: string;
-  brandColors: BrandColor[];
-  showSpaceRequirements: boolean;
-  spaceTitle: string;
-  spaceDescription: string;
-  spaceLabels: string[];
-  spaceRows: SpaceRow[];
+  applications: { title: string; description: string; icon: string; points: string[] }[];
+  caseStudiesTitle: string;
+  caseStudiesDescription: string;
+  caseStudies: ServiceCaseStudy[];
   showProcess: boolean;
   processTitle: string;
   processDescription: string;
   processSteps: { label: string }[];
   faqIntro: string;
-  faqs: { question: string; answer: string }[];
-  caseStudiesTitle: string;
-  caseStudiesDescription: string;
-  projectsTitle: string;
-  projectsDescription: string;
-  related: ServiceCard[];
   siblings: ServiceCard[];
-  seoTitle: string;
-  seoDescription: string;
 };
 
 export type MegaMenuColumn = {
@@ -126,323 +84,68 @@ export type SearchEntry = {
   group: string;
 };
 
-const published = { _status: "published" } as const;
-
-type LeanDoc = Record<string, unknown> & { _id?: unknown };
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
-}
-
-function sortOrder(value: unknown) {
-  return typeof value === "number" && Number.isFinite(value) ? value : 0;
-}
-
-function mediaFromMap(
-  value: unknown,
-  media: Map<string, PublicMedia>
-): PublicMedia | null {
-  const id = toId(value);
-  if (!id) return null;
-  return media.get(id) ?? null;
-}
-
-function resolveImage(
-  value: unknown,
-  media: Map<string, PublicMedia>,
-  size?: "thumbnail" | "card" | "hero"
-) {
-  const doc = mediaFromMap(value, media);
-  if (!doc) {
-    return { url: "/images/profile/modular-office-complex.jpg", alt: "" };
-  }
-  const resolved = resolveMediaUrl(doc, size);
+function toCard(service: {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  coverUrl?: string;
+  imageUrl?: string;
+  coverAlt?: string;
+  imageAlt?: string;
+  parent?: string;
+  parentTitle?: string;
+}): ServiceCard {
+  const image = service.coverUrl || service.imageUrl || "/images/profile/modular-office-complex.jpg";
   return {
-    url: resolved.url || "/images/profile/modular-office-complex.jpg",
-    alt: resolved.alt,
-  };
-}
-
-function resolveParent(
-  value: unknown,
-  parents: Map<string, { id: string; title: string }>
-) {
-  const id = toId(value);
-  if (!id) return { id: null, title: null as string | null };
-  const parent = parents.get(id);
-  return { id, title: parent?.title ?? null };
-}
-
-function toServiceCard(
-  service: LeanDoc,
-  media: Map<string, PublicMedia>,
-  parents: Map<string, { id: string; title: string }>,
-  imageSize?: "thumbnail" | "card" | "hero"
-): ServiceCard {
-  const image = resolveImage(service.image, media, imageSize ?? "card");
-  const parent = resolveParent(service.parent, parents);
-  const slug = typeof service.slug === "string" ? service.slug : "";
-
-  return {
-    id: toId(service._id),
-    slug,
-    title: typeof service.title === "string" ? service.title : "",
-    excerpt: typeof service.excerpt === "string" ? service.excerpt : "",
-    image: image.url,
-    imageAlt: image.alt || (typeof service.title === "string" ? service.title : ""),
-    href: `/services/${slug}`,
-    parentId: parent.id,
-    parentTitle: parent.title,
-  };
-}
-
-function collectMediaIds(docs: LeanDoc[]) {
-  const ids: string[] = [];
-  for (const doc of docs) {
-    const image = toId(doc.image);
-    const overview = toId(doc.overviewImage);
-    if (image) ids.push(image);
-    if (overview) ids.push(overview);
-  }
-  return ids;
-}
-
-async function loadParents(ids: string[]) {
-  const unique = [...new Set(ids.filter(Boolean))];
-  const map = new Map<string, { id: string; title: string }>();
-  if (unique.length === 0) return map;
-
-  if (isSupabaseContentEnabled()) {
-    return getServiceFamilyTitles(unique);
-  }
-
-  const objectIds = unique.filter(isObjectId);
-  if (objectIds.length === 0) return map;
-
-  const { MainService } = await getModels();
-  const docs = await MainService.find({ _id: { $in: objectIds.map(asObjectId) } })
-    .select("title")
-    .lean();
-  for (const doc of docs) {
-    map.set(toId(doc._id), {
-      id: toId(doc._id),
-      title: typeof doc.title === "string" ? doc.title : "",
-    });
-  }
-  return map;
-}
-
-function toDetailView(
-  service: LeanDoc,
-  media: Map<string, PublicMedia>,
-  parents: Map<string, { id: string; title: string }>,
-  related: ServiceCard[],
-  siblings: ServiceCard[]
-): ServiceDetailView {
-  const card = toServiceCard(service, media, parents, "hero");
-  const overview = resolveImage(
-    service.overviewImage ?? service.image,
-    media,
-    "card"
-  );
-  const title = card.title;
-  const applications = Array.isArray(service.applications)
-    ? service.applications.map((application) => {
-        const row = isRecord(application) ? application : {};
-        return {
-          title: typeof row.title === "string" ? row.title : "",
-          description: typeof row.description === "string" ? row.description : "",
-          icon: typeof row.icon === "string" ? row.icon : "",
-          points: Array.isArray(row.points)
-            ? row.points.map((point) =>
-                isRecord(point) && typeof point.label === "string"
-                  ? point.label
-                  : ""
-              )
-            : [],
-        };
-      })
-    : [];
-
-  return {
-    ...card,
-    detailReady: Boolean(service.detailReady),
-    heroTitle:
-      (typeof service.heroTitle === "string" && service.heroTitle) || title,
-    heroDescription:
-      (typeof service.heroDescription === "string" && service.heroDescription) ||
-      card.excerpt,
-    overviewTitle:
-      (typeof service.overviewTitle === "string" && service.overviewTitle) ||
-      `Complete ${title} Support - From Specification to Installation`,
-    overviewDescription:
-      (typeof service.overviewDescription === "string" &&
-        service.overviewDescription) ||
-      "Our team supports the full project cycle with site assessment, product selection, technical submittals, preparation, installation, and documented handover.",
-    overviewImage: overview.url,
-    guideTitle:
-      (typeof service.guideTitle === "string" && service.guideTitle) ||
-      `The ${title} Guide`,
-    guideDescription:
-      (typeof service.guideDescription === "string" && service.guideDescription) ||
-      "Every project has unique structural demands. We provide application-specific guidance to protect athletes, users, equipment, and the subfloor.",
-    applications,
-    showPerformanceMatrix: Boolean(service.showPerformanceMatrix),
-    performanceTitle:
-      typeof service.performanceTitle === "string" ? service.performanceTitle : "",
-    performanceDescription:
-      typeof service.performanceDescription === "string"
-        ? service.performanceDescription
-        : "",
-    performanceLabels: columnLabels(service.performanceLabels, PERFORMANCE_COLUMN_LABELS),
-    performanceRows: Array.isArray(service.performanceRows)
-      ? service.performanceRows.map((row) => {
-          const item = isRecord(row) ? row : {};
-          return {
-            useCase: typeof item.useCase === "string" ? item.useCase : "",
-            recommended:
-              typeof item.recommended === "string" ? item.recommended : "",
-            forceReduction:
-              typeof item.forceReduction === "string" ? item.forceReduction : "",
-          };
-        })
-      : [],
-    density:
-      typeof service.density === "string" ? service.density : "",
-    warranty:
-      typeof service.warranty === "string" ? service.warranty : "",
-    brandingTitle:
-      typeof service.brandingTitle === "string" ? service.brandingTitle : "",
-    brandingDescription:
-      typeof service.brandingDescription === "string"
-        ? service.brandingDescription
-        : "",
-    brandColorLabel:
-      typeof service.brandColorLabel === "string" ? service.brandColorLabel : "",
-    brandColors: readBrandColors(service.brandColors),
-    showSpaceRequirements: Boolean(service.showSpaceRequirements),
-    spaceTitle: typeof service.spaceTitle === "string" ? service.spaceTitle : "",
-    spaceDescription:
-      typeof service.spaceDescription === "string" ? service.spaceDescription : "",
-    spaceLabels: columnLabels(service.spaceLabels, SPACE_COLUMN_LABELS),
-    spaceRows: Array.isArray(service.spaceRows)
-      ? service.spaceRows.map((row) => {
-          const item = isRecord(row) ? row : {};
-          return {
-            useCase: typeof item.useCase === "string" ? item.useCase : "",
-            recommended:
-              typeof item.recommended === "string" ? item.recommended : "",
-            impact: typeof item.impact === "string" ? item.impact : "",
-            slip: typeof item.slip === "string" ? item.slip : "",
-            acoustic: typeof item.acoustic === "string" ? item.acoustic : "",
-            maintenance:
-              typeof item.maintenance === "string" ? item.maintenance : "",
-          };
-        })
-      : [],
-    showProcess: service.showProcess !== false,
-    processTitle:
-      typeof service.processTitle === "string"
-        ? service.processTitle
-        : DEFAULT_PROCESS_TITLE,
-    processDescription:
-      typeof service.processDescription === "string"
-        ? service.processDescription
-        : DEFAULT_PROCESS_DESCRIPTION,
-    processSteps: readProcessSteps(service.processSteps),
-    faqIntro: readFaqIntro(service.faqIntro),
-    faqs: readFaqs(service.faqs),
-    caseStudiesTitle:
-      typeof service.caseStudiesTitle === "string" ? service.caseStudiesTitle : "",
-    caseStudiesDescription:
-      typeof service.caseStudiesDescription === "string"
-        ? service.caseStudiesDescription
-        : "",
-    projectsTitle:
-      typeof service.projectsTitle === "string" ? service.projectsTitle : "",
-    projectsDescription:
-      typeof service.projectsDescription === "string"
-        ? service.projectsDescription
-        : "",
-    related,
-    siblings,
-    seoTitle:
-      (typeof service.seoTitle === "string" && service.seoTitle) || title,
-    seoDescription:
-      (typeof service.seoDescription === "string" && service.seoDescription) ||
-      card.excerpt,
+    id: service.id,
+    slug: service.slug,
+    title: service.title,
+    excerpt: service.excerpt,
+    image,
+    imageAlt: service.coverAlt || service.imageAlt || service.title,
+    href: `/services/${service.slug}`,
+    parentId: service.parent || null,
+    parentTitle: service.parentTitle || null,
   };
 }
 
 export async function getServices(limit = 100): Promise<ServiceCard[]> {
+  if (!isSupabaseContentEnabled()) return getArabiaServiceCards(limit);
   try {
-    const { Service } = await getModels();
-    const docs = (await Service.find(published)
-      .sort({ sortOrder: 1 })
-      .limit(limit)
-      .lean()) as LeanDoc[];
-
+    const docs = await listPublishedCmsServices(limit);
     if (docs.length === 0) return getArabiaServiceCards(limit);
-
-    const [media, parents] = await Promise.all([
-      loadMediaMap(collectMediaIds(docs)),
-      loadParents(docs.map((doc) => toId(doc.parent))),
-    ]);
-
-    return docs.map((doc) => toServiceCard(doc, media, parents));
+    return docs.map((doc) => toCard(doc));
   } catch {
     return getArabiaServiceCards(limit);
   }
 }
 
 export async function getServiceGroups(): Promise<ServiceGroup[]> {
+  if (!isSupabaseContentEnabled()) return getArabiaServiceGroups();
   try {
-    const { Service } = await getModels();
-    const subs = await Service.find(published)
-      .sort({ sortOrder: 1 })
-      .limit(200)
-      .lean();
-
-    const [media, parents, mains] = await Promise.all([
-      loadMediaMap(collectMediaIds(subs)),
-      loadParents(subs.map((doc) => toId(doc.parent))),
-      isSupabaseContentEnabled()
-        ? listServiceFamilies({ publishedOnly: true })
-        : (async () => {
-            const { MainService } = await getModels();
-            const docs = await MainService.find(published)
-              .sort({ sortOrder: 1, title: 1 })
-              .limit(50)
-              .lean();
-            return docs.map((main) => ({
-              id: toId(main._id),
-              slug: typeof main.slug === "string" ? main.slug : "",
-              title: typeof main.title === "string" ? main.title : "",
-              sortOrder: sortOrder(main.sortOrder),
-              menuDescription: "",
-              showInMegaMenu: true,
-              status: "published" as const,
-              updatedAt: "",
-            }));
-          })(),
+    const [families, services] = await Promise.all([
+      listServiceFamilies({ publishedOnly: true }),
+      listPublishedCmsServices(200),
     ]);
+    if (services.length === 0) return getArabiaServiceGroups();
 
     const childrenByParent = new Map<string, ServiceCard[]>();
-    for (const sub of subs) {
-      const card = toServiceCard(sub, media, parents);
+    for (const service of services) {
+      const card = toCard(service);
       if (!card.parentId) continue;
       const list = childrenByParent.get(card.parentId) ?? [];
       list.push(card);
       childrenByParent.set(card.parentId, list);
     }
 
-    const groups = mains
-      .map((main) => ({
-        id: main.id,
-        slug: main.slug,
-        title: main.title,
-        sortOrder: main.sortOrder,
-        children: childrenByParent.get(main.id) ?? [],
+    const groups = families
+      .map((family) => ({
+        id: family.id,
+        slug: family.slug,
+        title: family.title,
+        sortOrder: family.sortOrder,
+        children: childrenByParent.get(family.id) ?? [],
       }))
       .filter((group) => group.children.length > 0);
 
@@ -452,75 +155,64 @@ export async function getServiceGroups(): Promise<ServiceGroup[]> {
   }
 }
 
-export async function getServiceBySlug(
-  slug: string
-): Promise<ServiceDetailView | null> {
+export async function getServiceBySlug(slug: string): Promise<ServiceDetailView | null> {
   if (!slug) return null;
+  if (!isSupabaseContentEnabled()) return getArabiaServiceBySlug(slug);
 
   try {
-    const { Service } = await getModels();
-    const service = (await Service.findOne({ ...published, slug }).lean()) as
-      | LeanDoc
-      | null;
+    const service = await getCmsServiceBySlug(slug, true);
     if (!service) return getArabiaServiceBySlug(slug);
 
-    const relatedIds = Array.isArray(service.relatedServices)
-      ? service.relatedServices.map((item) => toId(item)).filter(isObjectId)
+    const siblings = service.parent
+      ? await listCmsSiblingServices(service.parent, slug)
       : [];
-    const parentId = toId(service.parent);
+    const related = siblings.map((item) => toCard(item));
+    const card = toCard(service);
 
-    const [relatedDocs, siblingDocs] = await Promise.all([
-      relatedIds.length
-        ? Service.find({
-            ...published,
-            _id: { $in: relatedIds.map(asObjectId) },
-          }).lean()
-        : Promise.resolve([] as LeanDoc[]),
-      parentId && isContentId(parentId)
-        ? Service.find({
-            ...published,
-            parent: parentId,
-            slug: { $ne: slug },
-          })
-            .sort({ sortOrder: 1 })
-            .limit(12)
-            .lean()
-        : Promise.resolve([] as LeanDoc[]),
-    ]);
+    const highlights = Array.isArray(service.highlights) ? service.highlights : [];
 
-    const relatedById = new Map(relatedDocs.map((doc) => [toId(doc._id), doc]));
-    const orderedRelated = relatedIds
-      .map((id) => relatedById.get(id))
-      .filter((doc): doc is LeanDoc => Boolean(doc))
-      .slice(0, 3);
-
-    const allDocs = [service, ...orderedRelated, ...siblingDocs];
-    const [media, parents] = await Promise.all([
-      loadMediaMap(collectMediaIds(allDocs)),
-      loadParents(allDocs.map((doc) => toId(doc.parent))),
-    ]);
-
-    const related = orderedRelated.map((doc) => toServiceCard(doc, media, parents));
-    const siblings = siblingDocs.map((doc) => toServiceCard(doc, media, parents));
-
-    return toDetailView(service, media, parents, related, siblings);
+    return {
+      ...card,
+      content: service.content,
+      tags: service.tags,
+      faqs: service.faqs,
+      focusKeyword: service.focusKeyword,
+      related,
+      siblings: related,
+      seoTitle: service.metaTitle || service.title,
+      seoDescription: service.metaDescription || service.excerpt,
+      detailReady: true,
+      heroTitle: service.title,
+      heroDescription: service.excerpt,
+      overviewTitle: "",
+      overviewDescription: "",
+      overviewImage: card.image,
+      guideTitle: service.highlightsTitle || "Key highlights",
+      guideDescription: service.highlightsDescription || "",
+      applications: highlights.map((item) => ({
+        title: item.title,
+        description: item.description,
+        icon: item.icon,
+        points: item.points,
+      })),
+      caseStudiesTitle: service.caseStudiesTitle || "Case studies",
+      caseStudiesDescription: service.caseStudiesDescription || "",
+      caseStudies: Array.isArray(service.caseStudies) ? service.caseStudies : [],
+      showProcess: false,
+      processTitle: "",
+      processDescription: "",
+      processSteps: [],
+      faqIntro: "",
+    };
   } catch {
     return getArabiaServiceBySlug(slug);
   }
 }
 
 export async function getServiceSlugs(): Promise<string[]> {
+  if (!isSupabaseContentEnabled()) return getArabiaServiceSlugs();
   try {
-    const { Service } = await getModels();
-    const docs = await Service.find(published)
-      .select("slug")
-      .limit(200)
-      .lean();
-
-    const slugs = docs
-      .map((doc) => (typeof doc.slug === "string" ? doc.slug : ""))
-      .filter(Boolean);
-
+    const slugs = await listPublishedCmsServiceSlugs();
     return slugs.length > 0 ? slugs : getArabiaServiceSlugs();
   } catch {
     return getArabiaServiceSlugs();
@@ -528,59 +220,17 @@ export async function getServiceSlugs(): Promise<string[]> {
 }
 
 export async function getServiceMegaMenu(): Promise<MegaMenuColumn[]> {
+  if (!isSupabaseContentEnabled()) return getArabiaServiceMegaMenu();
   try {
-    const { Service } = await getModels();
-    const [mains, subs] = await Promise.all([
-      isSupabaseContentEnabled()
-        ? listServiceFamilies({ publishedOnly: true, menu: "visible" })
-        : (async () => {
-            const { MainService } = await getModels();
-            const docs = await MainService.find({
-              ...published,
-              showInMegaMenu: true,
-            })
-              .sort({ sortOrder: 1, title: 1 })
-              .limit(50)
-              .select("title")
-              .lean();
-            return docs.map((main) => ({
-              id: toId(main._id),
-              title: typeof main.title === "string" ? main.title : "",
-              slug: "",
-              menuDescription: "",
-              sortOrder: 0,
-              showInMegaMenu: true,
-              status: "published" as const,
-              updatedAt: "",
-            }));
-          })(),
-      Service.find({ ...published, showInMegaMenu: true })
-        .sort({ sortOrder: 1 })
-        .limit(200)
-        .select("title slug parent sortOrder")
-        .lean(),
-    ]);
-
-    const linksByParent = new Map<string, { label: string; href: string }[]>();
-    for (const sub of subs) {
-      const parentId = toId(sub.parent);
-      const slug = typeof sub.slug === "string" ? sub.slug : "";
-      if (!parentId || !slug) continue;
-      const list = linksByParent.get(parentId) ?? [];
-      list.push({
-        label: typeof sub.title === "string" ? sub.title : "",
-        href: `/services/${slug}`,
-      });
-      linksByParent.set(parentId, list);
-    }
-
-    const columns = mains
-      .map((main) => ({
-        title: main.title,
-        links: linksByParent.get(main.id) ?? [],
-      }))
-      .filter((column) => column.links.length > 0);
-
+    const groups = await getServiceGroups();
+    const columns = groups.map((group) => ({
+      title: group.title,
+      href: "/services",
+      links: group.children.map((service) => ({
+        label: service.title,
+        href: service.href,
+      })),
+    }));
     return columns.length > 0 ? columns : getArabiaServiceMegaMenu();
   } catch {
     return getArabiaServiceMegaMenu();
@@ -588,26 +238,12 @@ export async function getServiceMegaMenu(): Promise<MegaMenuColumn[]> {
 }
 
 export async function getServiceSearchIndex(): Promise<SearchEntry[]> {
-  const [groups, megaMenu] = await Promise.all([
-    getServiceGroups(),
-    getServiceMegaMenu(),
-  ]);
-
-  const fromGroups = groups.flatMap((group) =>
+  const groups = await getServiceGroups();
+  return groups.flatMap((group) =>
     group.children.map((service) => ({
       label: service.title,
       href: service.href,
       group: group.title,
-    }))
-  );
-
-  if (fromGroups.length > 0) return fromGroups;
-
-  return megaMenu.flatMap((column) =>
-    column.links.map((link) => ({
-      label: link.label,
-      href: link.href,
-      group: column.title,
     }))
   );
 }

@@ -86,7 +86,7 @@ export const cataloguePage = {
       {
         title: "Porta Cabins & Site Offices",
         description:
-          "Site-ready offices, security cabins, accommodation and storage for active project sites.",
+          "Site ready offices, security cabins, accommodation and storage for active project sites.",
         image: "/images/profile/porta-cabin-site-office.png",
         tags: ["Construction", "Industrial", "Infrastructure", "Sites"],
       },
@@ -100,7 +100,7 @@ export const cataloguePage = {
       {
         title: "Parking Shades",
         description:
-          "Engineered shade structures for vehicles, compounds and high-use outdoor areas.",
+          "Engineered shade structures for vehicles, compounds and high use outdoor areas.",
         image: "/images/profile/car-parking-shades.jpg",
         tags: ["Commercial", "Industrial", "Parking", "Compounds"],
       },
@@ -114,7 +114,7 @@ export const cataloguePage = {
       {
         title: "Police Barrier",
         description:
-          "Heavy-duty steel police barriers for road closures, government events and perimeter control.",
+          "Heavy duty steel police barriers for road closures, government events and perimeter control.",
         image: "/images/profile/site-compound-fencing.jpg",
         tags: ["Events", "Security", "Perimeter", "Traffic"],
       },
@@ -161,7 +161,7 @@ export const cataloguePage = {
       {
         icon: Sparkles,
         title: "Clear Presentation",
-        description: "Professional looks for offices, visitor spaces and client-facing compounds.",
+        description: "Professional looks for offices, visitor spaces and client facing compounds.",
       },
       {
         icon: Ear,
@@ -201,7 +201,7 @@ export const cataloguePage = {
       },
       {
         title: "Institutional Campuses",
-        description: "Modular workplaces and purpose-built portable environments.",
+        description: "Modular workplaces and purpose built portable environments.",
         image: "/images/profile/porta-cabin-site-office.png",
       },
     ],
@@ -268,12 +268,12 @@ export const cataloguePage = {
       },
       {
         title: "Event Structures",
-        description: "Temporary tents and facilities for short-term programmes.",
+        description: "Temporary tents and facilities for short term programmes.",
         image: "/images/profile/porta-cabin-site-office.png",
       },
       {
         title: "Custom Modular",
-        description: "Purpose-built modular environments for specialised briefs.",
+        description: "Purpose built modular environments for specialised briefs.",
         image: "/images/catalogue/Sports.png",
       },
     ],
@@ -301,7 +301,7 @@ export const cataloguePage = {
         cells: ["Site Office", "Single cabin / twin unit", "Access & power", "Standard porta cabin", "Programme"],
       },
       {
-        cells: ["Modular Workplace", "Multi-room layout", "Occupancy", "Modular office suite", "Services"],
+        cells: ["Modular Workplace", "Multi room layout", "Occupancy", "Modular office suite", "Services"],
       },
       {
         cells: ["Parking Shade", "Bay rows / canopy", "Span & foundations", "Engineered shade", "Wind load"],

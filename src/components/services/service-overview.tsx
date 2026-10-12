@@ -133,12 +133,15 @@ export function ServiceOverview({ service }: { service: ServiceDetailView }) {
 }
 
 export function ServiceGuide({ service }: { service: ServiceDetailView }) {
+  if (service.applications.length === 0) return null;
+
   return (
     <Section>
       <SectionHeading
         align="center"
-        title={service.guideTitle}
-        description={service.guideDescription}
+        eyebrow="Highlights"
+        title={service.guideTitle || "Key highlights"}
+        description={service.guideDescription || undefined}
       />
 
       <ul className="mt-10 grid overflow-hidden rounded-md border border-border md:grid-cols-3">
@@ -147,7 +150,7 @@ export function ServiceGuide({ service }: { service: ServiceDetailView }) {
 
           return (
             <li
-              key={application.title}
+              key={`${application.title}-${index}`}
               className="group border-b border-border bg-surface-alt p-7 transition-colors last:border-b-0 hover:bg-brand hover:text-white md:border-b-0 md:border-e md:last:border-e-0"
             >
               <Icon className="size-6 text-brand transition-colors group-hover:text-white" />
@@ -157,17 +160,72 @@ export function ServiceGuide({ service }: { service: ServiceDetailView }) {
               <p className="mt-3 text-sm leading-relaxed text-body transition-colors group-hover:text-white/75">
                 {application.description}
               </p>
-              <ul className="mt-5 space-y-2 text-xs text-body transition-colors group-hover:text-white/75">
-                {application.points.map((point) => (
-                  <li key={point} className="flex items-center gap-2">
-                    <span className="size-1.5 rounded-full bg-brand group-hover:bg-white" />
-                    {point}
-                  </li>
-                ))}
-              </ul>
+              {application.points.length > 0 ? (
+                <ul className="mt-5 space-y-2 text-xs text-body transition-colors group-hover:text-white/75">
+                  {application.points.map((point) => (
+                    <li key={point} className="flex items-center gap-2">
+                      <span className="size-1.5 rounded-full bg-brand group-hover:bg-white" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </li>
           );
         })}
+      </ul>
+    </Section>
+  );
+}
+
+export function ServiceCaseStudies({ service }: { service: ServiceDetailView }) {
+  if (service.caseStudies.length === 0) return null;
+
+  return (
+    <Section tone="alt">
+      <SectionHeading
+        align="center"
+        eyebrow="Case Studies"
+        title={service.caseStudiesTitle || "Case studies"}
+        description={service.caseStudiesDescription || undefined}
+      />
+
+      <ul className="mt-10 grid gap-5 md:grid-cols-3">
+        {service.caseStudies.map((item, index) => (
+          <li
+            key={`${item.title}-${index}`}
+            className="overflow-hidden rounded-md border border-border bg-background"
+          >
+            <div className="relative">
+              <Media
+                src={item.imageUrl}
+                alt={item.imageAlt || item.title}
+                className="aspect-[4/3]"
+                sizes="(min-width: 768px) 30vw, 90vw"
+              />
+              {item.badge ? (
+                <span className="absolute start-3 top-3 rounded-sm bg-brand-dark px-2 py-1 text-[0.625rem] font-semibold uppercase tracking-[0.14em] text-white">
+                  {item.badge}
+                </span>
+              ) : null}
+            </div>
+            <div className="p-5">
+              <h3 className="text-xl font-semibold tracking-tight text-ink">
+                {item.title}
+              </h3>
+              {item.price || item.meta ? (
+                <div className="mt-3 flex items-end justify-between gap-3 text-sm">
+                  {item.price ? (
+                    <p className="font-semibold text-ink">{item.price}</p>
+                  ) : null}
+                  {item.meta ? (
+                    <p className="text-xs text-body">{item.meta}</p>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          </li>
+        ))}
       </ul>
     </Section>
   );

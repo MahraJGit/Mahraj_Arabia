@@ -5,15 +5,13 @@ import {
   getArabiaPostsList,
   getArabiaRelatedPosts,
 } from "@/content/arabia-posts";
-import { asObjectId, isObjectId, toId } from "@/lib/db/ids";
-import { getModels } from "@/lib/db/models";
-import { collectUploadIds } from "@/lib/cms/lexical";
 import {
-  loadMediaMap,
-  resolveMediaUrl,
-  type PublicMedia,
-} from "@/lib/public/media";
-import type { LexicalContent } from "@/lib/public/rich-text";
+  getBlogPostBySlug,
+  isSupabaseContentEnabled,
+  listPublishedBlogPosts,
+  listPublishedBlogPostSlugs,
+} from "@/lib/supabase/content";
+import { getCategories } from "@/lib/public/categories";
 
 export type BlogCard = {
   id: string;
@@ -30,6 +28,7 @@ export type BlogCard = {
   category: string;
   categorySlug: string;
   href: string;
+  tags?: string[];
 };
 
 export type { BlogCategory } from "@/lib/public/categories";
@@ -41,27 +40,22 @@ export type PublicPost = {
   slug: string;
   excerpt: string;
   content: unknown;
-  coverImage: PublicMedia | null;
+  coverImage: { url: string; alt: string } | null;
   seoTitle: string;
   seoDescription: string;
+  focusKeyword: string;
+  tags: string[];
+  faqs: { question: string; answer: string }[];
   category: { id: string; title: string; slug: string } | null;
   author: string;
-  authorImage: PublicMedia | null;
+  authorImage: null;
   readTime: string;
   publishedAt: string | null;
   featured: boolean;
-  inlineMedia: Record<string, PublicMedia>;
+  inlineMedia: Record<string, never>;
 };
 
-const published = { _status: "published" } as const;
-
-type LeanDoc = Record<string, unknown> & { _id?: unknown };
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
-}
-
-function formatDate(value?: Date | string | null) {
+function formatDate(value?: string | null) {
   if (!value) return "";
   return new Date(value).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -70,196 +64,100 @@ function formatDate(value?: Date | string | null) {
   });
 }
 
-function publishedAtIso(value: unknown) {
-  if (value instanceof Date) return value.toISOString();
-  if (typeof value === "string" && value) return value;
-  return null;
-}
-
-function resolveImage(
-  media: PublicMedia | null | undefined,
-  size?: "thumbnail" | "card" | "hero"
-) {
-  const resolved = resolveMediaUrl(media ?? null, size);
-  return {
-    url: resolved.url || "/images/profile/modular-office-complex.jpg",
-    alt: resolved.alt,
-  };
-}
-
 export function toBlogCard(
-  post: PublicPost,
-  imageSize?: "thumbnail" | "card" | "hero"
+  post: {
+    id: string;
+    title: string;
+    slug: string;
+    excerpt: string;
+    coverUrl?: string;
+    coverAlt?: string;
+    coverImage?: string | { url?: string; alt?: string } | null;
+    categoryTitle?: string;
+    categorySlug?: string;
+    category?: string | { title?: string; slug?: string } | null;
+    publishedAt?: string | null;
+    author?: string;
+    readTime?: string;
+    tags?: string[];
+  },
+  _size?: string
 ): BlogCard {
-  const image = resolveImage(post.coverImage, imageSize ?? "card");
-  const hasAuthorImage = Boolean(
-    post.authorImage && (post.authorImage.url || post.authorImage.sizes)
-  );
-  const authorImage = hasAuthorImage
-    ? resolveMediaUrl(post.authorImage, "thumbnail")
-    : { url: "", alt: "" };
+  const categoryTitle =
+    post.categoryTitle ||
+    (typeof post.category === "object" && post.category ? post.category.title : "") ||
+    "";
+  const categorySlug =
+    post.categorySlug ||
+    (typeof post.category === "object" && post.category ? post.category.slug : "") ||
+    "";
 
   return {
     id: post.id,
     title: post.title,
     slug: post.slug,
     excerpt: post.excerpt,
-    image: image.url,
-    imageAlt: image.alt || post.title,
-    readTime: post.readTime,
+    image:
+      post.coverUrl ||
+      (typeof post.coverImage === "object" && post.coverImage?.url) ||
+      "/images/profile/porta-cabin-site-office.png",
+    imageAlt:
+      post.coverAlt ||
+      (typeof post.coverImage === "object" ? post.coverImage?.alt : undefined) ||
+      post.title,
+    readTime: post.readTime || "",
     date: formatDate(post.publishedAt),
-    author: post.author || "By Mahraj Engineering Team",
-    authorImage: authorImage.url,
-    authorImageAlt: authorImage.alt || post.author || "Article author",
-    category: post.category?.title ?? "Blogs",
-    categorySlug: post.category?.slug ?? "",
+    author: post.author || "",
+    authorImage: "",
+    authorImageAlt: "",
+    category: categoryTitle,
+    categorySlug,
     href: `/blog/${post.slug}`,
+    tags: post.tags || [],
   };
 }
-
-function toPublicPost(
-  doc: LeanDoc,
-  media: Map<string, PublicMedia>,
-  category?: { id: string; title: string; slug: string } | null
-): PublicPost {
-  const coverId = toId(doc.coverImage);
-  const authorImageId = toId(doc.authorImage);
-  const categoryId = toId(doc.category);
-  const inlineIds = collectUploadIds(doc.content);
-  const inlineMedia: Record<string, PublicMedia> = {};
-  for (const id of inlineIds) {
-    const item = media.get(id);
-    if (item) inlineMedia[id] = item;
-  }
-
-  return {
-    id: toId(doc._id),
-    title: typeof doc.title === "string" ? doc.title : "",
-    slug: typeof doc.slug === "string" ? doc.slug : "",
-    excerpt: typeof doc.excerpt === "string" ? doc.excerpt : "",
-    content: doc.content ?? null,
-    coverImage: media.get(coverId) ?? null,
-    seoTitle: typeof doc.seoTitle === "string" ? doc.seoTitle : "",
-    seoDescription:
-      typeof doc.seoDescription === "string" ? doc.seoDescription : "",
-    category:
-      category ??
-      (isRecord(doc.category)
-        ? {
-            id: categoryId,
-            title:
-              typeof doc.category.title === "string"
-                ? doc.category.title
-                : "Blogs",
-            slug:
-              typeof doc.category.slug === "string" ? doc.category.slug : "",
-          }
-        : null),
-    author: typeof doc.author === "string" ? doc.author : "",
-    authorImage: media.get(authorImageId) ?? null,
-    readTime: typeof doc.readTime === "string" ? doc.readTime : "",
-    publishedAt: publishedAtIso(doc.publishedAt),
-    featured: Boolean(doc.featured),
-    inlineMedia,
-  };
-}
-
-function collectPostMediaIds(docs: LeanDoc[]) {
-  const ids: string[] = [];
-  for (const doc of docs) {
-    const cover = toId(doc.coverImage);
-    const author = toId(doc.authorImage);
-    if (cover) ids.push(cover);
-    if (author) ids.push(author);
-    ids.push(...collectUploadIds(doc.content));
-  }
-  return ids;
-}
-
-async function loadCategoryMap(ids: string[]) {
-  const unique = [...new Set(ids.filter((id) => isObjectId(id)))];
-  const map = new Map<string, { id: string; title: string; slug: string }>();
-  if (unique.length === 0) return map;
-
-  const { Category } = await getModels();
-  const docs = await Category.find({ _id: { $in: unique.map(asObjectId) } })
-    .select("title slug")
-    .lean();
-  for (const doc of docs) {
-    map.set(toId(doc._id), {
-      id: toId(doc._id),
-      title: typeof doc.title === "string" ? doc.title : "",
-      slug: typeof doc.slug === "string" ? doc.slug : "",
-    });
-  }
-  return map;
-}
-
-async function findCategoryIdBySlug(slug: string) {
-  const { Category } = await getModels();
-  const category = await Category.findOne({ slug }).select("_id").lean();
-  return category ? toId(category._id) : "";
-}
-
-type ListArgs = {
-  page?: number;
-  limit?: number;
-  categorySlug?: string;
-  search?: string;
-};
 
 export async function getPosts({
   page = 1,
   limit = 6,
   categorySlug,
   search,
-}: ListArgs = {}) {
-  try {
-    const { Post } = await getModels();
-    const filter: Record<string, unknown> = { ...published };
+}: {
+  page?: number;
+  limit?: number;
+  categorySlug?: string;
+  search?: string;
+} = {}) {
+  if (!isSupabaseContentEnabled()) {
+    return getArabiaPostsList({ page, limit, categorySlug, search });
+  }
 
+  try {
+    let categoryId: string | undefined;
     if (categorySlug) {
-      const categoryId = await findCategoryIdBySlug(categorySlug);
+      const categories = await getCategories();
+      categoryId = categories.find((item) => item.slug === categorySlug)?.id;
       if (!categoryId) {
         return getArabiaPostsList({ page, limit, categorySlug, search });
       }
-      filter.category = asObjectId(categoryId);
     }
 
-    if (search) {
-      const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      filter.$or = [
-        { title: { $regex: escaped, $options: "i" } },
-        { excerpt: { $regex: escaped, $options: "i" } },
-      ];
-    }
+    const result = await listPublishedBlogPosts({
+      page,
+      limit,
+      categoryId,
+      search,
+    });
 
-    const skip = Math.max(0, (page - 1) * limit);
-    const [docs, totalDocs] = await Promise.all([
-      Post.find(filter)
-        .sort({ publishedAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      Post.countDocuments(filter),
-    ]);
-
-    const [media, categories] = await Promise.all([
-      loadMediaMap(collectPostMediaIds(docs)),
-      loadCategoryMap(docs.map((doc) => toId(doc.category))),
-    ]);
-
-    if (totalDocs === 0) {
+    if (result.total === 0 && !categorySlug && !search) {
       return getArabiaPostsList({ page, limit, categorySlug, search });
     }
 
     return {
-      docs: docs.map((doc) =>
-        toBlogCard(toPublicPost(doc, media, categories.get(toId(doc.category))))
-      ),
-      page,
-      totalPages: Math.ceil(totalDocs / limit),
-      totalDocs,
+      docs: result.rows.map((row) => toBlogCard(row)),
+      page: result.page,
+      totalPages: result.totalPages,
+      totalDocs: result.total,
     };
   } catch {
     return getArabiaPostsList({ page, limit, categorySlug, search });
@@ -267,23 +165,11 @@ export async function getPosts({
 }
 
 export async function getFeaturedPosts(limit = 3) {
+  if (!isSupabaseContentEnabled()) return getArabiaFeaturedPosts(limit);
   try {
-    const { Post } = await getModels();
-    const docs = (await Post.find({ ...published, featured: true })
-      .sort({ publishedAt: -1 })
-      .limit(limit)
-      .lean()) as LeanDoc[];
-
-    const [media, categories] = await Promise.all([
-      loadMediaMap(collectPostMediaIds(docs)),
-      loadCategoryMap(docs.map((doc) => toId(doc.category))),
-    ]);
-
-    if (docs.length === 0) return getArabiaFeaturedPosts(limit);
-
-    return docs.map((doc) =>
-      toBlogCard(toPublicPost(doc, media, categories.get(toId(doc.category))))
-    );
+    const result = await listPublishedBlogPosts({ page: 1, limit });
+    if (result.rows.length === 0) return getArabiaFeaturedPosts(limit);
+    return result.rows.map((row) => toBlogCard(row));
   } catch {
     return getArabiaFeaturedPosts(limit);
   }
@@ -294,72 +180,73 @@ export async function getRelatedPosts(
   excludeId: string,
   limit = 3
 ) {
+  if (!isSupabaseContentEnabled()) {
+    return getArabiaRelatedPosts(categorySlug, excludeId, limit);
+  }
   try {
-    const { Post } = await getModels();
-    const filter: Record<string, unknown> = { ...published };
-    if (isObjectId(excludeId)) {
-      filter._id = { $ne: asObjectId(excludeId) };
-    }
-    if (categorySlug) {
-      const categoryId = await findCategoryIdBySlug(categorySlug);
-      if (categoryId) filter.category = asObjectId(categoryId);
-    }
-
-    const docs = (await Post.find(filter)
-      .sort({ publishedAt: -1 })
-      .limit(limit)
-      .lean()) as LeanDoc[];
-
-    const [media, categories] = await Promise.all([
-      loadMediaMap(collectPostMediaIds(docs)),
-      loadCategoryMap(docs.map((doc) => toId(doc.category))),
-    ]);
-
-    if (docs.length === 0) {
+    const categories = await getCategories();
+    const categoryId = categories.find((item) => item.slug === categorySlug)?.id;
+    const result = await listPublishedBlogPosts({
+      page: 1,
+      limit,
+      categoryId,
+      excludeId,
+    });
+    if (result.rows.length === 0) {
       return getArabiaRelatedPosts(categorySlug, excludeId, limit);
     }
-
-    return docs.map((doc) =>
-      toBlogCard(toPublicPost(doc, media, categories.get(toId(doc.category))))
-    );
+    return result.rows.map((row) => toBlogCard(row));
   } catch {
     return getArabiaRelatedPosts(categorySlug, excludeId, limit);
   }
 }
 
 export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
-  if (!slug) return null;
+  if (!isSupabaseContentEnabled()) return getArabiaPostBySlug(slug);
+
   try {
-    const { Post } = await getModels();
-    const doc = (await Post.findOne({ ...published, slug }).lean()) as
-      | LeanDoc
-      | null;
-    if (!doc) return getArabiaPostBySlug(slug);
+    const post = await getBlogPostBySlug(slug, true);
+    if (!post) return getArabiaPostBySlug(slug);
 
-    const [media, categories] = await Promise.all([
-      loadMediaMap(collectPostMediaIds([doc])),
-      loadCategoryMap([toId(doc.category)]),
-    ]);
-
-    return toPublicPost(doc, media, categories.get(toId(doc.category)) ?? null);
+    return {
+      id: post.id,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt,
+      content: post.content,
+      coverImage: post.coverUrl
+        ? { url: post.coverUrl, alt: post.coverAlt || post.title }
+        : null,
+      seoTitle: post.metaTitle || post.title,
+      seoDescription: post.metaDescription || post.excerpt,
+      focusKeyword: post.focusKeyword,
+      tags: post.tags,
+      faqs: post.faqs,
+      category: post.category
+        ? {
+            id: post.category,
+            title: post.categoryTitle,
+            slug: post.categorySlug,
+          }
+        : null,
+      author: "",
+      authorImage: null,
+      readTime: "",
+      publishedAt: post.publishedAt || null,
+      featured: false,
+      inlineMedia: {},
+    };
   } catch {
     return getArabiaPostBySlug(slug);
   }
 }
 
 export async function getPostSlugs() {
+  if (!isSupabaseContentEnabled()) return getArabiaPostSlugs();
   try {
-    const { Post } = await getModels();
-    const docs = await Post.find(published).select("slug").lean();
-    const slugs = docs
-      .map((doc) => (typeof doc.slug === "string" ? doc.slug : ""))
-      .filter(Boolean);
+    const slugs = await listPublishedBlogPostSlugs();
     return slugs.length > 0 ? slugs : getArabiaPostSlugs();
   } catch {
     return getArabiaPostSlugs();
   }
-}
-
-export function postContent(post: PublicPost): LexicalContent {
-  return post.content as LexicalContent;
 }

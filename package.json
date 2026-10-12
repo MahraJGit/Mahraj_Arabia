@@ -7,14 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "seed": "node scripts/seed.mjs",
-    "reset:blog": "node scripts/reset-content.mjs --blog",
-    "reset:services": "node scripts/reset-content.mjs --services",
-    "reset:content": "node scripts/reset-content.mjs --all"
+    "lint": "eslint"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1136.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -22,7 +17,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.28.0",
-    "mongoose": "^8.24.1",
     "motion": "^13.5.0",
     "next": "16.3.0",
     "radix-ui": "^1.6.7",

@@ -157,7 +157,7 @@ export const termsDocument: LegalDocument = {
     },
     {
       id: "installation",
-      title: "Your Responsibilities On-Site",
+      title: "Your Responsibilities On Site",
       paragraphs: [
         "You must provide suitable site access, accurate project information, and a safe working area for the agreed delivery or installation activities.",
         "Unless included in our scope, you are responsible for:",
@@ -226,7 +226,7 @@ export const termsDocument: LegalDocument = {
       id: "confidentiality",
       title: "Keeping Information Confidential",
       paragraphs: [
-        "Project quotations, drawings, specifications, tender information, pricing, and other non-public details may be confidential.",
+        "Project quotations, drawings, specifications, tender information, pricing, and other non public details may be confidential.",
       ],
       bullets: [
         "You agree to use confidential information only for the purpose for which it was shared.",
@@ -283,7 +283,7 @@ export const termsDocument: LegalDocument = {
       id: "third-parties",
       title: "Links and Partner Services",
       paragraphs: [
-        "Our website may contain links to third-party websites or services for additional information. We do not control their content, availability, or privacy practices.",
+        "Our website may contain links to third party websites or services for additional information. We do not control their content, availability, or privacy practices.",
         "Some projects may involve manufacturers, delivery partners, specialist installers, or other service providers. Their responsibilities will depend on the agreed project arrangements.",
         "Where third parties are involved in our work, we will coordinate their role as appropriate to the scope we have accepted. Separate third party terms may also apply.",
       ],
@@ -364,7 +364,7 @@ export const privacyDocument: LegalDocument = {
       icon: Mail,
       title: "Your Rights & Choices",
       description:
-        "You have the option to access your data, request changes or deletion where allowed, and stop non-essential communications.",
+        "You have the option to access your data, request changes or deletion where allowed, and stop non essential communications.",
     },
   ],
   intro:
@@ -435,7 +435,7 @@ export const privacyDocument: LegalDocument = {
       ],
       bullets: [
         "Consent: When you agree to a specific use of your information.",
-        "Pre-contractual Steps: When processing is necessary to respond to your request before agreeing.",
+        "Pre contractual Steps: When processing is necessary to respond to your request before agreeing.",
         "Contractual Requirements: When information is needed to fulfill an agreement or provide agreed services.",
         "Legitimate Business Interests: When processing supports our operations and does not override your applicable rights.",
         "Legal Obligations: When we must process or retain information to comply with applicable laws.",
@@ -478,7 +478,7 @@ export const privacyDocument: LegalDocument = {
       paragraphs: [
         "Our website may use essential cookies or similar technologies to support its basic functions. Analytics or other optional cookies may also be used if those tools are enabled.",
         "You can manage cookies through your browser settings. Disabling certain cookies may affect how parts of the website function.",
-        "Where required, we will seek consent before using non-essential cookies.",
+        "Where required, we will seek consent before using non essential cookies.",
       ],
     },
     {
@@ -551,7 +551,7 @@ export const privacyDocument: LegalDocument = {
       id: "contact-privacy",
       title: "Get in Touch About Privacy",
       paragraphs: [
-        "If you have questions about this policy or want to make a privacy-related request, contact our team.",
+        "If you have questions about this policy or want to make a privacy related request, contact our team.",
       ],
       bullets: [
         "Email: Waseem@mahraj.com",

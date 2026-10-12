@@ -1,8 +1,6 @@
 import { getArabiaCategories } from "@/content/arabia-posts";
-import { toId } from "@/lib/db/ids";
-import { getModels } from "@/lib/db/models";
-import { loadMediaMap, resolveMediaUrl } from "@/lib/public/media";
 import {
+  countBlogPostsForCategory,
   isSupabaseContentEnabled,
   listBlogCategories,
 } from "@/lib/supabase/content";
@@ -17,47 +15,25 @@ export type BlogCategory = {
 };
 
 export async function getCategories(): Promise<BlogCategory[]> {
+  if (!isSupabaseContentEnabled()) return getArabiaCategories();
+
   try {
-    const { Post } = await getModels();
-    const counts = await Post.aggregate<{ _id: unknown; total: number }>([
-      { $match: { _status: "published" } },
-      { $group: { _id: "$category", total: { $sum: 1 } } },
-    ]);
-    const countById = new Map(
-      counts.map((row) => [toId(row._id), row.total] as const)
+    const categories = await listBlogCategories();
+    if (categories.length === 0) return getArabiaCategories();
+
+    const counts = await Promise.all(
+      categories.map(async (category) => [category.id, await countBlogPostsForCategory(category.id)] as const)
     );
+    const countById = new Map(counts);
 
-    if (isSupabaseContentEnabled()) {
-      const categories = await listBlogCategories();
-      if (categories.length === 0) return getArabiaCategories();
-
-      return categories.map((category) => ({
-        id: category.id,
-        title: category.title,
-        slug: category.slug,
-        subtitle: category.subtitle,
-        image: category.imageUrl || "/images/profile/modular-office-complex.jpg",
-        postCount: countById.get(category.id) ?? 0,
-      }));
-    }
-
-    const { Category } = await getModels();
-    const docs = await Category.find().sort({ title: 1 }).limit(100).lean();
-    if (docs.length === 0) return getArabiaCategories();
-
-    const media = await loadMediaMap(docs.map((doc) => toId(doc.image)));
-
-    return docs.map((doc) => {
-      const image = resolveMediaUrl(media.get(toId(doc.image)) ?? null, "card");
-      return {
-        id: toId(doc._id),
-        title: typeof doc.title === "string" ? doc.title : "",
-        slug: typeof doc.slug === "string" ? doc.slug : "",
-        subtitle: typeof doc.subtitle === "string" ? doc.subtitle : "",
-        image: image.url,
-        postCount: countById.get(toId(doc._id)) ?? 0,
-      };
-    });
+    return categories.map((category) => ({
+      id: category.id,
+      title: category.title,
+      slug: category.slug,
+      subtitle: category.subtitle,
+      image: category.imageUrl || "/images/profile/modular-office-complex.jpg",
+      postCount: countById.get(category.id) ?? 0,
+    }));
   } catch {
     return getArabiaCategories();
   }

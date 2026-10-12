@@ -1,20 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { ComingSoon } from "@/components/layout/coming-soon";
-import { PageHero } from "@/components/layout/page-hero";
+import { BlogArticleBody } from "@/components/blog/blog-article";
 import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
+import { Section } from "@/components/layout/section";
 import { ServiceHero } from "@/components/services/service-hero";
 import {
   ExploreServices,
-  ServiceGuide,
-  ServiceOverview,
-} from "@/components/services/service-overview";
-import {
-  PerformanceMatrix,
   ServiceCaseStudies,
-} from "@/components/services/service-performance";
-import { OngoingProjects, ServiceProcess, SpaceRequirements } from "@/components/services/service-support";
+  ServiceGuide,
+} from "@/components/services/service-overview";
 import {
   getServiceBySlug,
   getServiceSlugs,
@@ -30,12 +25,12 @@ export async function generateMetadata({
 }: PageProps<"/services/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
-
   if (!service) return {};
 
   return {
-    title: service.seoTitle,
-    description: service.seoDescription,
+    title: service.seoTitle || service.title,
+    description: service.seoDescription || service.excerpt,
+    keywords: service.focusKeyword || undefined,
   };
 }
 
@@ -44,55 +39,68 @@ export default async function ServiceDetailPage({
 }: PageProps<"/services/[slug]">) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
-
   if (!service) notFound();
 
-  if (service.detailReady) {
-    return (
-      <>
-        <ServiceHero service={service} />
-        {service.related.length > 0 ? (
-          <ExploreServices service={service} related={service.related} />
-        ) : null}
-        {service.overviewTitle || service.overviewDescription ? (
-          <ServiceOverview service={service} />
-        ) : null}
-        {service.applications.length > 0 || service.guideTitle || service.guideDescription ? (
-          <ServiceGuide service={service} />
-        ) : null}
-        {service.showPerformanceMatrix && service.performanceRows.length > 0 ? (
-          <PerformanceMatrix service={service} />
-        ) : null}
-        {service.caseStudiesTitle || service.caseStudiesDescription ? (
-          <ServiceCaseStudies service={service} />
-        ) : null}
-        {service.showSpaceRequirements && service.spaceRows.length > 0 ? (
-          <SpaceRequirements service={service} />
-        ) : null}
-        {service.projectsTitle || service.projectsDescription ? (
-          <OngoingProjects service={service} />
-        ) : null}
-        {service.showProcess &&
-        (service.processTitle || service.processDescription || service.processSteps.length > 0) ? (
-          <ServiceProcess service={service} />
-        ) : null}
-        <TechnicalFaqForm
-          formIdPrefix={`service-${service.slug}`}
-          faqs={service.faqs}
-          faqIntro={service.faqIntro}
-        />
-      </>
-    );
-  }
+  const faqJsonLd =
+    service.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: service.faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer,
+            },
+          })),
+        }
+      : null;
 
   return (
     <>
-      <PageHero
-        title={service.title}
-        description={service.excerpt}
-        breadcrumb={[{ label: "Services", href: "/services" }]}
-      />
-      <ComingSoon note="More detail for this service is being prepared." />
+      {faqJsonLd ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      ) : null}
+
+      <ServiceHero service={service} />
+
+      <ServiceGuide service={service} />
+
+      <ServiceCaseStudies service={service} />
+
+      <Section>
+        <article className="w-full rounded-md border border-border bg-background p-6 sm:p-8 lg:p-10">
+          {service.tags.length > 0 ? (
+            <ul className="mb-6 flex flex-wrap gap-2">
+              {service.tags.map((tag) => (
+                <li
+                  key={tag}
+                  className="rounded-full border border-border bg-surface-alt px-3 py-1 text-xs font-medium text-body"
+                >
+                  {tag}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          <BlogArticleBody data={service.content} mediaById={{}} fullWidth />
+        </article>
+      </Section>
+
+      {service.related.length > 0 ? (
+        <ExploreServices service={service} related={service.related} />
+      ) : null}
+
+      {service.faqs.length > 0 ? (
+        <TechnicalFaqForm
+          formIdPrefix={`service-${service.slug}`}
+          faqs={service.faqs}
+          faqIntro="Planning your project."
+        />
+      ) : null}
     </>
   );
 }

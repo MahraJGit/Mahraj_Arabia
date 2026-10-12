@@ -20,20 +20,17 @@ export default async function ServicesPage({
   const q = first(params.q);
   const status = first(params.status);
   const group = first(params.group);
-  const ready = first(params.ready);
   const page = Number(first(params.page) ?? "1") || 1;
   const saved = first(params.saved);
   const statusFilter = status === "draft" || status === "published" ? status : "all";
-  const readyFilter = ready === "ready" || ready === "soon" ? ready : "all";
-  const filtered = Boolean(q || status || group || ready);
-  const ordering = Boolean(group) && !q && statusFilter === "all" && readyFilter === "all";
+  const filtered = Boolean(q || status || group);
+  const ordering = Boolean(group) && !q && statusFilter === "all";
 
   const [result, groups] = await Promise.all([
     listServices({
       q,
       status: statusFilter,
       group,
-      ready: readyFilter,
       sort: "position",
       page: ordering ? 1 : page,
       limit: ordering ? 200 : 25,
@@ -47,7 +44,7 @@ export default async function ServicesPage({
     <>
       <AdminPageHeader
         title="Services"
-        description="Services are the links on the right of the Services menu, inside the family you choose."
+        description="Manage solution pages shown in the Services menu and on the public website."
         action={
           <Button asChild>
             <Link href="/admin/services/new">
@@ -61,11 +58,10 @@ export default async function ServicesPage({
       <MenuGuide focus="services" />
       <div className="mb-4">
         <ServiceFilters
-          key={[q, status, group, ready].join("|")}
+          key={[q, status, group].join("|")}
           q={q}
           status={statusFilter}
           group={group || "all"}
-          ready={readyFilter}
           groups={groups}
           filtered={filtered}
         />
@@ -117,7 +113,7 @@ export default async function ServicesPage({
           <ServicesPagination
             page={result.page}
             pageCount={result.pageCount}
-            hrefFor={(next) => listingHref({ q, status, group, ready }, next)}
+            hrefFor={(next) => listingHref({ q, status, group }, next)}
           />
         </>
       )}
@@ -165,14 +161,13 @@ function ServicesPagination({
 }
 
 function listingHref(
-  current: { q?: string; status?: string; group?: string; ready?: string },
+  current: { q?: string; status?: string; group?: string },
   page: number
 ) {
   const params = new URLSearchParams();
   if (current.q) params.set("q", current.q);
   if (current.status === "draft" || current.status === "published") params.set("status", current.status);
   if (current.group) params.set("group", current.group);
-  if (current.ready === "ready" || current.ready === "soon") params.set("ready", current.ready);
   if (page > 1) params.set("page", String(page));
   const qs = params.toString();
   return qs ? `/admin/services?${qs}` : "/admin/services";

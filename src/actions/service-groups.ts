@@ -6,14 +6,9 @@ import { isDemoMode } from "@/lib/auth/demo";
 import { demoWriteBlockedMessage } from "@/lib/cms/demo-data";
 import { revalidateServicePaths } from "@/lib/cms/revalidate";
 import { requireServiceEditor } from "@/lib/cms/permissions";
-import { swapAdjacentSortOrder } from "@/lib/cms/reorder";
 import { slugify } from "@/lib/cms/slug";
-import { asObjectId, isContentId, isObjectId, toId } from "@/lib/db/ids";
-import { getModels } from "@/lib/db/models";
-import {
-  countServicesInGroup,
-  nextSortOrder,
-} from "@/lib/services/queries";
+import { isUuid } from "@/lib/db/ids";
+import { countServicesInGroup, nextSortOrder } from "@/lib/services/queries";
 import {
   deleteServiceFamily,
   findServiceFamilyBySlug,
@@ -33,21 +28,6 @@ export type ActionResult = {
   href?: string;
 };
 
-async function assertUniqueGroupSlug(slug: string, excludeId?: string) {
-  if (isSupabaseContentEnabled()) {
-    const existing = await findServiceFamilyBySlug(slug, excludeId);
-    return !existing;
-  }
-
-  const { MainService } = await getModels();
-  const filter: Record<string, unknown> = { slug };
-  if (excludeId && isObjectId(excludeId)) {
-    filter._id = { $ne: asObjectId(excludeId) };
-  }
-  const existing = await MainService.findOne(filter).select("_id").lean();
-  return !existing;
-}
-
 function parseGroupForm(formData: FormData) {
   const title = String(formData.get("title") ?? "");
   const slugRaw = String(formData.get("slug") ?? "");
@@ -61,29 +41,24 @@ function parseGroupForm(formData: FormData) {
   });
 }
 
-function isDuplicateKey(error: unknown) {
-  return Boolean(
-    error &&
-      typeof error === "object" &&
-      "code" in error &&
-      (error as { code?: number }).code === 11000
-  );
-}
-
 export async function saveServiceGroup(
   id: string | null,
   formData: FormData
 ): Promise<ActionResult> {
   await requireServiceEditor();
   if (isDemoMode()) return { error: demoWriteBlockedMessage()! };
+  if (!isSupabaseContentEnabled()) {
+    return { error: "Supabase is not configured. Connect Supabase to manage service families." };
+  }
+
   const parsed = parseGroupForm(formData);
   if (!parsed.success) {
     return { fieldErrors: flattenZod(parsed.error) };
   }
 
   const data = parsed.data;
-  const unique = await assertUniqueGroupSlug(data.slug, id ?? undefined);
-  if (!unique) {
+  const duplicate = await findServiceFamilyBySlug(data.slug, id ?? undefined);
+  if (duplicate) {
     return {
       fieldErrors: {
         slug: "This URL slug is already used by another service group.",
@@ -106,70 +81,31 @@ export async function saveServiceGroup(
   };
 
   let savedId = id;
-
-  if (isSupabaseContentEnabled()) {
-    if (id) {
-      if (!isContentId(id)) {
-        return { error: "This service group could not be found." };
-      }
-      const result = await updateServiceFamily(id, payload);
-      if (result.duplicateSlug) {
-        return {
-          fieldErrors: {
-            slug: "This URL slug is already used by another service group.",
-          },
-        };
-      }
-      if (!result.ok) {
-        return { error: "This service group could not be found." };
-      }
-    } else {
-      const created = await insertServiceFamily(payload);
-      if (created.duplicateSlug) {
-        return {
-          fieldErrors: {
-            slug: "This URL slug is already used by another service group.",
-          },
-        };
-      }
-      savedId = created.id;
+  if (id) {
+    if (!isUuid(id)) {
+      return { error: "This service group could not be found." };
+    }
+    const result = await updateServiceFamily(id, payload);
+    if (result.duplicateSlug) {
+      return {
+        fieldErrors: {
+          slug: "This URL slug is already used by another service group.",
+        },
+      };
+    }
+    if (!result.ok) {
+      return { error: "This service group could not be found." };
     }
   } else {
-    const { MainService } = await getModels();
-    const mongoPayload = {
-      title: payload.title,
-      slug: payload.slug,
-      menuDescription: payload.menuDescription,
-      sortOrder: payload.sortOrder,
-      showInMegaMenu: payload.showInMegaMenu,
-      _status: payload.status,
-    };
-
-    try {
-      if (id) {
-        if (!isObjectId(id)) {
-          return { error: "This service group could not be found." };
-        }
-        const updated = await MainService.findByIdAndUpdate(
-          id,
-          { $set: mongoPayload },
-          { new: true }
-        );
-        if (!updated) return { error: "This service group could not be found." };
-      } else {
-        const created = await MainService.create(mongoPayload);
-        savedId = toId(created._id);
-      }
-    } catch (error) {
-      if (isDuplicateKey(error)) {
-        return {
-          fieldErrors: {
-            slug: "This URL slug is already used by another service group.",
-          },
-        };
-      }
-      throw error;
+    const created = await insertServiceFamily(payload);
+    if (created.duplicateSlug) {
+      return {
+        fieldErrors: {
+          slug: "This URL slug is already used by another service group.",
+        },
+      };
     }
+    savedId = created.id;
   }
 
   await revalidateServicePaths();
@@ -183,7 +119,8 @@ export async function saveServiceGroup(
 export async function deleteServiceGroup(id: string): Promise<ActionResult> {
   await requireServiceEditor();
   if (isDemoMode()) return { error: demoWriteBlockedMessage()! };
-  if (!isContentId(id)) return { error: "This service group could not be found." };
+  if (!isSupabaseContentEnabled()) return { error: "Supabase is not configured." };
+  if (!isUuid(id)) return { error: "This service group could not be found." };
 
   const childCount = await countServicesInGroup(id);
   if (childCount > 0) {
@@ -192,14 +129,7 @@ export async function deleteServiceGroup(id: string): Promise<ActionResult> {
     };
   }
 
-  if (isSupabaseContentEnabled()) {
-    await deleteServiceFamily(id);
-  } else {
-    if (!isObjectId(id)) return { error: "This service group could not be found." };
-    const { MainService } = await getModels();
-    await MainService.deleteOne({ _id: asObjectId(id) });
-  }
-
+  await deleteServiceFamily(id);
   await revalidateServicePaths();
   revalidatePath("/admin/service-groups");
   return { href: "/admin/service-groups?saved=deleted" };
@@ -208,49 +138,26 @@ export async function deleteServiceGroup(id: string): Promise<ActionResult> {
 export async function reorderServiceGroups(orderedIds: string[]): Promise<ActionResult> {
   await requireServiceEditor();
   if (isDemoMode()) return { error: demoWriteBlockedMessage()! };
+  if (!isSupabaseContentEnabled()) return { error: "Supabase is not configured." };
   if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
     return { error: "The menu order could not be saved." };
   }
-  if (orderedIds.some((id) => !isContentId(id))) {
+  if (orderedIds.some((id) => !isUuid(id))) {
     return { error: "The menu order could not be saved." };
   }
   if (new Set(orderedIds).size !== orderedIds.length) {
     return { error: "The menu order could not be saved." };
   }
 
-  if (isSupabaseContentEnabled()) {
-    const existing = await listServiceFamilies();
-    const existingIds = new Set(existing.map((family) => family.id));
-    const matches =
-      existingIds.size === orderedIds.length &&
-      orderedIds.every((id) => existingIds.has(id));
-    if (!matches) {
-      return { error: "The group list changed. Refresh the page and try again." };
-    }
-    await reorderServiceFamilies(orderedIds);
-  } else {
-    if (orderedIds.some((id) => !isObjectId(id))) {
-      return { error: "The menu order could not be saved." };
-    }
-    const { MainService } = await getModels();
-    const existing = await MainService.find().select("_id").lean();
-    const existingIds = new Set(existing.map((doc) => toId(doc._id)));
-    const matches =
-      existingIds.size === orderedIds.length &&
-      orderedIds.every((id) => existingIds.has(id));
-    if (!matches) {
-      return { error: "The group list changed. Refresh the page and try again." };
-    }
-
-    await Promise.all(
-      orderedIds.map((id, index) =>
-        MainService.updateOne(
-          { _id: asObjectId(id) },
-          { $set: { sortOrder: (index + 1) * 10 } }
-        )
-      )
-    );
+  const existing = await listServiceFamilies();
+  const existingIds = new Set(existing.map((family) => family.id));
+  const matches =
+    existingIds.size === orderedIds.length &&
+    orderedIds.every((id) => existingIds.has(id));
+  if (!matches) {
+    return { error: "The group list changed. Refresh the page and try again." };
   }
+  await reorderServiceFamilies(orderedIds);
 
   await revalidateServicePaths();
   revalidatePath("/admin/service-groups");
@@ -263,18 +170,11 @@ export async function moveServiceGroup(
 ): Promise<ActionResult> {
   await requireServiceEditor();
   if (isDemoMode()) return { error: demoWriteBlockedMessage()! };
-  if (!isContentId(id)) return { error: "This service group could not be found." };
+  if (!isSupabaseContentEnabled()) return { error: "Supabase is not configured." };
+  if (!isUuid(id)) return { error: "This service group could not be found." };
 
-  if (isSupabaseContentEnabled()) {
-    const result = await moveServiceFamily(id, direction);
-    if (!result.moved) return {};
-  } else {
-    if (!isObjectId(id)) return { error: "This service group could not be found." };
-    const { MainService } = await getModels();
-    const result = await swapAdjacentSortOrder(MainService, id, direction);
-    if (result.error) return { error: result.error };
-    if (!result.moved) return {};
-  }
+  const result = await moveServiceFamily(id, direction);
+  if (!result.moved) return {};
 
   await revalidateServicePaths();
   revalidatePath("/admin/service-groups");

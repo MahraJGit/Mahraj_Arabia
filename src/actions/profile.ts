@@ -5,10 +5,7 @@ import { revalidatePath } from "next/cache";
 import { requireUser } from "@/actions/auth";
 import { isDemoMode } from "@/lib/auth/demo";
 import { demoWriteBlockedMessage } from "@/lib/cms/demo-data";
-import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
-import { asObjectId, isObjectId } from "@/lib/db/ids";
-import { getModels } from "@/lib/db/models";
 import {
   changeAdminPassword,
   isSupabaseAdminEnabled,
@@ -32,10 +29,6 @@ export type PasswordState = {
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function escapeRegex(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
 
 export async function updateProfile(
   _prev: ProfileState,
@@ -75,49 +68,28 @@ export async function updateProfile(
     };
   }
 
-  if (isSupabaseAdminEnabled()) {
-    const result = await updateAdminProfile({
-      userId: user.id,
-      name,
-      email,
-      role: user.role,
-    });
-    if (result.error) {
-      return {
-        error: result.error,
-        field: result.field ?? null,
-        success: null,
-        savedAt: null,
-      };
-    }
-  } else {
-    if (!isObjectId(user.id)) {
-      return {
-        error: "Your account could not be found.",
-        field: null,
-        success: null,
-        savedAt: null,
-      };
-    }
+  if (!isSupabaseAdminEnabled()) {
+    return {
+      error: "Supabase is not configured for profile updates.",
+      field: null,
+      success: null,
+      savedAt: null,
+    };
+  }
 
-    const { User } = await getModels();
-    const taken = await User.findOne({
-      _id: { $ne: asObjectId(user.id) },
-      email: { $regex: `^${escapeRegex(email)}$`, $options: "i" },
-    })
-      .select("_id")
-      .lean();
-
-    if (taken) {
-      return {
-        error: "Another account already uses this email.",
-        field: "email",
-        success: null,
-        savedAt: null,
-      };
-    }
-
-    await User.updateOne({ _id: asObjectId(user.id) }, { $set: { name, email } });
+  const result = await updateAdminProfile({
+    userId: user.id,
+    name,
+    email,
+    role: user.role,
+  });
+  if (result.error) {
+    return {
+      error: result.error,
+      field: result.field ?? null,
+      success: null,
+      savedAt: null,
+    };
   }
 
   await createSession({
@@ -193,68 +165,29 @@ export async function changePassword(
     };
   }
 
-  if (isSupabaseAdminEnabled()) {
-    const result = await changeAdminPassword({
-      email: user.email,
-      currentPassword,
-      newPassword,
-      userId: user.id,
-    });
-    if (result.error) {
-      return {
-        error: result.error,
-        field: result.field ?? null,
-        success: null,
-        savedAt: null,
-      };
-    }
-
+  if (!isSupabaseAdminEnabled()) {
     return {
-      error: null,
-      field: null,
-      success: "Password changed.",
-      savedAt: Date.now(),
-    };
-  }
-
-  if (!isObjectId(user.id)) {
-    return {
-      error: "Your account could not be found.",
+      error: "Supabase is not configured for password changes.",
       field: null,
       success: null,
       savedAt: null,
     };
   }
 
-  const { User } = await getModels();
-  const doc = await User.findById(asObjectId(user.id)).select("hash salt").lean();
-  const verified = await verifyPassword({
-    password: currentPassword,
-    hash: typeof doc?.hash === "string" ? doc.hash : null,
-    salt: typeof doc?.salt === "string" ? doc.salt : null,
+  const result = await changeAdminPassword({
+    email: user.email,
+    currentPassword,
+    newPassword,
+    userId: user.id,
   });
-
-  if (!verified) {
+  if (result.error) {
     return {
-      error: "Current password is incorrect.",
-      field: "current",
+      error: result.error,
+      field: result.field ?? null,
       success: null,
       savedAt: null,
     };
   }
-
-  const next = await hashPassword(newPassword);
-  await User.updateOne(
-    { _id: asObjectId(user.id) },
-    {
-      $set: {
-        hash: next.hash,
-        salt: next.salt,
-        loginAttempts: 0,
-        lockUntil: null,
-      },
-    }
-  );
 
   return {
     error: null,

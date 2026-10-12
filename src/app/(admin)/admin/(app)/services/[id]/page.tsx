@@ -4,7 +4,7 @@ import { SavedBanner } from "@/components/admin/field";
 import { AdminPageHeader } from "@/components/admin/page-chrome";
 import { ServiceForm } from "@/components/admin/service-form";
 import { requireUser } from "@/actions/auth";
-import { getService, listGroupOptions, listServiceOptions } from "@/lib/services/queries";
+import { getService, listGroupOptions } from "@/lib/services/queries";
 
 export default async function EditServicePage({
   params,
@@ -19,10 +19,7 @@ export default async function EditServicePage({
   const service = await getService(id);
   if (!service) notFound();
 
-  const [groups, relatedOptions] = await Promise.all([
-    listGroupOptions(),
-    listServiceOptions(service.id),
-  ]);
+  const groups = await listGroupOptions();
 
   return (
     <>
@@ -35,7 +32,7 @@ export default async function EditServicePage({
         }
       />
       <SavedBanner value={Array.isArray(saved) ? saved[0] : saved} />
-      <ServiceForm service={service} groups={groups} relatedOptions={relatedOptions} />
+      <ServiceForm service={service} groups={groups} />
     </>
   );
 }

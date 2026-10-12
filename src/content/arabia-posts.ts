@@ -163,7 +163,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
       ),
       h2("Technical preferences"),
       ul(
-        "Single or multi-room layouts",
+        "Single or multi room layouts",
         "Insulation, glazing and finish level",
         "Electrical, HVAC, plumbing and data preparation",
         "Furniture, partitions and storage needs"
@@ -173,7 +173,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
         "Note site access constraints, working hours, crane availability and whether installation should be included. Coordinated delivery is part of how we keep Saudi project programmes moving."
       ),
       quote(
-        "A one-page brief with dimensions and photos is often enough for a practical first quotation."
+        "A one page brief with dimensions and photos is often enough for a practical first quotation."
       )
     ),
   },
@@ -199,7 +199,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
       ),
       h2("Climate and finish"),
       ul(
-        "UV-stable fabric or solid cladding",
+        "UV stable fabric or solid cladding",
         "Galvanized or coated steel for long service life",
         "Drainage and runoff away from walkways",
         "Lighting and camera mounting if required"
@@ -215,7 +215,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
     slug: "police-barriers-for-events-and-road-control",
     title: "Police Barriers for Events and Road Control",
     excerpt:
-      "When heavy-duty steel police barriers are the right choice for perimeter control in Saudi Arabia.",
+      "When heavy duty steel police barriers are the right choice for perimeter control in Saudi Arabia.",
     image: "/images/profile/site-compound-fencing.jpg",
     categoryId: "arabia-cat-fencing",
     author: "By Mahraj Arabia Team",
@@ -224,14 +224,14 @@ const arabiaPostInputs: ArabiaPostInput[] = [
     featured: true,
     content: article(
       p(
-        "Police barriers are built for crowd direction, road closures and temporary perimeter control. Mahraj Arabia supplies heavy-duty steel sections that interlock quickly for government events, civic functions and active project sites."
+        "Police barriers are built for crowd direction, road closures and temporary perimeter control. Mahraj Arabia supplies heavy duty steel sections that interlock quickly for government events, civic functions and active project sites."
       ),
       h2("Where police barriers work best"),
       ul(
         "Road closures and traffic diversion",
         "Government and public events",
         "Queue and crowd management",
-        "Short-term site or compound boundaries"
+        "Short term site or compound boundaries"
       ),
       h2("What to specify"),
       p(
@@ -274,7 +274,7 @@ const arabiaPostInputs: ArabiaPostInput[] = [
       ),
       h2("Corrugated fence"),
       p(
-        "Corrugated steel fencing creates a solid boundary for privacy, dust control and branded hoarding. It suits longer-running construction fronts and sites next to roads or occupied buildings."
+        "Corrugated steel fencing creates a solid boundary for privacy, dust control and branded hoarding. It suits longer running construction fronts and sites next to roads or occupied buildings."
       ),
       ul(
         "Solid sheet privacy screening",
@@ -413,20 +413,14 @@ function toPublicPost(input: ArabiaPostInput): PublicPost {
     excerpt: input.excerpt,
     content: input.content,
     coverImage: {
-      id: `${input.id}-cover`,
       url: input.image,
       alt: input.title,
-      caption: "",
-      filename: "",
-      mimeType: "image/jpeg",
-      width: null,
-      height: null,
-      focalX: null,
-      focalY: null,
-      sizes: {},
     },
     seoTitle: `${input.title} | Mahraj Arabia`,
     seoDescription: input.excerpt,
+    focusKeyword: "",
+    tags: [],
+    faqs: [],
     category: category
       ? { id: category.id, title: category.title, slug: category.slug }
       : null,

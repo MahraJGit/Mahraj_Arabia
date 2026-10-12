@@ -125,43 +125,12 @@ export function getDemoService(id: string) {
       icon: app.icon,
       points: app.points.map((label) => ({ label })),
     })),
-    showPerformanceMatrix: false,
-    performanceTitle: "",
-    performanceDescription: "",
-    performanceLabels: [] as string[],
-    performanceRows: [] as {
-      useCase: string;
-      recommended: string;
-      forceReduction: string;
-    }[],
-    density: "",
-    warranty: "",
-    brandingTitle: "",
-    brandingDescription: "",
-    brandColorLabel: "",
-    brandColors: [] as { hex: string; selected: boolean }[],
-    showSpaceRequirements: false,
-    spaceTitle: "",
-    spaceDescription: "",
-    spaceLabels: [] as string[],
-    spaceRows: [] as {
-      useCase: string;
-      recommended: string;
-      impact: string;
-      slip: string;
-      acoustic: string;
-      maintenance: string;
-    }[],
     showProcess: true,
     processTitle: service.processTitle,
     processDescription: service.processDescription,
     processSteps: service.processSteps.map((step) => ({ label: step.label })),
     faqIntro: service.faqIntro,
     faqs: service.faqs,
-    caseStudiesTitle: "",
-    caseStudiesDescription: "",
-    projectsTitle: "",
-    projectsDescription: "",
     seoTitle: service.seoTitle,
     seoDescription: service.seoDescription,
     status: "published" as PublishStatus,
@@ -248,7 +217,7 @@ export function getDemoPost(id: string) {
     slug: post.slug,
     excerpt:
       post.id === "demo-post-3"
-        ? "When heavy-duty steel police barriers are the right choice for perimeter control in Saudi Arabia."
+        ? "When heavy duty steel police barriers are the right choice for perimeter control in Saudi Arabia."
         : post.id === "demo-post-4"
           ? "A practical comparison of temporary mesh panels and corrugated steel hoarding for Saudi projects."
           : post.id === "demo-post-5"

@@ -20,7 +20,7 @@ export const solutionStories = [
       "Modular offices and meeting rooms configured for teams, visitors and programme milestones.",
     points: [
       "Meeting and workspace layouts",
-      "Visitor-ready configurations",
+      "Visitor ready configurations",
       "Services prepared for handover",
     ],
     image: "/images/profile/modular-meeting-room.png",
@@ -33,7 +33,7 @@ export const solutionStories = [
     description:
       "Ablution and sanitary units that keep welfare standards practical on active sites.",
     points: [
-      "Welfare-ready sanitary units",
+      "Welfare ready sanitary units",
       "Compact site footprints",
       "Simple install and relocation",
     ],
@@ -89,9 +89,9 @@ export const solutionStories = [
     description:
       "Custom steel fabrication shaped around drawings, loads and site interfaces.",
     points: [
-      "Drawing-led fabrication",
+      "Drawing led fabrication",
       "Load and interface checks",
-      "Workshop-controlled quality",
+      "Workshop controlled quality",
     ],
     image: "/images/profile/steel-fabrication-workshop.jpg",
     href: "/services/custom-steel-fabrication",

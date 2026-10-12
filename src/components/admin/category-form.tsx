@@ -13,7 +13,17 @@ import type { CategoryRecord } from "@/lib/blog/queries";
 import type { CategoryInput } from "@/lib/validation/category";
 
 function emptyCategory(): CategoryInput {
-  return { title: "", slug: "", subtitle: "", image: "" };
+  return {
+    title: "",
+    slug: "",
+    subtitle: "",
+    image: "",
+    imageUrl: "",
+    imageAlt: "",
+    imageFilename: "",
+    imageWidth: null,
+    imageHeight: null,
+  };
 }
 
 function fromRecord(category: CategoryRecord): CategoryInput {
@@ -22,6 +32,11 @@ function fromRecord(category: CategoryRecord): CategoryInput {
     slug: category.slug,
     subtitle: category.subtitle,
     image: category.image,
+    imageUrl: category.imageUrl,
+    imageAlt: category.imageAlt,
+    imageFilename: category.imageFilename,
+    imageWidth: category.imageWidth,
+    imageHeight: category.imageHeight,
   };
 }
 
@@ -69,6 +84,11 @@ export function CategoryForm({
     const payload: CategoryInput = {
       ...values,
       slug: slugLocked ? values.slug : generated,
+      imageUrl: imagePreview.url,
+      imageAlt: imagePreview.alt,
+      imageFilename: imagePreview.filename,
+      imageWidth: imagePreview.width,
+      imageHeight: imagePreview.height,
     };
     start(async () => {
       setError(null);

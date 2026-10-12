@@ -1,4 +1,5 @@
-import type { ServiceDetailView } from "@/lib/public/services";
+import type { ServiceCaseStudy, ServiceDetailView } from "@/lib/public/services";
+import { emptyLexicalDoc } from "@/lib/cms/lexical";
 
 const SHARED_FAQS = [
   {
@@ -13,17 +14,16 @@ const SHARED_FAQS = [
   },
   {
     question: "Can delivery and installation be included?",
-    answer:
-      "Yes, subject to site access, logistics and the agreed scope.",
+    answer: "Yes, subject to site access, logistics and the agreed scope.",
   },
 ] as const;
 
-const PROCESS_STEPS = [
-  { label: "Understand" },
-  { label: "Configure" },
-  { label: "Fabricate" },
-  { label: "Install" },
-] as const;
+type ArabiaHighlight = {
+  title: string;
+  description: string;
+  icon: string;
+  points: string[];
+};
 
 type ArabiaServiceInput = {
   id: string;
@@ -31,18 +31,17 @@ type ArabiaServiceInput = {
   title: string;
   excerpt: string;
   image: string;
-  heroTitle: string;
-  heroDescription: string;
-  applications: {
-    title: string;
-    description: string;
-    icon: string;
-    points: string[];
-  }[];
+  highlightsTitle?: string;
+  highlightsDescription?: string;
+  highlights?: ArabiaHighlight[];
+  caseStudiesTitle?: string;
+  caseStudiesDescription?: string;
+  caseStudies?: ServiceCaseStudy[];
 };
 
 function buildService(input: ArabiaServiceInput): ServiceDetailView {
   const href = `/services/${input.slug}`;
+  const highlights = input.highlights ?? [];
 
   return {
     id: input.id,
@@ -54,48 +53,32 @@ function buildService(input: ArabiaServiceInput): ServiceDetailView {
     href,
     parentId: null,
     parentTitle: null,
-    detailReady: true,
-    heroTitle: input.heroTitle,
-    heroDescription: input.heroDescription,
-    overviewTitle: `${input.title}: planned around your brief`,
-    overviewDescription:
-      "Clear design, dependable fabrication and coordinated delivery from first requirement through site handover.",
-    overviewImage: input.image,
-    guideTitle: `The ${input.title} Guide`,
-    guideDescription:
-      "Practical options shaped around how the solution will be used on site.",
-    applications: input.applications,
-    showPerformanceMatrix: false,
-    performanceTitle: "",
-    performanceDescription: "",
-    performanceLabels: [],
-    performanceRows: [],
-    density: "",
-    warranty: "",
-    brandingTitle: "",
-    brandingDescription: "",
-    brandColorLabel: "",
-    brandColors: [],
-    showSpaceRequirements: false,
-    spaceTitle: "",
-    spaceDescription: "",
-    spaceLabels: [],
-    spaceRows: [],
-    showProcess: true,
-    processTitle: "From requirements to installation.",
-    processDescription:
-      "Our experienced team develops practical designs, delivers quality fabrication and coordinates reliable installation tailored to each project.",
-    processSteps: [...PROCESS_STEPS],
-    faqIntro: "Planning your project.",
+    content: emptyLexicalDoc(),
+    tags: [],
     faqs: SHARED_FAQS.map((faq) => ({ ...faq })),
-    caseStudiesTitle: "",
-    caseStudiesDescription: "",
-    projectsTitle: "",
-    projectsDescription: "",
+    focusKeyword: "",
     related: [],
     siblings: [],
     seoTitle: `${input.title} in Riyadh`,
     seoDescription: input.excerpt,
+    detailReady: true,
+    heroTitle: input.title,
+    heroDescription: input.excerpt,
+    overviewTitle: "",
+    overviewDescription: "",
+    overviewImage: input.image,
+    guideTitle: input.highlightsTitle || (highlights.length ? "Key highlights" : ""),
+    guideDescription: input.highlightsDescription || "",
+    applications: highlights,
+    caseStudiesTitle:
+      input.caseStudiesTitle || (input.caseStudies?.length ? "Case studies" : ""),
+    caseStudiesDescription: input.caseStudiesDescription || "",
+    caseStudies: input.caseStudies ?? [],
+    showProcess: false,
+    processTitle: "",
+    processDescription: "",
+    processSteps: [],
+    faqIntro: "",
   };
 }
 
@@ -104,34 +87,61 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     id: "porta-cabins-site-offices",
     slug: "porta-cabins-site-offices",
     title: "Porta Cabins & Site Offices",
-    excerpt:
-      "Site-ready offices, security cabins, accommodation and storage spaces.",
+    excerpt: "Site ready offices, security cabins, accommodation and storage spaces.",
     image: "/images/profile/porta-cabin-site-office.png",
-    heroTitle: "Site-ready offices, security cabins, accommodation and storage spaces.",
-    heroDescription:
-      "Portable site facilities planned around access, utilities and your project programme.",
-    applications: [
+    highlightsTitle: "Key highlights",
+    highlightsDescription:
+      "Practical advantages for site offices, welfare units and temporary workplace setups.",
+    highlights: [
       {
-        title: "Where this solution works",
-        description: "Practical portable buildings for active project sites.",
-        icon: "home",
-        points: [
-          "Project site offices",
-          "Security and gate cabins",
-          "Storage and utility rooms",
-          "Staff accommodation",
-        ],
+        title: "Site-ready delivery",
+        description:
+          "Units arrive prepared for rapid placement with clear access and utility connection points.",
+        icon: "zap",
+        points: ["Fast mobilisation", "Clear site access planning", "Ready for temporary power"],
       },
       {
-        title: "Planned around your brief",
-        description: "Layouts and services shaped to the intended use.",
+        title: "Flexible layouts",
+        description:
+          "Configure offices, meeting rooms, security cabins and storage to match your site programme.",
         icon: "layers",
-        points: [
-          "Single or multi-room layouts",
-          "Insulated wall and roof panels",
-          "Electrical, HVAC and lighting preparation",
-          "Tailored finishes and storage",
-        ],
+        points: ["Single or linked units", "Multiple room options", "Scalable as works grow"],
+      },
+      {
+        title: "Built for site conditions",
+        description:
+          "Robust construction suited to Saudi project environments and everyday site use.",
+        icon: "shield",
+        points: ["Durable finishes", "Secure entry options", "Low-maintenance operation"],
+      },
+    ],
+    caseStudiesTitle: "From concept to completion",
+    caseStudiesDescription:
+      "Examples of how porta cabins and site offices support real project requirements.",
+    caseStudies: [
+      {
+        title: "Porta Cabins & Site Offices",
+        imageUrl: "/images/projects/porta-cabins-site-offices.jpg",
+        imageAlt: "Porta cabins and site offices",
+        meta: "Site ready portable facilities",
+        badge: "Capability",
+        price: "Quote on request",
+      },
+      {
+        title: "Ablution & Sanitary Units",
+        imageUrl: "/images/projects/ablution-sanitary-units.jpg",
+        imageAlt: "Ablution and sanitary units",
+        meta: "Portable welfare facilities",
+        badge: "Capability",
+        price: "Quote on request",
+      },
+      {
+        title: "Customized Modular Solutions",
+        imageUrl: "/images/projects/customized-modular-solutions.jpg",
+        imageAlt: "Customized modular solutions",
+        meta: "Purpose built modular environments",
+        badge: "Project",
+        price: "Quote on request",
       },
     ],
   },
@@ -139,34 +149,61 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     id: "modular-offices-meeting-rooms",
     slug: "modular-offices-meeting-rooms",
     title: "Modular Offices & Meeting Rooms",
-    excerpt:
-      "Professional modular workplaces with flexible layouts and integrated services.",
+    excerpt: "Professional modular workplaces with flexible layouts and integrated services.",
     image: "/images/profile/modular-meeting-room.png",
-    heroTitle: "Professional modular workplaces with flexible layouts and integrated services.",
-    heroDescription:
-      "Modular offices and meeting rooms configured for teams, visitors and daily operations.",
-    applications: [
+    highlightsTitle: "Key highlights",
+    highlightsDescription:
+      "Professional modular workplaces designed for flexible commercial and site use.",
+    highlights: [
       {
-        title: "Where this solution works",
-        description: "Workplaces that need speed without compromising usability.",
-        icon: "users",
-        points: [
-          "Executive offices",
-          "Project management suites",
-          "Meeting and training rooms",
-          "Reception areas",
-        ],
+        title: "Professional workplaces",
+        description:
+          "Create focused office and meeting environments without committing to permanent build-out.",
+        icon: "home",
+        points: ["Meeting-ready rooms", "Clean finishes", "Quiet working zones"],
       },
       {
-        title: "Planned around your brief",
-        description: "Flexible layouts with integrated services.",
-        icon: "sparkles",
-        points: [
-          "Open-plan and private layouts",
-          "Glazed or solid partitions",
-          "Acoustic and finish upgrades",
-          "Data, electrical and HVAC integration",
-        ],
+        title: "Adaptable floor plans",
+        description:
+          "Adjust layouts as teams, visitors and project phases change over time.",
+        icon: "layers",
+        points: ["Open or partitioned plans", "Expandable modules", "Reusable across sites"],
+      },
+      {
+        title: "Integrated services",
+        description:
+          "Plan lighting, cooling, furniture and access around how the space will actually be used.",
+        icon: "wrench",
+        points: ["Utility coordination", "Comfort-focused fit-out", "Practical access routes"],
+      },
+    ],
+    caseStudiesTitle: "From concept to completion",
+    caseStudiesDescription:
+      "Modular office and meeting room setups shaped around day-to-day operations.",
+    caseStudies: [
+      {
+        title: "Modular Offices & Meeting Rooms",
+        imageUrl: "/images/projects/modular-offices-meeting-rooms.jpg",
+        imageAlt: "Modular offices and meeting rooms",
+        meta: "Flexible modular workplaces",
+        badge: "Capability",
+        price: "Quote on request",
+      },
+      {
+        title: "Customized Modular Solutions",
+        imageUrl: "/images/projects/customized-modular-solutions.jpg",
+        imageAlt: "Customized modular solutions",
+        meta: "Purpose built modular environments",
+        badge: "Project",
+        price: "Quote on request",
+      },
+      {
+        title: "Porta Cabins & Site Offices",
+        imageUrl: "/images/projects/porta-cabins-site-offices.jpg",
+        imageAlt: "Porta cabins and site offices",
+        meta: "Site ready portable facilities",
+        badge: "Capability",
+        price: "Quote on request",
       },
     ],
   },
@@ -176,67 +213,66 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     title: "Ablution & Sanitary Units",
     excerpt: "Robust portable washroom, toilet and shower facilities.",
     image: "/images/profile/ablution-sanitary-units.png",
-    heroTitle: "Robust portable washroom, toilet and shower facilities.",
-    heroDescription:
-      "Welfare units planned for construction, events and remote-site operations.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Sanitary facilities where permanent buildings are not available.",
-        icon: "shield",
-        points: [
-          "Construction welfare facilities",
-          "Worker accommodation",
-          "Event washroom blocks",
-          "Remote-site sanitary units",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Layouts prepared for hygiene, durability and site services.",
-        icon: "wrench",
-        points: [
-          "Toilet, shower or combined layouts",
-          "Separate access arrangements",
-          "Water-resistant internal finishes",
-          "Plumbing and ventilation preparation",
-        ],
-      },
-    ],
   },
   {
     id: "car-parking-shades",
     slug: "car-parking-shades",
     title: "Car Parking Shades",
-    excerpt:
-      "Engineered shade structures for commercial, residential and industrial parking.",
+    excerpt: "Engineered shade structures for commercial, residential and industrial parking.",
     image: "/images/profile/car-parking-shades.jpg",
-    heroTitle:
+    highlightsTitle: "Key highlights",
+    highlightsDescription:
       "Engineered shade structures for commercial, residential and industrial parking.",
-    heroDescription:
-      "Parking shade systems planned around span, access and site conditions.",
-    applications: [
+    highlights: [
       {
-        title: "Where this solution works",
-        description: "Shade coverage for everyday parking and staff facilities.",
+        title: "Engineered shade",
+        description:
+          "Design shade coverage around parking density, vehicle types and site constraints.",
         icon: "award",
-        points: [
-          "Office and commercial parking",
-          "Residential developments",
-          "Industrial staff parking",
-          "Schools and public facilities",
-        ],
+        points: ["Span options", "Durable framing", "Weather-minded detailing"],
       },
       {
-        title: "Planned around your brief",
-        description: "Structural and visual options matched to the site.",
-        icon: "layers",
-        points: [
-          "Single or double-row layouts",
-          "Cantilever or supported systems",
-          "Fabric or metal roof concepts",
-          "Powder-coated steel finishes",
-        ],
+        title: "Practical installation",
+        description:
+          "Coordinate foundations, access and sequencing so parking areas stay usable during works.",
+        icon: "wrench",
+        points: ["Clear installation plan", "Minimal disruption", "Site-ready components"],
+      },
+      {
+        title: "Long-term value",
+        description:
+          "Protect vehicles and improve comfort while keeping maintenance straightforward.",
+        icon: "check",
+        points: ["UV protection", "Low upkeep finishes", "Commercial and residential use"],
+      },
+    ],
+    caseStudiesTitle: "From concept to completion",
+    caseStudiesDescription:
+      "Shade and structure examples that support parking and outdoor coverage needs.",
+    caseStudies: [
+      {
+        title: "Car Parking Shades",
+        imageUrl: "/images/projects/car-parking-shades.jpg",
+        imageAlt: "Car parking shades",
+        meta: "Engineered shade structures",
+        badge: "Capability",
+        price: "Quote on request",
+      },
+      {
+        title: "Steel Structures & Fabrication",
+        imageUrl: "/images/projects/steel-structures-fabrication-works.jpg",
+        imageAlt: "Steel structures and fabrication",
+        meta: "Frames, sheds and platforms",
+        badge: "Capability",
+        price: "Quote on request",
+      },
+      {
+        title: "Custom Steel Fabrication",
+        imageUrl: "/images/projects/custom-steel-fabrication.jpg",
+        imageAlt: "Custom steel fabrication",
+        meta: "Made to order steel components",
+        badge: "Project",
+        price: "Quote on request",
       },
     ],
   },
@@ -244,271 +280,58 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     id: "event-tents-temporary-structures",
     slug: "event-tents-temporary-structures",
     title: "Event Tents & Temporary Structures",
-    excerpt:
-      "Adaptable temporary spaces for events, hospitality and operations.",
+    excerpt: "Temporary covered spaces for events, compounds and site operations.",
     image: "/images/profile/event-tent-luxury.jpg",
-    heroTitle: "Adaptable temporary spaces for events, hospitality and operations.",
-    heroDescription:
-      "Temporary structures coordinated around programme, access and guest flow.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Short-term spaces that still need to feel intentional.",
-        icon: "zap",
-        points: [
-          "Corporate events",
-          "Exhibitions and activations",
-          "Temporary hospitality",
-          "Operational shelters",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Layouts and elevations adapted to the occasion.",
-        icon: "check",
-        points: [
-          "Clear-span layouts",
-          "Flooring and access systems",
-          "Open, glazed or enclosed elevations",
-          "Lighting and climate coordination",
-        ],
-      },
-    ],
   },
   {
     id: "steel-structures-fabrication",
     slug: "steel-structures-fabrication",
-    title: "Steel Structures & Fabrication Works",
-    excerpt:
-      "Structural frames, sheds, platforms, canopies and supporting steelwork.",
+    title: "Steel Structures & Fabrication",
+    excerpt: "Fabricated steel frames and structures planned for Saudi project conditions.",
     image: "/images/profile/steel-structure-frame.jpg",
-    heroTitle: "Structural frames, sheds, platforms, canopies and supporting steelwork.",
-    heroDescription:
-      "Steel structures fabricated and coordinated for industrial and commercial sites.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Supporting steelwork for operational and covered spaces.",
-        icon: "wrench",
-        points: [
-          "Warehouses and sheds",
-          "Platforms and access structures",
-          "Canopies and support frames",
-          "Utility structures",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Fabrication options matched to structural requirements.",
-        icon: "layers",
-        points: [
-          "Primary and secondary steel",
-          "Roofing and cladding coordination",
-          "Bolted or welded assemblies",
-          "Protective coating options",
-        ],
-      },
-    ],
   },
   {
     id: "custom-steel-fabrication",
     slug: "custom-steel-fabrication",
     title: "Custom Steel Fabrication",
-    excerpt:
-      "Made-to-order steel components for architectural and industrial applications.",
+    excerpt: "Made to order steel components for architectural and industrial applications.",
     image: "/images/profile/steel-fabrication-workshop.jpg",
-    heroTitle:
-      "Made-to-order steel components for architectural and industrial applications.",
-    heroDescription:
-      "Custom steelwork produced to drawings, references and site requirements.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Components that need precise fabrication and finish.",
-        icon: "activity",
-        points: [
-          "Support assemblies",
-          "Equipment bases",
-          "Stairs and rails",
-          "Architectural metal features",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Workshop processes aligned to the specified scope.",
-        icon: "sparkles",
-        points: [
-          "Cutting, forming and welding",
-          "Drilled and bolted connections",
-          "Surface preparation and coatings",
-          "Prototype or repeat fabrication",
-        ],
-      },
-    ],
   },
   {
     id: "customized-modular-solutions",
     slug: "customized-modular-solutions",
     title: "Customized Modular Solutions",
-    excerpt:
-      "Purpose-built modular environments with tailored layouts, finishes and utilities.",
+    excerpt: "Purpose built modular environments with tailored layouts, finishes and utilities.",
     image: "/images/profile/modular-office-complex.jpg",
-    heroTitle:
-      "Purpose-built modular environments with tailored layouts, finishes and utilities.",
-    heroDescription:
-      "Modular solutions developed when standard units need more specific configuration.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Specialist spaces that still benefit from modular delivery.",
-        icon: "home",
-        points: [
-          "Operations facilities",
-          "Specialist accommodation",
-          "Multi-room complexes",
-          "Commercial spaces",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Custom scope shaped around use, finish and utilities.",
-        icon: "layers",
-        points: [
-          "Single or multi-storey concepts",
-          "Custom façades and sun control",
-          "Integrated service zones",
-          "Specialized room layouts",
-        ],
-      },
-    ],
   },
   {
     id: "police-barrier",
     slug: "police-barrier",
     title: "Police Barrier",
-    excerpt:
-      "Heavy-duty steel police barriers for road closures, government events and perimeter control.",
+    excerpt: "Heavy duty steel police barriers for road closures, government events and perimeter control.",
     image: "/images/profile/site-compound-fencing.jpg",
-    heroTitle:
-      "Heavy-duty steel police barriers for road closures, government events and perimeter control.",
-    heroDescription:
-      "Crowd-control and perimeter barriers planned for rapid deployment across Saudi project and event sites.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Reliable barrier systems for controlled access and public safety.",
-        icon: "home",
-        points: [
-          "Road closures and traffic management",
-          "Government and civic events",
-          "Perimeter and crowd control",
-          "Temporary site boundaries",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Quantities, finishes and logistics shaped to the deployment.",
-        icon: "layers",
-        points: [
-          "Interlocking barrier sections",
-          "Heavy-duty steel construction",
-          "Fast install and relocation",
-          "Purchase or project supply options",
-        ],
-      },
-    ],
   },
   {
     id: "heras-fence",
     slug: "heras-fence",
     title: "Heras Fence",
-    excerpt:
-      "Temporary Heras fencing panels for construction sites and event perimeters.",
+    excerpt: "Temporary mesh panel fencing for construction sites and controlled access areas.",
     image: "/images/profile/site-compound-fencing.jpg",
-    heroTitle:
-      "Temporary Heras fencing panels for construction sites and event perimeters.",
-    heroDescription:
-      "Mesh panel fencing for secure, relocatable boundaries on active sites and events.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Practical temporary fencing for secure site and event control.",
-        icon: "home",
-        points: [
-          "Construction site perimeters",
-          "Event and exhibition boundaries",
-          "Temporary compound fencing",
-          "Rapid redeployment across phases",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Panel counts, gates and accessories matched to site access.",
-        icon: "layers",
-        points: [
-          "Galvanized mesh panels",
-          "Stable base and clamp systems",
-          "Pedestrian and vehicle gates",
-          "Hire or supply programmes",
-        ],
-      },
-    ],
   },
   {
     id: "corrugated-fence",
     slug: "corrugated-fence",
     title: "Corrugated Fence",
-    excerpt:
-      "Corrugated steel sheet fencing for construction hoarding and event boundaries.",
+    excerpt: "Solid corrugated steel fencing for privacy, dust control and site hoarding.",
     image: "/images/profile/steel-structure-frame.jpg",
-    heroTitle:
-      "Corrugated steel sheet fencing for construction hoarding and event boundaries.",
-    heroDescription:
-      "Solid corrugated fencing for privacy, site security and branded hoarding applications.",
-    applications: [
-      {
-        title: "Where this solution works",
-        description: "Solid boundary fencing where privacy and presentation matter.",
-        icon: "home",
-        points: [
-          "Construction hoarding",
-          "Event and site boundaries",
-          "Privacy screening",
-          "Branded perimeter cladding",
-        ],
-      },
-      {
-        title: "Planned around your brief",
-        description: "Height, finish and access details shaped to the project.",
-        icon: "layers",
-        points: [
-          "Corrugated steel sheet panels",
-          "Durable site-ready frames",
-          "Optional branding surfaces",
-          "Coordinated delivery and install",
-        ],
-      },
-    ],
   },
 ];
 
-export const arabiaServices: ServiceDetailView[] = arabiaServiceInputs.map(
-  buildService
-);
+export const arabiaServices: ServiceDetailView[] = arabiaServiceInputs.map(buildService);
 
 export function getArabiaServiceCards(limit = 100) {
   return arabiaServices.slice(0, limit).map(
-    ({
-      id,
-      slug,
-      title,
-      excerpt,
-      image,
-      imageAlt,
-      href,
-      parentId,
-      parentTitle,
-    }) => ({
+    ({ id, slug, title, excerpt, image, imageAlt, href, parentId, parentTitle }) => ({
       id,
       slug,
       title,
@@ -525,16 +348,10 @@ export function getArabiaServiceCards(limit = 100) {
 export function getArabiaServiceBySlug(slug: string) {
   const service = arabiaServices.find((item) => item.slug === slug);
   if (!service) return null;
-
   const related = getArabiaServiceCards()
     .filter((item) => item.slug !== slug)
     .slice(0, 3);
-
-  return {
-    ...service,
-    related,
-    siblings: [],
-  };
+  return { ...service, related, siblings: related };
 }
 
 export function getArabiaServiceGroups() {

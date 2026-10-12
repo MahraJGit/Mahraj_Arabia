@@ -2,15 +2,6 @@ import { z } from "zod";
 
 import { slugify } from "@/lib/cms/slug";
 
-const optionalObjectId = z
-  .string()
-  .trim()
-  .optional()
-  .or(z.literal(""))
-  .refine((value) => !value || /^[a-f0-9]{24}$/i.test(value), {
-    message: "Please choose a valid image.",
-  });
-
 export const categoryInputSchema = z.object({
   title: z.string().trim().min(1, "Please enter a category name."),
   slug: z
@@ -28,7 +19,12 @@ export const categoryInputSchema = z.object({
       return next;
     }),
   subtitle: z.string().trim().max(160).optional().or(z.literal("")),
-  image: optionalObjectId,
+  image: z.string().trim().optional().or(z.literal("")),
+  imageUrl: z.string().trim().optional().or(z.literal("")),
+  imageAlt: z.string().trim().optional().or(z.literal("")),
+  imageFilename: z.string().trim().optional().or(z.literal("")),
+  imageWidth: z.number().nullable().optional(),
+  imageHeight: z.number().nullable().optional(),
 });
 
 export type CategoryInput = z.infer<typeof categoryInputSchema>;

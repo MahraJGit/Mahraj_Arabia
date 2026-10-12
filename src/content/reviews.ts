@@ -265,7 +265,7 @@ export const industryReviews: IndustryReview[] = [
     name: "Tariq Al-Naimi",
     rating: "5.0",
     quote:
-      "We wanted the office compound to feel modern and welcoming. The modular fit-out gave us exactly that.",
+      "We wanted the office compound to feel modern and welcoming. The modular fit out gave us exactly that.",
     projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 2,
   },
@@ -391,7 +391,7 @@ export const industryReviews: IndustryReview[] = [
     name: "Hind Al-Ali",
     rating: "4.9",
     quote:
-      "We appreciated honest recommendations on modular layouts instead of a one-size-fits-all package.",
+      "We appreciated honest recommendations on modular layouts instead of a one size fits all package.",
     projectImage: "/images/profile/porta-cabin-site-office.png",
     extraViews: 1,
   },
@@ -520,13 +520,13 @@ export const projectExperienceSteps = [
     number: "02",
     title: "We Recommend Honestly",
     description:
-      "Clients tell us they trust our advice because we explain trade-offs clearly instead of just pushing the priciest option.",
+      "Clients tell us they trust our advice because we explain trade offs clearly instead of just pushing the priciest option.",
   },
   {
     number: "03",
     title: "We Deliver As Promised",
     description:
-      "On-time delivery, clean job sites, and clear communication: the details our reviews mention again and again.",
+      "On time delivery, clean job sites, and clear communication: the details our reviews mention again and again.",
   },
   {
     number: "04",

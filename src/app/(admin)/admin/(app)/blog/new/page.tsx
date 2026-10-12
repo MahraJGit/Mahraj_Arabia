@@ -10,8 +10,8 @@ export default async function NewPostPage() {
   return (
     <>
       <AdminPageHeader
-        title="New post"
-        description="Save a draft at any time. Publish when the excerpt, cover image, category, and article are ready."
+        title="Upload blog"
+        description="Cover image, tags, SEO, rich content, and publishing state are stored in Supabase."
       />
       <PostForm categories={categories} />
     </>

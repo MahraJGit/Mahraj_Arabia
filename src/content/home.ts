@@ -71,7 +71,7 @@ export const projects: Project[] = [
     title: "Porta Cabins & Site Offices",
     location: "Riyadh, KSA",
     application: "Construction",
-    product: "Site-ready portable facilities",
+    product: "Site ready portable facilities",
     image: "/images/projects/porta-cabins-site-offices.jpg",
   },
   {
@@ -119,7 +119,7 @@ export const projects: Project[] = [
     title: "Custom Steel Fabrication",
     location: "Riyadh, KSA",
     application: "Industrial",
-    product: "Made-to-order steel components",
+    product: "Made to order steel components",
     image: "/images/projects/custom-steel-fabrication.jpg",
   },
   {
@@ -127,7 +127,7 @@ export const projects: Project[] = [
     title: "Customized Modular Solutions",
     location: "Riyadh, KSA",
     application: "Institutional",
-    product: "Purpose-built modular environments",
+    product: "Purpose built modular environments",
     image: "/images/projects/customized-modular-solutions.jpg",
   },
 ];
@@ -137,7 +137,7 @@ export const featuredCaseStudies = [
     slug: "porta-cabins-site-offices",
     title: "Porta Cabins & Site Offices",
     price: "Quote on request",
-    meta: "Site-ready portable facilities",
+    meta: "Site ready portable facilities",
     badge: "Capability",
   },
   {

@@ -1,10 +1,8 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  BookOpenText,
   CalendarDays,
   Clock,
-  Star,
 } from "lucide-react";
 
 import { FeaturedBlogsCarousel } from "@/components/blog/featured-blogs-carousel";
@@ -119,50 +117,6 @@ export function ExploreByTopic({ categories }: { categories: BlogCategory[] }) {
         <Button asChild variant="brand" size="xl">
           <Link href="/blog#latest-insights">View all articles</Link>
         </Button>
-      </div>
-    </Section>
-  );
-}
-
-function WorkingOnCard({ title }: { title: string }) {
-  return (
-    <div className="group flex h-full flex-col items-center rounded-md border border-border bg-background px-5 py-8 text-center transition-colors hover:border-brand hover:bg-brand">
-      <Star className="size-8 fill-brand text-brand transition-colors group-hover:fill-white group-hover:text-white" />
-      <p className="mt-4 text-sm font-semibold text-ink transition-colors group-hover:text-white">
-        {title}
-      </p>
-      <p className="mt-1 text-xs text-body transition-colors group-hover:text-white/80">
-        Consultation & Design
-      </p>
-    </div>
-  );
-}
-
-export function WorkingOnSection() {
-  const cards = blogPage.workingOn.cards;
-
-  return (
-    <Section tone="alt">
-      <SectionHeading
-        align="center"
-        title={blogPage.workingOn.title}
-        description={blogPage.workingOn.description}
-      />
-      <div className="mt-10 space-y-4">
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {cards.slice(0, 3).map((label) => (
-            <li key={label}>
-              <WorkingOnCard title={label} />
-            </li>
-          ))}
-        </ul>
-        <ul className="mx-auto grid max-w-2xl gap-4 sm:grid-cols-2">
-          {cards.slice(3).map((label) => (
-            <li key={label}>
-              <WorkingOnCard title={label} />
-            </li>
-          ))}
-        </ul>
       </div>
     </Section>
   );
@@ -333,32 +287,6 @@ export function LatestInsights({
           ))}
         </nav>
       ) : null}
-    </Section>
-  );
-}
-
-export function KnowledgeHubBand() {
-  return (
-    <Section tone="alt">
-      <SectionHeading align="center" title={blogPage.knowledgeHub.title} />
-      <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {blogPage.knowledgeHub.cards.map((card) => (
-          <li
-            key={card}
-            className="relative overflow-hidden rounded-md border border-border bg-background p-5"
-          >
-            <span className="flex size-9 items-center justify-center rounded bg-brand/10 text-brand">
-              <BookOpenText className="size-4" />
-            </span>
-            <h3 className="mt-4 text-xl font-semibold">{card}</h3>
-            <p className="mt-2 text-sm text-body">Project description will go in here.</p>
-            <span
-              aria-hidden
-              className="absolute -bottom-8 -end-8 size-24 rotate-45 bg-brand/25"
-            />
-          </li>
-        ))}
-      </ul>
     </Section>
   );
 }

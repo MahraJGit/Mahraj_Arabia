@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,14 +19,12 @@ export function ServiceFilters({
   q = "",
   status = "all",
   group = "all",
-  ready = "all",
   groups,
   filtered,
 }: {
   q?: string;
   status?: string;
   group?: string;
-  ready?: string;
   groups: { id: string; title: string }[];
   filtered: boolean;
 }) {
@@ -34,9 +33,6 @@ export function ServiceFilters({
     status === "draft" || status === "published" ? status : "all"
   );
   const [groupValue, setGroupValue] = useState(group || "all");
-  const [readyValue, setReadyValue] = useState(
-    ready === "ready" || ready === "soon" ? ready : "all"
-  );
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -45,11 +41,9 @@ export function ServiceFilters({
     const query = String(data.get("q") ?? "").trim();
     const nextStatus = String(data.get("status") ?? "");
     const nextGroup = String(data.get("group") ?? "");
-    const nextReady = String(data.get("ready") ?? "");
     if (query) params.set("q", query);
     if (nextStatus === "draft" || nextStatus === "published") params.set("status", nextStatus);
     if (nextGroup && nextGroup !== "all") params.set("group", nextGroup);
-    if (nextReady === "ready" || nextReady === "soon") params.set("ready", nextReady);
     const qs = params.toString();
     router.push(qs ? `/admin/services?${qs}` : "/admin/services");
   }
@@ -57,18 +51,20 @@ export function ServiceFilters({
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col gap-2 rounded-xl border border-border bg-card p-3 sm:flex-row sm:flex-wrap sm:items-center"
+      className="flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row sm:flex-wrap sm:items-center"
     >
-      <Input
-        name="q"
-        defaultValue={q}
-        placeholder="Search name or slug"
-        aria-label="Search services"
-        className="w-full sm:w-56"
-      />
+      <div className="relative w-full sm:max-w-xs sm:flex-1">
+        <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          name="q"
+          defaultValue={q}
+          placeholder="Search by name or slug"
+          aria-label="Search services"
+          className="ps-9"
+        />
+      </div>
       <input type="hidden" name="group" value={groupValue} />
       <input type="hidden" name="status" value={statusValue} />
-      <input type="hidden" name="ready" value={readyValue} />
       <Select value={groupValue} onValueChange={setGroupValue}>
         <SelectTrigger className="w-full sm:w-48" aria-label="Family">
           <SelectValue placeholder="All families" />
@@ -92,23 +88,16 @@ export function ServiceFilters({
           <SelectItem value="draft">Draft</SelectItem>
         </SelectContent>
       </Select>
-      <Select value={readyValue} onValueChange={setReadyValue}>
-        <SelectTrigger className="w-full sm:w-44" aria-label="Page type">
-          <SelectValue placeholder="All page types" />
-        </SelectTrigger>
-        <SelectContent position="popper">
-          <SelectItem value="all">All page types</SelectItem>
-          <SelectItem value="ready">Full page</SelectItem>
-          <SelectItem value="soon">Coming soon</SelectItem>
-        </SelectContent>
-      </Select>
       <div className="flex gap-2">
         <Button type="submit" variant="outline">
-          Filter
+          Apply
         </Button>
         {filtered ? (
           <Button asChild variant="ghost">
-            <Link href="/admin/services">Clear</Link>
+            <Link href="/admin/services">
+              <X className="size-4" />
+              Clear
+            </Link>
           </Button>
         ) : null}
       </div>
