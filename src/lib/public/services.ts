@@ -202,7 +202,7 @@ export async function getServiceBySlug(slug: string): Promise<ServiceDetailView 
       processTitle: "",
       processDescription: "",
       processSteps: [],
-      faqIntro: "",
+      faqIntro: service.faqIntro || service.faqDescription || "",
     };
   } catch {
     return getArabiaServiceBySlug(slug);

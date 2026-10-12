@@ -1,11 +1,4 @@
 import {
-  getArabiaFeaturedPosts,
-  getArabiaPostBySlug,
-  getArabiaPostSlugs,
-  getArabiaPostsList,
-  getArabiaRelatedPosts,
-} from "@/content/arabia-posts";
-import {
   getBlogPostBySlug,
   isSupabaseContentEnabled,
   listPublishedBlogPosts,
@@ -20,11 +13,8 @@ export type BlogCard = {
   excerpt: string;
   image: string;
   imageAlt: string;
-  readTime: string;
   date: string;
   author: string;
-  authorImage: string;
-  authorImageAlt: string;
   category: string;
   categorySlug: string;
   href: string;
@@ -45,15 +35,24 @@ export type PublicPost = {
   seoDescription: string;
   focusKeyword: string;
   tags: string[];
+  faqDescription: string;
   faqs: { question: string; answer: string }[];
   category: { id: string; title: string; slug: string } | null;
   author: string;
-  authorImage: null;
-  readTime: string;
   publishedAt: string | null;
   featured: boolean;
   inlineMedia: Record<string, never>;
 };
+
+function emptyPostsPage(page = 1, limit = 6) {
+  return {
+    docs: [] as BlogCard[],
+    page,
+    totalPages: 1,
+    totalDocs: 0,
+    limit,
+  };
+}
 
 function formatDate(value?: string | null) {
   if (!value) return "";
@@ -78,7 +77,6 @@ export function toBlogCard(
     category?: string | { title?: string; slug?: string } | null;
     publishedAt?: string | null;
     author?: string;
-    readTime?: string;
     tags?: string[];
   },
   _size?: string
@@ -100,16 +98,13 @@ export function toBlogCard(
     image:
       post.coverUrl ||
       (typeof post.coverImage === "object" && post.coverImage?.url) ||
-      "/images/profile/porta-cabin-site-office.png",
+      "",
     imageAlt:
       post.coverAlt ||
       (typeof post.coverImage === "object" ? post.coverImage?.alt : undefined) ||
       post.title,
-    readTime: post.readTime || "",
     date: formatDate(post.publishedAt),
     author: post.author || "",
-    authorImage: "",
-    authorImageAlt: "",
     category: categoryTitle,
     categorySlug,
     href: `/blog/${post.slug}`,
@@ -129,7 +124,7 @@ export async function getPosts({
   search?: string;
 } = {}) {
   if (!isSupabaseContentEnabled()) {
-    return getArabiaPostsList({ page, limit, categorySlug, search });
+    return emptyPostsPage(page, limit);
   }
 
   try {
@@ -138,7 +133,7 @@ export async function getPosts({
       const categories = await getCategories();
       categoryId = categories.find((item) => item.slug === categorySlug)?.id;
       if (!categoryId) {
-        return getArabiaPostsList({ page, limit, categorySlug, search });
+        return emptyPostsPage(page, limit);
       }
     }
 
@@ -149,29 +144,36 @@ export async function getPosts({
       search,
     });
 
-    if (result.total === 0 && !categorySlug && !search) {
-      return getArabiaPostsList({ page, limit, categorySlug, search });
-    }
-
     return {
       docs: result.rows.map((row) => toBlogCard(row)),
       page: result.page,
       totalPages: result.totalPages,
       totalDocs: result.total,
+      limit,
     };
   } catch {
-    return getArabiaPostsList({ page, limit, categorySlug, search });
+    return emptyPostsPage(page, limit);
   }
 }
 
 export async function getFeaturedPosts(limit = 3) {
-  if (!isSupabaseContentEnabled()) return getArabiaFeaturedPosts(limit);
+  if (!isSupabaseContentEnabled()) return [];
+
   try {
-    const result = await listPublishedBlogPosts({ page: 1, limit });
-    if (result.rows.length === 0) return getArabiaFeaturedPosts(limit);
-    return result.rows.map((row) => toBlogCard(row));
+    const featured = await listPublishedBlogPosts({
+      page: 1,
+      limit,
+      featuredOnly: true,
+    });
+    if (featured.rows.length > 0) {
+      return featured.rows.map((row) => toBlogCard(row));
+    }
+
+    // No featured flag set — show latest published posts instead of static demos.
+    const latest = await listPublishedBlogPosts({ page: 1, limit });
+    return latest.rows.map((row) => toBlogCard(row));
   } catch {
-    return getArabiaFeaturedPosts(limit);
+    return [];
   }
 }
 
@@ -180,9 +182,8 @@ export async function getRelatedPosts(
   excludeId: string,
   limit = 3
 ) {
-  if (!isSupabaseContentEnabled()) {
-    return getArabiaRelatedPosts(categorySlug, excludeId, limit);
-  }
+  if (!isSupabaseContentEnabled()) return [];
+
   try {
     const categories = await getCategories();
     const categoryId = categories.find((item) => item.slug === categorySlug)?.id;
@@ -192,21 +193,18 @@ export async function getRelatedPosts(
       categoryId,
       excludeId,
     });
-    if (result.rows.length === 0) {
-      return getArabiaRelatedPosts(categorySlug, excludeId, limit);
-    }
     return result.rows.map((row) => toBlogCard(row));
   } catch {
-    return getArabiaRelatedPosts(categorySlug, excludeId, limit);
+    return [];
   }
 }
 
 export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
-  if (!isSupabaseContentEnabled()) return getArabiaPostBySlug(slug);
+  if (!isSupabaseContentEnabled()) return null;
 
   try {
     const post = await getBlogPostBySlug(slug, true);
-    if (!post) return getArabiaPostBySlug(slug);
+    if (!post) return null;
 
     return {
       id: post.id,
@@ -221,6 +219,7 @@ export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
       seoDescription: post.metaDescription || post.excerpt,
       focusKeyword: post.focusKeyword,
       tags: post.tags,
+      faqDescription: post.faqDescription || "",
       faqs: post.faqs,
       category: post.category
         ? {
@@ -229,24 +228,21 @@ export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
             slug: post.categorySlug,
           }
         : null,
-      author: "",
-      authorImage: null,
-      readTime: "",
+      author: post.author,
       publishedAt: post.publishedAt || null,
-      featured: false,
+      featured: post.featured,
       inlineMedia: {},
     };
   } catch {
-    return getArabiaPostBySlug(slug);
+    return null;
   }
 }
 
 export async function getPostSlugs() {
-  if (!isSupabaseContentEnabled()) return getArabiaPostSlugs();
+  if (!isSupabaseContentEnabled()) return [];
   try {
-    const slugs = await listPublishedBlogPostSlugs();
-    return slugs.length > 0 ? slugs : getArabiaPostSlugs();
+    return await listPublishedBlogPostSlugs();
   } catch {
-    return getArabiaPostSlugs();
+    return [];
   }
 }

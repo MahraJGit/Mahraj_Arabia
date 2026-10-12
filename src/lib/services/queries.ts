@@ -113,6 +113,7 @@ export type ServiceRecord = {
   processDescription: string;
   processSteps: { label: string }[];
   faqIntro: string;
+  faqDescription?: string;
   faqs: { question: string; answer: string }[];
   tags?: string[];
   metaTitle?: string;

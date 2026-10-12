@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ArrowRight,
   CalendarDays,
-  Clock,
 } from "lucide-react";
 
 import { FeaturedBlogsCarousel } from "@/components/blog/featured-blogs-carousel";
@@ -145,12 +144,6 @@ export function BlogPostCard({ post }: { post: BlogCard }) {
             {post.excerpt}
           </p>
           <div className="mt-5 flex flex-wrap gap-3 text-[0.6875rem] text-body">
-            {post.readTime ? (
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="size-3.5 shrink-0" aria-hidden />
-                {post.readTime}
-              </span>
-            ) : null}
             {post.date ? (
               <span className="inline-flex items-center gap-1.5">
                 <CalendarDays className="size-3.5 shrink-0" aria-hidden />

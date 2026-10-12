@@ -51,7 +51,7 @@ export const termsDocument: LegalDocument = {
   breadcrumb: "Terms of Service",
   description:
     "These terms cover website use, quotations, project coordination, delivery, installation, and our responsibilities when supplying modular, portable fencing, and steel solutions through Mahraj Arabia.",
-  heroImage: "/images/heroes/terms-hero.jpg",
+  heroImage: "/images/heroes/terms-hero.png",
   lastUpdated: "9 October 2026",
   highlights: [
     { label: "Last Updated", value: "9 October 2026" },
@@ -328,7 +328,7 @@ export const privacyDocument: LegalDocument = {
   breadcrumb: "Privacy Policy",
   description:
     "We explain how Mahraj Arabia collects, uses, stores, and protects your information when you contact us, request a quotation, or work with us on a modular, portable, or steel project.",
-  heroImage: "/images/heroes/privacy-hero.jpg",
+  heroImage: "/images/heroes/privacy-hero.png",
   lastUpdated: "9 October 2026",
   highlights: [
     { label: "Last Updated", value: "9 October 2026" },

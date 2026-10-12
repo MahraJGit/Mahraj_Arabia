@@ -9,7 +9,7 @@ import {
 
 export const cataloguePage = {
   hero: {
-    image: "/images/profile/steel-and-modular-collage.jpg",
+    image: "/images/projects/customized-modular-solutions.jpg",
     title: "Modular spaces. Steel built.",
     description:
       "Modular, portable, fencing and steel solutions for construction, events and industrial sites across Saudi Arabia.",
@@ -26,7 +26,7 @@ export const cataloguePage = {
   topics: [
     // {
     //   title: "All Collections",
-    //   image: "/images/profile/porta-cabin-site-office.png",
+    //   image: "/images/profile/porta-cabin-site-office.jpg",
     // },
     {
       title: "Gyms",
@@ -75,7 +75,7 @@ export const cataloguePage = {
     title: "Portable & Modular Site Solutions",
     excerpt:
       "Browse porta cabins, modular offices and site facilities planned around programme, access and utilities.",
-    image: "/images/profile/porta-cabin-site-office.png",
+    image: "/images/profile/porta-cabin-site-office.jpg",
     author: "By Mahraj Arabia Team",
     authorAvatar: "/images/avatar.jpg",
   },
@@ -87,14 +87,14 @@ export const cataloguePage = {
         title: "Porta Cabins & Site Offices",
         description:
           "Site ready offices, security cabins, accommodation and storage for active project sites.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
         tags: ["Construction", "Industrial", "Infrastructure", "Sites"],
       },
       {
         title: "Modular Offices",
         description:
           "Professional modular workplaces with flexible layouts and integrated services.",
-        image: "/images/profile/modular-meeting-room.png",
+        image: "/images/profile/modular-meeting-room.jpg",
         tags: ["Commercial", "Institutional", "Offices", "Teams"],
       },
       {
@@ -177,32 +177,32 @@ export const cataloguePage = {
       {
         title: "Construction Sites",
         description: "Portable offices, cabins and utilities for active programmes.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Industrial Facilities",
         description: "Steel structures and modular spaces for operational compounds.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Commercial Campuses",
         description: "Parking shades, modular offices and visitor facilities.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Events & Temporary Use",
         description: "Tents and temporary structures planned around schedule and access.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Infrastructure",
         description: "Site facilities and steel work for corridor and utility projects.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Institutional Campuses",
         description: "Modular workplaces and purpose built portable environments.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
     ],
   },
@@ -249,12 +249,12 @@ export const cataloguePage = {
       {
         title: "Site Offices",
         description: "Portable facilities coordinated around active programmes.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Modular Workplaces",
         description: "Flexible offices and meeting rooms for teams on site.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Parking Shades",
@@ -264,12 +264,12 @@ export const cataloguePage = {
       {
         title: "Steel Frames",
         description: "Fabricated structures planned for industrial use.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Event Structures",
         description: "Temporary tents and facilities for short term programmes.",
-        image: "/images/profile/porta-cabin-site-office.png",
+        image: "/images/profile/porta-cabin-site-office.jpg",
       },
       {
         title: "Custom Modular",

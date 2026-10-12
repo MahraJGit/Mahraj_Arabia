@@ -46,6 +46,7 @@ function emptyService(): ServiceInput {
     metaTitle: "",
     metaDescription: "",
     focusKeyword: "",
+    faqDescription: "",
     faqs: [],
     highlightsTitle: "",
     highlightsDescription: "",
@@ -94,6 +95,8 @@ function fromRecord(service: ServiceRecord): ServiceInput {
     metaDescription:
       service.seoDescription || (service as { metaDescription?: string }).metaDescription || "",
     focusKeyword: (service as { focusKeyword?: string }).focusKeyword || "",
+    faqDescription:
+      (service as { faqDescription?: string }).faqDescription || service.faqIntro || "",
     faqs: Array.isArray(service.faqs) ? service.faqs : [],
     highlightsTitle: service.highlightsTitle || service.guideTitle || "",
     highlightsDescription:
@@ -376,7 +379,9 @@ export function ServiceForm({
       />
 
       <FaqEditor
+        description={values.faqDescription ?? ""}
         value={values.faqs}
+        onDescriptionChange={(faqDescription) => update("faqDescription", faqDescription)}
         onChange={(faqs) => update("faqs", faqs)}
         errors={errors}
       />

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,11 +12,9 @@ type FeaturedArticle = {
   title: string;
   excerpt: string;
   image: string;
-  readTime: string;
+  imageAlt?: string;
   date: string;
   author: string;
-  authorImage?: string;
-  authorImageAlt?: string;
   href: string;
 };
 
@@ -63,7 +61,7 @@ export function FeaturedBlogsCarousel({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={current.image}
-              alt=""
+              alt={current.imageAlt || current.title}
               className="aspect-[16/10] h-auto w-full object-cover"
               loading="eager"
               decoding="async"
@@ -71,7 +69,7 @@ export function FeaturedBlogsCarousel({
           ) : (
             <Image
               src={current.image}
-              alt=""
+              alt={current.imageAlt || current.title}
               width={1280}
               height={800}
               className="h-auto w-full object-cover"
@@ -82,12 +80,6 @@ export function FeaturedBlogsCarousel({
             Featured Blog
           </span>
           <div className="absolute inset-x-0 bottom-0 flex gap-2 p-3 text-[0.6875rem] text-white/90">
-            {current.readTime ? (
-              <span className="inline-flex items-center gap-1.5 rounded bg-black/55 px-2 py-1">
-                <Clock className="size-3.5 shrink-0" aria-hidden />
-                {current.readTime}
-              </span>
-            ) : null}
             {current.date ? (
               <span className="inline-flex items-center gap-1.5 rounded bg-black/55 px-2 py-1">
                 <CalendarDays className="size-3.5 shrink-0" aria-hidden />
@@ -103,29 +95,7 @@ export function FeaturedBlogsCarousel({
           </Link>
           <p className="mt-4 text-base leading-relaxed text-body">{current.excerpt}</p>
           {current.author ? (
-            <div className="mt-5 flex items-center gap-3">
-              {current.authorImage && isValidImageSrc(current.authorImage) ? (
-                isManagedAsset(current.authorImage) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={current.authorImage}
-                    alt={current.authorImageAlt || current.author}
-                    className="size-10 shrink-0 rounded-full object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ) : (
-                  <Image
-                    src={current.authorImage}
-                    alt={current.authorImageAlt || current.author}
-                    width={40}
-                    height={40}
-                    className="size-10 shrink-0 rounded-full object-cover"
-                  />
-                )
-              ) : null}
-              <p className="text-sm font-semibold text-ink">{current.author}</p>
-            </div>
+            <p className="mt-5 text-sm font-semibold text-ink">{current.author}</p>
           ) : null}
           <Button asChild variant="brand" size="xl" className="mt-5">
             <Link href={current.href}>Read More</Link>

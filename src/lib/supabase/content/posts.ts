@@ -53,21 +53,15 @@ export function asBlogPostRecord(row: BlogPostRow, categoryTitle = "") {
     metaTitle: metaTitle(row),
     metaDescription: metaDescription(row),
     focusKeyword: String(row.focus_keyword ?? ""),
+    faqDescription: String(row.faq_intro ?? ""),
     faqs: asFaqs(row.faqs),
     publishedAt: row.published_at ? String(row.published_at) : "",
     updatedAt: String(row.updated_at ?? ""),
     // compatibility aliases used by older admin list UI
     seoTitle: metaTitle(row),
     seoDescription: metaDescription(row),
-    author: "",
-    authorImage: "",
-    authorImageUrl: "",
-    authorImageAlt: "",
-    authorImageFilename: "",
-    authorImageWidth: null as number | null,
-    authorImageHeight: null as number | null,
-    readTime: "",
-    featured: false,
+    author: String(row.author ?? ""),
+    featured: Boolean(row.featured),
     inlineMedia: {} as Record<string, never>,
   };
 }
@@ -90,14 +84,14 @@ function toWriteRow(input: BlogPostWrite) {
     meta_title: input.metaTitle || "",
     meta_description: input.metaDescription || "",
     focus_keyword: input.focusKeyword || "",
+    faq_intro: input.faqDescription || "",
     faqs: input.faqs,
     published_at: input.publishedAt,
     // keep legacy columns populated for safety
     seo_title: input.metaTitle || "",
     seo_description: input.metaDescription || "",
-    featured: false,
-    author: "",
-    read_time: "",
+    featured: Boolean(input.featured),
+    author: input.author || "",
   };
 }
 
@@ -167,8 +161,8 @@ export async function listBlogPosts(filters?: {
         title: record.title,
         slug: record.slug,
         categoryTitle: record.categoryTitle || "—",
-        author: "",
-        featured: false,
+        author: record.author,
+        featured: record.featured,
         status: record.status,
         publishedAt: record.publishedAt,
         updatedAt: record.updatedAt,
@@ -306,6 +300,7 @@ export async function listPublishedBlogPosts(filters?: {
   categoryId?: string;
   search?: string;
   excludeId?: string;
+  featuredOnly?: boolean;
 }) {
   const page = Math.max(1, filters?.page ?? 1);
   const limit = filters?.limit ?? 6;
@@ -317,6 +312,7 @@ export async function listPublishedBlogPosts(filters?: {
 
   if (filters?.categoryId) query = query.eq("category_id", filters.categoryId);
   if (filters?.excludeId) query = query.neq("id", filters.excludeId);
+  if (filters?.featuredOnly) query = query.eq("featured", true);
 
   const from = (page - 1) * limit;
   const { data, error, count } = await query.range(from, from + limit - 1);

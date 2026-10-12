@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 export const reviewsHero = {
-  image: "/images/heroes/reviews-hero.jpg",
+  image: "/images/heroes/review-hero.png",
   title: "What Our Clients Say About Us",
   description:
     "Real feedback from project teams across Saudi Arabia who trusted Mahraj Arabia for modular, portable, fencing and steel solutions.",
@@ -149,7 +149,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "We needed site offices that matched our programme. Delivery and installation stayed coordinated without slowing the main works.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -158,7 +158,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "We compared three vendors before choosing Mahraj Arabia. Pricing was clear, and we never felt pushed into extras we did not need.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -185,7 +185,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "We had plenty of questions before deciding, and the Mahraj Arabia team answered every one without rushing the brief.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -194,7 +194,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "Hundreds of staff use these facilities every day, and after months of operation the modular units still look well maintained.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 1,
   },
   {
@@ -212,7 +212,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "We were coordinating multiple compounds at once, but the team kept drawings, fabrication and delivery organised.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 1,
   },
   {
@@ -230,7 +230,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "The new modular offices made the compound feel more professional, and the teams settled in quickly.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 1,
   },
   {
@@ -257,7 +257,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.8",
     quote:
       "We got a practical scope that looks professional and works for everyday operations, with no unnecessary complexity.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -266,7 +266,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "We wanted the office compound to feel modern and welcoming. The modular fit out gave us exactly that.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -338,7 +338,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "Matching new site facilities with existing compound standards was a concern. The team got finishes and layout right.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -356,7 +356,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "5.0",
     quote:
       "We wanted the space to feel practical and welcoming for site teams. The finished modular offices delivered that.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -365,7 +365,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "Guests and inspectors walk through this compound daily, and the facilities still look fresh and organised.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 2,
   },
   {
@@ -392,7 +392,7 @@ export const industryReviews: IndustryReview[] = [
     rating: "4.9",
     quote:
       "We appreciated honest recommendations on modular layouts instead of a one size fits all package.",
-    projectImage: "/images/profile/porta-cabin-site-office.png",
+    projectImage: "/images/profile/porta-cabin-site-office.jpg",
     extraViews: 1,
   },
   {
@@ -443,7 +443,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Porta Cabins and Site Offices",
     location: "Riyadh, KSA",
     category: "Porta Cabins",
-    image: "/images/profile/porta-cabin-site-office.png",
+    image: "/images/profile/porta-cabin-site-office.jpg",
     rating: 5,
   },
   {
@@ -451,7 +451,7 @@ export const solutionProjects: SolutionProject[] = [
     title: "Modular Offices and Meeting Rooms",
     location: "Riyadh, KSA",
     category: "Modular Offices",
-    image: "/images/profile/porta-cabin-site-office.png",
+    image: "/images/profile/porta-cabin-site-office.jpg",
     rating: 5,
   },
   {

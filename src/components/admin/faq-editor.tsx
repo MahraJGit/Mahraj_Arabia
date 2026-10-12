@@ -21,11 +21,15 @@ export type FaqDraft = {
 };
 
 export function FaqEditor({
+  description = "",
   value,
+  onDescriptionChange,
   onChange,
   errors = {},
 }: {
+  description?: string;
   value: FaqDraft[];
+  onDescriptionChange?: (value: string) => void;
   onChange: (next: FaqDraft[]) => void;
   errors?: Record<string, string>;
 }) {
@@ -73,6 +77,21 @@ export function FaqEditor({
       title="FAQs"
       description="Optional questions shown on the page and as FAQPage structured data."
     >
+      {onDescriptionChange ? (
+        <Field
+          label="Section description"
+          hint="Shown under the FAQ heading on the public page."
+          error={errors.faqDescription}
+        >
+          <Textarea
+            value={description}
+            placeholder="Short intro for this FAQ section."
+            className="min-h-20 rounded-xl"
+            onChange={(event) => onDescriptionChange(event.target.value)}
+          />
+        </Field>
+      ) : null}
+
       {value.length === 0 ? (
         <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-6 sm:flex-row sm:items-center">
           <p className="text-sm text-muted-foreground">

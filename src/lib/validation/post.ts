@@ -56,6 +56,8 @@ export const postInputSchema = z.object({
   coverImageHeight: z.number().nullable().optional(),
   coverImageId: z.string().trim().optional().or(z.literal("")),
   category: z.string().trim().optional().or(z.literal("")),
+  author: z.string().trim().max(80).optional().or(z.literal("")),
+  featured: z.boolean().default(false),
   tags: z.array(z.string().trim().min(1)).max(8, "Add up to 8 tags.").default([]),
   metaTitle: z.string().trim().max(120).optional().or(z.literal("")),
   metaDescription: z
@@ -65,6 +67,7 @@ export const postInputSchema = z.object({
     .optional()
     .or(z.literal("")),
   focusKeyword: z.string().trim().max(80).optional().or(z.literal("")),
+  faqDescription: z.string().trim().max(300).optional().or(z.literal("")),
   faqs: z.array(faqSchema).default([]),
   _status: z.enum(["draft", "published"]),
 });

@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
+import Underline from "@tiptap/extension-underline";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 import {
   Bold,
   Code,
@@ -14,8 +20,7 @@ import {
   Minus,
   Pilcrow,
   Quote,
-  Trash2,
-  Underline,
+  Underline as UnderlineIcon,
 } from "lucide-react";
 
 import { MediaPicker } from "@/components/admin/media-picker";
@@ -28,28 +33,35 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  blocksToLexical,
-  emptyParagraph,
-  htmlToSpans,
-  lexicalToBlocks,
-  newBlockId,
-  spansToHtml,
-  spansToPlainText,
-  type EditorBlock,
+  htmlToLexical,
+  lexicalToHtml,
   type InlineMedia,
-  type InlineSpan,
 } from "@/lib/cms/lexical";
 import { cn } from "@/lib/utils";
 
-const BLOCK_TYPES = [
-  { value: "paragraph", label: "Paragraph" },
-  { value: "heading-2", label: "Heading" },
-  { value: "heading-3", label: "Subheading" },
-  { value: "list", label: "Bulleted list" },
-  { value: "ordered", label: "Numbered list" },
-  { value: "quote", label: "Quote" },
-  { value: "code", label: "Code" },
-] as const;
+const MediaImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      "data-media-id": {
+        default: null,
+        parseHTML: (element) => element.getAttribute("data-media-id"),
+        renderHTML: (attributes) => {
+          if (!attributes["data-media-id"]) return {};
+          return { "data-media-id": attributes["data-media-id"] };
+        },
+      },
+      "data-caption": {
+        default: null,
+        parseHTML: (element) => element.getAttribute("data-caption"),
+        renderHTML: (attributes) => {
+          if (!attributes["data-caption"]) return {};
+          return { "data-caption": attributes["data-caption"] };
+        },
+      },
+    };
+  },
+});
 
 export function LexicalEditor({
   value,
@@ -62,560 +74,312 @@ export function LexicalEditor({
   onChange: (next: unknown) => void;
   error?: string;
 }) {
-  const [blocks, setBlocks] = useState<EditorBlock[]>(() =>
-    lexicalToBlocks(value, mediaById)
-  );
-  const [activeId, setActiveId] = useState<string | null>(blocks[0]?.id ?? null);
-  const [pickerFor, setPickerFor] = useState<string | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [linkOpen, setLinkOpen] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("https://");
   const skipEmit = useRef(true);
+  const lastHtml = useRef("");
+
+  const emitChange = useCallback(
+    (html: string) => {
+      if (skipEmit.current) {
+        skipEmit.current = false;
+        lastHtml.current = html;
+        return;
+      }
+      if (html === lastHtml.current) return;
+      lastHtml.current = html;
+      onChange(htmlToLexical(html));
+    },
+    [onChange]
+  );
+
+  const editor = useEditor({
+    immediatelyRender: false,
+    extensions: [
+      StarterKit.configure({
+        heading: { levels: [2, 3] },
+      }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          rel: "noopener noreferrer",
+        },
+      }),
+      MediaImage.configure({
+        allowBase64: false,
+        HTMLAttributes: {
+          class: "rounded-md",
+        },
+      }),
+      Placeholder.configure({
+        placeholder: "Start writing your article…",
+      }),
+    ],
+    content: lexicalToHtml(value, mediaById),
+    editorProps: {
+      attributes: {
+        class: cn(
+          "prose prose-neutral max-w-none min-h-full px-3 py-4 outline-none sm:px-6 sm:py-5",
+          "focus:outline-none",
+          "[&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-ink",
+          "[&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-ink",
+          "[&_p]:my-3 [&_p]:leading-relaxed [&_p]:text-ink",
+          "[&_ul]:my-3 [&_ul]:list-disc [&_ul]:ps-6",
+          "[&_ol]:my-3 [&_ol]:list-decimal [&_ol]:ps-6",
+          "[&_blockquote]:my-4 [&_blockquote]:border-s-4 [&_blockquote]:border-brand [&_blockquote]:bg-muted/40 [&_blockquote]:px-4 [&_blockquote]:py-3 [&_blockquote]:italic",
+          "[&_pre]:my-4 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-ink [&_pre]:p-4 [&_pre]:text-sm [&_pre]:text-white",
+          "[&_img]:my-4 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-md",
+          "[&_a]:text-brand [&_a]:underline [&_a]:underline-offset-4",
+          "[&_hr]:my-8 [&_hr]:border-border",
+          "[&_.is-empty:first-child::before]:pointer-events-none [&_.is-empty:first-child::before]:float-left [&_.is-empty:first-child::before]:h-0 [&_.is-empty:first-child::before]:text-muted-foreground [&_.is-empty:first-child::before]:content-[attr(data-placeholder)]"
+        ),
+      },
+    },
+    onUpdate: ({ editor: next }) => {
+      emitChange(next.getHTML());
+    },
+  });
 
   useEffect(() => {
-    if (skipEmit.current) {
-      skipEmit.current = false;
+    if (!editor) return;
+    const nextHtml = lexicalToHtml(value, mediaById);
+    if (nextHtml === lastHtml.current) return;
+    if (nextHtml === editor.getHTML()) {
+      lastHtml.current = nextHtml;
       return;
     }
-    onChange(blocksToLexical(blocks));
-    // Parent handlers are recreated each render; serialize only after local edits.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [blocks]);
+    skipEmit.current = true;
+    lastHtml.current = nextHtml;
+    editor.commands.setContent(nextHtml, { emitUpdate: false });
+  }, [editor, mediaById, value]);
 
-  const active = blocks.find((block) => block.id === activeId) ?? blocks.at(-1) ?? null;
-
-  function updateBlocks(next: EditorBlock[]) {
-    const safe = next.length > 0 ? next : [emptyParagraph()];
-    setBlocks(safe);
-    if (!safe.some((block) => block.id === activeId)) {
-      setActiveId(safe[0]?.id ?? null);
+  function setLink() {
+    if (!editor) return;
+    const href = linkUrl.trim();
+    if (!href || href === "https://") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
+    } else if (!href.startsWith("javascript:")) {
+      editor.chain().focus().extendMarkRange("link").setLink({ href }).run();
     }
+    setLinkOpen(false);
+    setLinkUrl("https://");
   }
 
-  function replace(id: string, next: EditorBlock) {
-    updateBlocks(blocks.map((block) => (block.id === id ? next : block)));
+  function insertImage(next: {
+    id: string;
+    url: string;
+    alt: string;
+    filename?: string;
+    width?: number | null;
+    height?: number | null;
+  }) {
+    if (!editor || !next.url) return;
+    editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: "image",
+        attrs: {
+          src: next.url,
+          alt: next.alt || "",
+          "data-media-id": next.id || null,
+        },
+      })
+      .run();
+    setPickerOpen(false);
   }
-
-  function remove(id: string) {
-    updateBlocks(blocks.filter((block) => block.id !== id));
-  }
-
-  function insert(afterId: string | null, block: EditorBlock) {
-    if (!afterId) {
-      updateBlocks([...blocks, block]);
-    } else {
-      const index = blocks.findIndex((item) => item.id === afterId);
-      const next = [...blocks];
-      next.splice(index < 0 ? next.length : index + 1, 0, block);
-      updateBlocks(next);
-    }
-    setActiveId(block.id);
-    return block;
-  }
-
-  function convert(id: string, kind: string) {
-    const current = blocks.find((block) => block.id === id);
-    if (!current || current.type === "raw") return;
-    const spans =
-      "spans" in current
-        ? current.spans
-        : current.type === "list"
-          ? current.items[0] ?? [{ text: "" }]
-          : current.type === "code"
-            ? [{ text: current.text }]
-            : [{ text: "" }];
-    const text = spansToPlainText(spans);
-
-    let next: EditorBlock = { id, type: "paragraph", spans };
-    if (kind === "heading-2") next = { id, type: "heading", level: 2, spans };
-    else if (kind === "heading-3") next = { id, type: "heading", level: 3, spans };
-    else if (kind === "list") next = { id, type: "list", ordered: false, items: [spans] };
-    else if (kind === "ordered") next = { id, type: "list", ordered: true, items: [spans] };
-    else if (kind === "quote") next = { id, type: "quote", spans };
-    else if (kind === "code") next = { id, type: "code", text };
-    else if (kind === "hr") next = { id, type: "hr" };
-
-    replace(id, next);
-    setActiveId(id);
-  }
-
-  function applyKind(kind: string) {
-    if (active && active.type !== "image" && active.type !== "raw" && active.type !== "hr") {
-      convert(active.id, kind);
-      return;
-    }
-    const id = newBlockId();
-    if (kind === "heading-2") {
-      insert(active?.id ?? null, { id, type: "heading", level: 2, spans: [{ text: "" }] });
-    } else if (kind === "heading-3") {
-      insert(active?.id ?? null, { id, type: "heading", level: 3, spans: [{ text: "" }] });
-    } else if (kind === "list") {
-      insert(active?.id ?? null, { id, type: "list", ordered: false, items: [[{ text: "" }]] });
-    } else if (kind === "ordered") {
-      insert(active?.id ?? null, { id, type: "list", ordered: true, items: [[{ text: "" }]] });
-    } else if (kind === "quote") {
-      insert(active?.id ?? null, { id, type: "quote", spans: [{ text: "" }] });
-    } else if (kind === "code") {
-      insert(active?.id ?? null, { id, type: "code", text: "" });
-    } else if (kind === "hr") {
-      insert(active?.id ?? null, { id, type: "hr" });
-    } else {
-      insert(active?.id ?? null, emptyParagraph());
-    }
-  }
-
-  function insertImage() {
-    const block: EditorBlock = { id: newBlockId(), type: "image", mediaId: "", caption: "" };
-    insert(active?.id ?? null, block);
-    setPickerFor(block.id);
-  }
-
-  const activeKind =
-    !active || active.type === "image" || active.type === "hr" || active.type === "raw"
-      ? ""
-      : active.type === "heading"
-        ? `heading-${active.level}`
-        : active.type === "list"
-          ? active.ordered
-            ? "ordered"
-            : "list"
-          : active.type;
 
   return (
     <TooltipProvider delayDuration={400}>
-      <div className="flex h-[28rem] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm sm:h-[32rem]">
-        <div className="sticky top-0 z-20 flex shrink-0 flex-wrap items-center gap-1 border-b border-border bg-card px-2 py-2">
-          <select
-            aria-label="Block style"
-            className="h-8 rounded-lg border border-input bg-background px-2 text-sm"
-            value={activeKind || "paragraph"}
-            onChange={(event) => applyKind(event.target.value)}
-          >
-            {BLOCK_TYPES.map((item) => (
-              <option key={item.value} value={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
+      <div className="flex h-[min(75vh,52rem)] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="z-20 flex shrink-0 flex-wrap items-center gap-1 border-b border-border bg-card px-2 py-2">
+          <ToolbarButton
+            icon={Pilcrow}
+            label="Paragraph"
+            active={editor?.isActive("paragraph")}
+            onClick={() => editor?.chain().focus().setParagraph().run()}
+          />
+          <ToolbarButton
+            icon={Heading2}
+            label="Heading"
+            active={editor?.isActive("heading", { level: 2 })}
+            onClick={() =>
+              editor?.chain().focus().toggleHeading({ level: 2 }).run()
+            }
+          />
+          <ToolbarButton
+            icon={Heading3}
+            label="Subheading"
+            active={editor?.isActive("heading", { level: 3 })}
+            onClick={() =>
+              editor?.chain().focus().toggleHeading({ level: 3 }).run()
+            }
+          />
           <ToolbarDivider />
-          <MarkButton icon={Bold} label="Bold" command="bold" />
-          <MarkButton icon={Italic} label="Italic" command="italic" />
-          <MarkButton icon={Underline} label="Underline" command="underline" />
-          <LinkButton />
+          <ToolbarButton
+            icon={Bold}
+            label="Bold"
+            active={editor?.isActive("bold")}
+            onClick={() => editor?.chain().focus().toggleBold().run()}
+          />
+          <ToolbarButton
+            icon={Italic}
+            label="Italic"
+            active={editor?.isActive("italic")}
+            onClick={() => editor?.chain().focus().toggleItalic().run()}
+          />
+          <ToolbarButton
+            icon={UnderlineIcon}
+            label="Underline"
+            active={editor?.isActive("underline")}
+            onClick={() => editor?.chain().focus().toggleUnderline().run()}
+          />
+          <ToolbarButton
+            icon={Link2}
+            label="Link"
+            active={editor?.isActive("link")}
+            onClick={() => {
+              const current = editor?.getAttributes("link").href;
+              setLinkUrl(
+                typeof current === "string" && current ? current : "https://"
+              );
+              setLinkOpen((open) => !open);
+            }}
+          />
           <ToolbarDivider />
-          <ToolbarButton icon={Pilcrow} label="Paragraph" onClick={() => applyKind("paragraph")} />
-          <ToolbarButton icon={Heading2} label="Heading" onClick={() => applyKind("heading-2")} />
-          <ToolbarButton icon={Heading3} label="Subheading" onClick={() => applyKind("heading-3")} />
-          <ToolbarButton icon={List} label="Bulleted list" onClick={() => applyKind("list")} />
-          <ToolbarButton icon={ListOrdered} label="Numbered list" onClick={() => applyKind("ordered")} />
-          <ToolbarButton icon={Quote} label="Quote" onClick={() => applyKind("quote")} />
-          <ToolbarButton icon={Code} label="Code" onClick={() => applyKind("code")} />
+          <ToolbarButton
+            icon={List}
+            label="Bulleted list"
+            active={editor?.isActive("bulletList")}
+            onClick={() => editor?.chain().focus().toggleBulletList().run()}
+          />
+          <ToolbarButton
+            icon={ListOrdered}
+            label="Numbered list"
+            active={editor?.isActive("orderedList")}
+            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+          />
+          <ToolbarButton
+            icon={Quote}
+            label="Quote"
+            active={editor?.isActive("blockquote")}
+            onClick={() => editor?.chain().focus().toggleBlockquote().run()}
+          />
+          <ToolbarButton
+            icon={Code}
+            label="Code block"
+            active={editor?.isActive("codeBlock")}
+            onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
+          />
           <ToolbarDivider />
-          <ToolbarButton icon={ImagePlus} label="Image" onClick={insertImage} />
-          <ToolbarButton icon={Minus} label="Divider" onClick={() => applyKind("hr")} />
+          <ToolbarButton
+            icon={ImagePlus}
+            label="Image"
+            onClick={() => setPickerOpen(true)}
+          />
+          <ToolbarButton
+            icon={Minus}
+            label="Divider"
+            onClick={() => editor?.chain().focus().setHorizontalRule().run()}
+          />
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-4 sm:px-6 sm:py-5">
-          <div className="min-h-full space-y-1">
-            {blocks.map((block) => (
-              <EditorBlockView
-                key={block.id}
-                block={block}
-                active={block.id === active?.id}
-                pickerOpen={pickerFor === block.id}
-                onFocus={() => setActiveId(block.id)}
-                onReplace={() => setPickerFor(block.id)}
-                onPickerClose={() => setPickerFor(null)}
-                onChange={(next) => replace(block.id, next)}
-                onRemove={() => remove(block.id)}
-                onInsertAfter={() => insert(block.id, emptyParagraph())}
-              />
-            ))}
+        {linkOpen ? (
+          <div className="flex flex-wrap items-center gap-2 border-b border-border bg-muted/30 px-3 py-2">
+            <Input
+              value={linkUrl}
+              onChange={(event) => setLinkUrl(event.target.value)}
+              placeholder="https://"
+              className="h-8 max-w-md rounded-lg"
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  setLink();
+                }
+              }}
+            />
+            <Button type="button" size="sm" className="rounded-lg" onClick={setLink}>
+              Apply
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="rounded-lg"
+              onClick={() => {
+                editor?.chain().focus().extendMarkRange("link").unsetLink().run();
+                setLinkOpen(false);
+              }}
+            >
+              Remove
+            </Button>
           </div>
+        ) : null}
+
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <EditorContent editor={editor} />
         </div>
       </div>
+
+      {pickerOpen ? (
+        <div className="mt-3 rounded-xl border border-border bg-card p-4">
+          <MediaPicker
+            label="Insert image"
+            value=""
+            startOpen
+            onChange={insertImage}
+            onDismiss={() => setPickerOpen(false)}
+          />
+        </div>
+      ) : null}
+
       {error ? (
         <p className="mt-2 text-xs text-destructive" role="alert">
           {error}
         </p>
       ) : (
         <p className="mt-2 text-xs text-muted-foreground">
-          Select text to format it. Scroll inside the editor for longer articles.
+          Select text to format it. Use the toolbar for headings, lists, links, and images.
         </p>
       )}
     </TooltipProvider>
   );
 }
 
-function EditorBlockView({
-  block,
-  active,
-  pickerOpen,
-  onFocus,
-  onReplace,
-  onPickerClose,
-  onChange,
-  onRemove,
-  onInsertAfter,
-}: {
-  block: EditorBlock;
-  active: boolean;
-  pickerOpen: boolean;
-  onFocus: () => void;
-  onReplace: () => void;
-  onPickerClose: () => void;
-  onChange: (next: EditorBlock) => void;
-  onRemove: () => void;
-  onInsertAfter: () => void;
-}) {
-  return (
-    <div
-      className={cn(
-        "group relative rounded-lg px-2 py-1.5",
-        active && "bg-muted/30"
-      )}
-      onFocus={onFocus}
-      onMouseDown={onFocus}
-    >
-      <div className="absolute top-1 right-1 z-10 flex gap-1 rounded-lg bg-card/90 opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-        <Button type="button" variant="ghost" size="sm" onClick={onInsertAfter}>
-          Add paragraph
-        </Button>
-        <Button type="button" variant="ghost" size="icon-sm" onClick={onRemove} aria-label="Remove block">
-          <Trash2 />
-        </Button>
-      </div>
-
-      {block.type === "paragraph" || block.type === "heading" || block.type === "quote" ? (
-        <RichLine
-          placeholder={
-            block.type === "heading"
-              ? block.level === 2
-                ? "Heading"
-                : "Subheading"
-              : block.type === "quote"
-                ? "Quote"
-                : "Write…"
-          }
-          className={
-            block.type === "heading"
-              ? block.level === 2
-                ? "font-heading text-2xl font-semibold"
-                : "font-heading text-xl font-semibold"
-              : block.type === "quote"
-                ? "border-s-4 border-brand bg-surface-alt px-4 py-3 italic"
-                : "text-base leading-7"
-          }
-          spans={block.spans}
-          onChange={(spans) => onChange({ ...block, spans })}
-        />
-      ) : null}
-
-      {block.type === "list" ? (
-        <div className="space-y-1.5">
-          {block.items.map((item, index) => (
-            <div key={`${block.id}-${index}`} className="flex items-start gap-2">
-              <span className="mt-2 w-6 shrink-0 text-sm text-muted-foreground">
-                {block.ordered ? `${index + 1}.` : "•"}
-              </span>
-              <RichLine
-                className="flex-1 text-base leading-7"
-                placeholder="List item"
-                spans={item}
-                onChange={(spans) => {
-                  const items = block.items.map((current, itemIndex) =>
-                    itemIndex === index ? spans : current
-                  );
-                  onChange({ ...block, items });
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    const items = [...block.items];
-                    items.splice(index + 1, 0, [{ text: "" }]);
-                    onChange({ ...block, items });
-                  }
-                  if (
-                    event.key === "Backspace" &&
-                    spansToPlainText(item).length === 0 &&
-                    block.items.length > 1
-                  ) {
-                    event.preventDefault();
-                    onChange({
-                      ...block,
-                      items: block.items.filter((_, itemIndex) => itemIndex !== index),
-                    });
-                  }
-                }}
-              />
-            </div>
-          ))}
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => onChange({ ...block, items: [...block.items, [{ text: "" }]] })}
-          >
-            Add item
-          </Button>
-        </div>
-      ) : null}
-
-      {block.type === "code" ? (
-        <textarea
-          className="min-h-28 w-full rounded-lg border border-input bg-muted/40 p-3 font-mono text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
-          placeholder="Code"
-          value={block.text}
-          onChange={(event) => onChange({ ...block, text: event.target.value })}
-          onFocus={onFocus}
-        />
-      ) : null}
-
-      {block.type === "hr" ? <hr className="my-4 border-border" /> : null}
-
-      {block.type === "image" ? (
-        <ImageBlock
-          block={block}
-          pickerOpen={pickerOpen}
-          onChange={onChange}
-          onReplace={onReplace}
-          onPickerClose={onPickerClose}
-          onRemove={onRemove}
-        />
-      ) : null}
-
-      {block.type === "raw" ? (
-        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-          This block is kept as it appears on the live article so existing formatting is not rewritten.
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-function ImageBlock({
-  block,
-  pickerOpen,
-  onChange,
-  onReplace,
-  onPickerClose,
-  onRemove,
-}: {
-  block: Extract<EditorBlock, { type: "image" }>;
-  pickerOpen: boolean;
-  onChange: (next: EditorBlock) => void;
-  onReplace: () => void;
-  onPickerClose: () => void;
-  onRemove: () => void;
-}) {
-  const [broken, setBroken] = useState(false);
-  const choosing = pickerOpen || !block.mediaId;
-
-  return (
-    <div className="space-y-3 rounded-xl border border-border bg-background p-3">
-      {choosing ? (
-        <MediaPicker
-          label="Article image"
-          value={block.mediaId}
-          previewUrl={block.url}
-          previewAlt={block.alt}
-          previewFilename={block.filename}
-          previewWidth={block.width}
-          previewHeight={block.height}
-          startOpen={pickerOpen || !block.mediaId}
-          onDismiss={() => {
-            if (!block.mediaId) onRemove();
-            else onPickerClose();
-          }}
-          onChange={(next) => {
-            if (!next.id) {
-              onRemove();
-              return;
-            }
-            onChange({
-              ...block,
-              mediaId: next.id,
-              url: next.url,
-              alt: next.alt,
-              filename: next.filename,
-              width: next.width ?? null,
-              height: next.height ?? null,
-            });
-            setBroken(false);
-            onPickerClose();
-          }}
-        />
-      ) : (
-        <div className="space-y-3">
-          {block.url && !broken ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={block.url}
-              alt={block.alt || ""}
-              className="mx-auto max-h-96 w-full rounded-lg bg-muted object-contain"
-              onError={() => setBroken(true)}
-            />
-          ) : (
-            <p className="rounded-lg bg-destructive/5 px-3 py-6 text-center text-sm text-destructive" role="alert">
-              This image could not be loaded. Replace it or remove the block.
-            </p>
-          )}
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-            <p className="min-w-0 truncate">
-              {block.alt ? `Alt: ${block.alt}` : "No alt text"}
-              {block.filename ? ` · ${block.filename}` : ""}
-            </p>
-            <Button type="button" variant="outline" size="sm" onClick={onReplace}>
-              Replace
-            </Button>
-          </div>
-          <Input
-            value={block.caption ?? ""}
-            placeholder="Caption (optional)"
-            aria-label="Image caption"
-            onChange={(event) => onChange({ ...block, caption: event.target.value })}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
-function RichLine({
-  spans,
-  onChange,
-  onKeyDown,
-  className,
-  placeholder,
-}: {
-  spans: InlineSpan[];
-  onChange: (spans: InlineSpan[]) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  className?: string;
-  placeholder?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const html = spansToHtml(spans);
-  const empty = spansToPlainText(spans).trim().length === 0;
-
-  useEffect(() => {
-    if (!ref.current) return;
-    if (ref.current.innerHTML !== html && document.activeElement !== ref.current) {
-      ref.current.innerHTML = html || "<br>";
-    }
-  }, [html]);
-
-  return (
-    <div
-      ref={ref}
-      contentEditable
-      suppressContentEditableWarning
-      role="textbox"
-      aria-multiline="true"
-      data-placeholder={placeholder}
-      data-empty={empty ? "true" : "false"}
-      className={cn(
-        "min-h-10 rounded-md px-1 py-1 outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
-        "data-[empty=true]:before:pointer-events-none data-[empty=true]:before:text-muted-foreground data-[empty=true]:before:content-[attr(data-placeholder)]",
-        className
-      )}
-      onKeyDown={onKeyDown}
-      onInput={() => {
-        if (!ref.current) return;
-        onChange(htmlToSpans(ref.current.innerHTML));
-      }}
-      onBlur={() => {
-        if (!ref.current) return;
-        onChange(htmlToSpans(ref.current.innerHTML));
-      }}
-    />
-  );
-}
-
-function ToolbarDivider() {
-  return <span className="mx-1 hidden h-6 w-px bg-border sm:block" aria-hidden />;
-}
-
 function ToolbarButton({
   icon: Icon,
   label,
+  active,
   onClick,
 }: {
   icon: typeof Bold;
   label: string;
+  active?: boolean;
   onClick: () => void;
 }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button type="button" variant="ghost" size="icon-sm" aria-label={label} onClick={onClick}>
-          <Icon />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
-    </Tooltip>
-  );
-}
-
-function MarkButton({
-  icon: Icon,
-  label,
-  command,
-}: {
-  icon: typeof Bold;
-  label: string;
-  command: string;
-}) {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
         <Button
           type="button"
-          variant="ghost"
-          size="icon-sm"
+          size="icon"
+          variant={active ? "secondary" : "ghost"}
+          className="size-8 rounded-lg"
+          onClick={onClick}
           aria-label={label}
-          onMouseDown={(event) => {
-            event.preventDefault();
-            document.execCommand(command);
-          }}
         >
-          <Icon />
+          <Icon className="size-4" />
         </Button>
       </TooltipTrigger>
-      <TooltipContent>{label}</TooltipContent>
+      <TooltipContent side="bottom">{label}</TooltipContent>
     </Tooltip>
   );
 }
 
-function LinkButton() {
+function ToolbarDivider() {
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label="Link"
-          onMouseDown={(event) => {
-            event.preventDefault();
-            const current = selectedLinkHref();
-            const href = window.prompt("Link URL", current || "https://");
-            if (href === null) return;
-            const next = href.trim();
-            if (!next || next === "https://") {
-              document.execCommand("unlink");
-              return;
-            }
-            if (next.startsWith("javascript:")) return;
-            document.execCommand("createLink", false, next);
-          }}
-        >
-          <Link2 />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>Link</TooltipContent>
-    </Tooltip>
+    <span className="mx-0.5 hidden h-5 w-px bg-border sm:block" aria-hidden />
   );
-}
-
-function selectedLinkHref() {
-  const anchor = window.getSelection()?.anchorNode?.parentElement?.closest("a");
-  return anchor?.getAttribute("href") ?? "";
 }

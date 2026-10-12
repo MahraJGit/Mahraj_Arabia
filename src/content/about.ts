@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 export const aboutHero = {
-  image: "/images/heroes/about-hero.jpg",
+  image: "/images/heroes/about-hero.png",
   title: "Modular spaces. Steel built.",
   description:
     "Mahraj Arabia brings practical planning, fabrication and site coordination together for modular, portable, fencing and steel solutions across Saudi Arabia.",
@@ -36,17 +36,17 @@ export type AboutIndustry = {
 export const aboutIndustries: AboutIndustry[] = [
   {
     title: "Porta Cabins & Site Offices",
-    image: "/images/profile/porta-cabin-site-office.png",
+    image: "/images/profile/porta-cabin-site-office.jpg",
     size: "small",
   },
   {
     title: "Modular Offices & Meeting Rooms",
-    image: "/images/profile/modular-meeting-room.png",
+    image: "/images/profile/modular-meeting-room.jpg",
     size: "large",
   },
   {
     title: "Ablution & Sanitary Units",
-    image: "/images/profile/ablution-sanitary-units.png",
+    image: "/images/profile/ablution-sanitary-units.jpg",
     size: "small",
   },
   {
@@ -82,13 +82,6 @@ export const aboutIndustries: AboutIndustry[] = [
 ];
 
 export const aboutAudiences = [
-  {
-    title: "Built for teams who need clarity early",
-    description:
-      "Layouts shaped around everyday operation. We consider how people will use the space before drawings and fabrication begin.",
-    image: "/images/profile/modular-crane-install.png",
-    imageSide: "start" as const,
-  },
   {
     title: "Delivery that keeps the programme moving",
     description:

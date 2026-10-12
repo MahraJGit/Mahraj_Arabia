@@ -88,7 +88,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     slug: "porta-cabins-site-offices",
     title: "Porta Cabins & Site Offices",
     excerpt: "Site ready offices, security cabins, accommodation and storage spaces.",
-    image: "/images/profile/porta-cabin-site-office.png",
+    image: "/images/profile/porta-cabin-site-office.jpg",
     highlightsTitle: "Key highlights",
     highlightsDescription:
       "Practical advantages for site offices, welfare units and temporary workplace setups.",
@@ -150,7 +150,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     slug: "modular-offices-meeting-rooms",
     title: "Modular Offices & Meeting Rooms",
     excerpt: "Professional modular workplaces with flexible layouts and integrated services.",
-    image: "/images/profile/modular-meeting-room.png",
+    image: "/images/profile/modular-meeting-room.jpg",
     highlightsTitle: "Key highlights",
     highlightsDescription:
       "Professional modular workplaces designed for flexible commercial and site use.",
@@ -212,7 +212,7 @@ const arabiaServiceInputs: ArabiaServiceInput[] = [
     slug: "ablution-sanitary-units",
     title: "Ablution & Sanitary Units",
     excerpt: "Robust portable washroom, toilet and shower facilities.",
-    image: "/images/profile/ablution-sanitary-units.png",
+    image: "/images/profile/ablution-sanitary-units.jpg",
   },
   {
     id: "car-parking-shades",

@@ -39,10 +39,13 @@ function emptyPost(): PostInput {
     coverImageWidth: null,
     coverImageHeight: null,
     category: "",
+    author: "",
+    featured: false,
     tags: [],
     metaTitle: "",
     metaDescription: "",
     focusKeyword: "",
+    faqDescription: "",
     faqs: [],
     _status: "draft",
   };
@@ -62,6 +65,8 @@ function fromRecord(post: PostRecord): PostInput {
     coverImageWidth: post.coverWidth,
     coverImageHeight: post.coverHeight,
     category: post.category,
+    author: post.author || "",
+    featured: Boolean(post.featured),
     tags: Array.isArray((post as { tags?: string[] }).tags)
       ? ((post as { tags?: string[] }).tags ?? [])
       : [],
@@ -69,6 +74,7 @@ function fromRecord(post: PostRecord): PostInput {
     metaDescription:
       post.seoDescription || (post as { metaDescription?: string }).metaDescription || "",
     focusKeyword: (post as { focusKeyword?: string }).focusKeyword || "",
+    faqDescription: (post as { faqDescription?: string }).faqDescription || "",
     faqs: Array.isArray((post as { faqs?: PostInput["faqs"] }).faqs)
       ? ((post as { faqs?: PostInput["faqs"] }).faqs ?? [])
       : [],
@@ -113,7 +119,7 @@ export function PostForm({
   function setCover(next: CoverValue | null) {
     update("coverImageId", next?.id ?? "");
     update("coverImageUrl", next?.url ?? "");
-    update("coverImageAlt", next?.alt ?? "");
+    update("coverImageAlt", next?.alt ?? values.coverImageAlt ?? "");
     update("coverImageFilename", next?.filename ?? "");
     update("coverImageWidth", next?.width ?? null);
     update("coverImageHeight", next?.height ?? null);
@@ -225,6 +231,48 @@ export function PostForm({
         <FormSidebar>
           <SidebarBlock title="Cover image">
             <CoverUpload value={cover} error={errors.coverImageUrl} onChange={setCover} />
+            {values.coverImageUrl ? (
+              <Field
+                label="Cover alt text"
+                htmlFor="coverImageAlt"
+                hint="Describe the image for accessibility and SEO."
+                error={errors.coverImageAlt}
+              >
+                <Input
+                  id="coverImageAlt"
+                  value={values.coverImageAlt ?? ""}
+                  placeholder={values.title || "Cover image description"}
+                  className="rounded-xl"
+                  onChange={(event) => update("coverImageAlt", event.target.value)}
+                />
+              </Field>
+            ) : null}
+          </SidebarBlock>
+
+          <SidebarBlock title="Author">
+            <Field label="Author name" htmlFor="author" error={errors.author}>
+              <Input
+                id="author"
+                value={values.author ?? ""}
+                placeholder="Mahraj Arabia Team"
+                className="rounded-xl"
+                onChange={(event) => update("author", event.target.value)}
+              />
+            </Field>
+            <label className="flex items-start gap-2.5 rounded-xl border border-border px-3 py-2.5 text-sm">
+              <input
+                type="checkbox"
+                className="mt-0.5 size-4 rounded border-border"
+                checked={Boolean(values.featured)}
+                onChange={(event) => update("featured", event.target.checked)}
+              />
+              <span>
+                <span className="font-medium text-ink">Featured blog</span>
+                <span className="mt-0.5 block text-xs text-muted-foreground">
+                  Show this post in the featured carousel on /blog.
+                </span>
+              </span>
+            </label>
           </SidebarBlock>
 
           <SidebarBlock title="Category">
@@ -303,7 +351,9 @@ export function PostForm({
       </FormPanel>
 
       <FaqEditor
+        description={values.faqDescription ?? ""}
         value={values.faqs}
+        onDescriptionChange={(faqDescription) => update("faqDescription", faqDescription)}
         onChange={(faqs) => update("faqs", faqs)}
         errors={errors}
       />

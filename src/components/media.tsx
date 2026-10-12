@@ -26,14 +26,14 @@ export function Media({
   sizes?: string;
   priority?: boolean;
 }) {
-  const managed = isManagedAsset(src);
+  const trimmed = src?.trim() ?? "";
+  const managed = Boolean(trimmed) && isManagedAsset(trimmed);
 
-  // Falls back to a labelled block for any asset not yet supplied, so missing
-  // photography is visible during review instead of failing as a broken image.
-  if (!managed && !existsInPublic(src)) {
+  // Falls back to a labelled block when no image is set or the file is missing.
+  if (!trimmed || (!managed && !existsInPublic(trimmed))) {
     return (
       <div
-        data-src={src}
+        data-src={trimmed || undefined}
         role="img"
         aria-label={alt}
         className={cn(
@@ -55,7 +55,7 @@ export function Media({
       <div className={cn("relative overflow-hidden bg-surface-alt", className)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={src}
+          src={trimmed}
           alt={alt}
           loading={priority ? "eager" : "lazy"}
           decoding="async"
@@ -68,7 +68,7 @@ export function Media({
   return (
     <div className={cn("relative overflow-hidden bg-surface-alt", className)}>
       <Image
-        src={src}
+        src={trimmed}
         alt={alt}
         fill
         sizes={sizes}

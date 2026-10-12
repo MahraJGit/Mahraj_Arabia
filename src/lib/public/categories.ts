@@ -1,4 +1,3 @@
-import { getArabiaCategories } from "@/content/arabia-posts";
 import {
   countBlogPostsForCategory,
   isSupabaseContentEnabled,
@@ -15,14 +14,16 @@ export type BlogCategory = {
 };
 
 export async function getCategories(): Promise<BlogCategory[]> {
-  if (!isSupabaseContentEnabled()) return getArabiaCategories();
+  if (!isSupabaseContentEnabled()) return [];
 
   try {
     const categories = await listBlogCategories();
-    if (categories.length === 0) return getArabiaCategories();
 
     const counts = await Promise.all(
-      categories.map(async (category) => [category.id, await countBlogPostsForCategory(category.id)] as const)
+      categories.map(
+        async (category) =>
+          [category.id, await countBlogPostsForCategory(category.id)] as const
+      )
     );
     const countById = new Map(counts);
 
@@ -31,10 +32,10 @@ export async function getCategories(): Promise<BlogCategory[]> {
       title: category.title,
       slug: category.slug,
       subtitle: category.subtitle,
-      image: category.imageUrl || "/images/profile/modular-office-complex.jpg",
+      image: category.imageUrl?.trim() || "",
       postCount: countById.get(category.id) ?? 0,
     }));
   } catch {
-    return getArabiaCategories();
+    return [];
   }
 }

@@ -38,24 +38,6 @@ export const industries: Industry[] = [
 
 export const homeIndustriesCompact = industries;
 
-export const advantages = [
-  {
-    title: "Practical design",
-    description:
-      "Layouts shaped around everyday operation, access, utilities and maintenance.",
-  },
-  {
-    title: "Dependable fabrication",
-    description:
-      "Controlled workmanship for modular units, portable facilities and steel structures.",
-  },
-  {
-    title: "Coordinated delivery",
-    description:
-      "Clear logistics and installation planning aligned to your project timeline.",
-  },
-];
-
 export type Project = {
   slug: string;
   title: string;
@@ -132,30 +114,6 @@ export const projects: Project[] = [
   },
 ];
 
-export const featuredCaseStudies = [
-  {
-    slug: "porta-cabins-site-offices",
-    title: "Porta Cabins & Site Offices",
-    price: "Quote on request",
-    meta: "Site ready portable facilities",
-    badge: "Capability",
-  },
-  {
-    slug: "car-parking-shades",
-    title: "Car Parking Shades",
-    price: "Quote on request",
-    meta: "Engineered shade structures",
-    badge: "Capability",
-  },
-  {
-    slug: "steel-structures-fabrication",
-    title: "Steel Structures & Fabrication",
-    price: "Quote on request",
-    meta: "Frames, sheds and platforms",
-    badge: "Capability",
-  },
-] as const;
-
 export const trustPartnerLogos = [
   "NEOM",
   "Red Sea Global",
@@ -171,7 +129,7 @@ export const blogHighlights = [
   {
     slug: "how-to-plan-a-portable-site-office",
     title: "How to Plan a Portable Site Office",
-    image: "/images/profile/porta-cabin-site-office.png",
+    image: "/images/profile/porta-cabin-site-office.jpg",
   },
   {
     slug: "police-barriers-for-events-and-road-control",
@@ -186,7 +144,7 @@ export const blogHighlights = [
   {
     slug: "from-brief-to-installation-mahraj-arabia",
     title: "From Brief to Installation: How Mahraj Arabia Delivers",
-    image: "/images/profile/modular-crane-install.png",
+    image: "/images/profile/modular-crane-install.jpg",
   },
   {
     slug: "steel-structures-for-saudi-project-sites",

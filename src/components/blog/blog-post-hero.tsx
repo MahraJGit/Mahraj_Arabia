@@ -5,7 +5,16 @@ import type { PublicPost } from "@/lib/public/blog";
 import { toBlogCard } from "@/lib/public/blog";
 
 export function BlogPostHero({ post }: { post: PublicPost }) {
-  const card = toBlogCard(post, "hero");
+  const card = toBlogCard(
+    {
+      ...post,
+      coverUrl: post.coverImage?.url,
+      coverAlt: post.coverImage?.alt,
+      categoryTitle: post.category?.title,
+      categorySlug: post.category?.slug,
+    },
+    "hero"
+  );
   const image = post.coverImage?.url || card.image;
 
   return (
@@ -20,12 +29,17 @@ export function BlogPostHero({ post }: { post: PublicPost }) {
       eyebrow={post.category?.title || "Blogs"}
       fullBleed
       footer={
-        card.date ? (
-          <p className="inline-flex items-center gap-1.5 text-sm text-white/80">
-            <CalendarDays className="size-3.5" />
-            {card.date}
-          </p>
-        ) : null
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+          {post.author ? (
+            <p className="text-sm font-semibold text-white">{post.author}</p>
+          ) : null}
+          {card.date ? (
+            <p className="inline-flex items-center gap-1.5 text-sm text-white/80">
+              <CalendarDays className="size-3.5" aria-hidden />
+              {card.date}
+            </p>
+          ) : null}
+        </div>
       }
     />
   );

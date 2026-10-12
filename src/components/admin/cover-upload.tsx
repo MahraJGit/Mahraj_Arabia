@@ -20,10 +20,16 @@ export function CoverUpload({
   value,
   error,
   onChange,
+  label = "Upload cover image",
+  hint = "1920×800px · JPG, PNG or WebP · Max 3MB",
+  previewClassName = "aspect-video w-full object-cover",
 }: {
   value: CoverValue | null;
   error?: string;
   onChange: (next: CoverValue | null) => void;
+  label?: string;
+  hint?: string;
+  previewClassName?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [pending, start] = useTransition();
@@ -59,8 +65,8 @@ export function CoverUpload({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={value.url}
-            alt={value.alt || "Cover"}
-            className="aspect-video w-full object-cover"
+            alt={value.alt || "Image"}
+            className={previewClassName}
           />
           <Button
             type="button"
@@ -68,7 +74,7 @@ export function CoverUpload({
             variant="secondary"
             className="absolute end-2 top-2 size-8 shadow-sm"
             onClick={() => onChange(null)}
-            aria-label="Remove cover image"
+            aria-label="Remove image"
           >
             <X className="size-4" />
           </Button>
@@ -97,11 +103,9 @@ export function CoverUpload({
           )}
           <div>
             <p className="text-sm font-medium text-ink">
-              {pending ? "Uploading…" : "Upload cover image"}
+              {pending ? "Uploading…" : label}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              1920×1080px · JPG, PNG or WebP · Max 3MB
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
           </div>
         </button>
       )}

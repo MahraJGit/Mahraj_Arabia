@@ -91,11 +91,14 @@ export type BlogPostRow = {
   cover_image_width: number | null;
   cover_image_height: number | null;
   category_id: string | null;
+  author: string;
+  featured: boolean;
   status: PublishStatus;
   tags: string[] | null;
   meta_title: string;
   meta_description: string;
   focus_keyword: string;
+  faq_intro: string;
   faqs: unknown;
   published_at: string | null;
   created_at: string;
@@ -111,11 +114,14 @@ export type BlogPostWrite = CoverImageFields & {
   excerpt: string;
   content: unknown;
   categoryId: string | null;
+  author: string;
+  featured: boolean;
   status: PublishStatus;
   tags: string[];
   metaTitle: string;
   metaDescription: string;
   focusKeyword: string;
+  faqDescription: string;
   faqs: FaqItem[];
   publishedAt: string | null;
 };
@@ -138,6 +144,7 @@ export type ServiceRow = {
   meta_title: string;
   meta_description: string;
   focus_keyword: string;
+  faq_intro: string;
   faqs: unknown;
   highlights_title?: string;
   highlights_description?: string;
@@ -162,6 +169,7 @@ export type ServiceWrite = CoverImageFields & {
   metaTitle: string;
   metaDescription: string;
   focusKeyword: string;
+  faqDescription: string;
   faqs: FaqItem[];
   highlightsTitle: string;
   highlightsDescription: string;

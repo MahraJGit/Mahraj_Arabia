@@ -79,16 +79,10 @@ export type PostRecord = {
   metaDescription?: string;
   focusKeyword?: string;
   tags?: string[];
+  faqDescription?: string;
   faqs?: { question: string; answer: string }[];
   category: string;
   author: string;
-  authorImage: string;
-  authorImageUrl: string;
-  authorImageAlt: string;
-  authorImageFilename: string;
-  authorImageWidth: number | null;
-  authorImageHeight: number | null;
-  readTime: string;
   publishedAt: string;
   featured: boolean;
   status: PublishStatus;

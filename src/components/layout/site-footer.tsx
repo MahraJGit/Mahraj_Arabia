@@ -84,8 +84,8 @@ export function SiteFooter() {
                 <Image
                   src="/brand/mahraj-arabia-footer-logo.png"
                   alt="Mahraj Arabia"
-                  width={286}
-                  height={64}
+                  width={261}
+                  height={63}
                   unoptimized
                   className="h-12 w-auto sm:h-14"
                 />

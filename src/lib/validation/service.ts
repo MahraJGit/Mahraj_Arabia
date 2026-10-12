@@ -83,6 +83,7 @@ const serviceBase = z.object({
     .optional()
     .or(z.literal("")),
   focusKeyword: z.string().trim().max(80).optional().or(z.literal("")),
+  faqDescription: z.string().trim().max(300).optional().or(z.literal("")),
   faqs: z.array(faqSchema).default([]),
   highlightsTitle: z.string().trim().max(120).optional().or(z.literal("")),
   highlightsDescription: z.string().trim().max(300).optional().or(z.literal("")),

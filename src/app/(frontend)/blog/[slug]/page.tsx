@@ -166,7 +166,7 @@ export default async function BlogPostPage({
         <TechnicalFaqForm
           formIdPrefix={`blog-${post.slug}`}
           faqs={post.faqs}
-          faqIntro="Answers related to this article."
+          faqIntro={post.faqDescription || "Answers related to this article."}
         />
       ) : null}
 

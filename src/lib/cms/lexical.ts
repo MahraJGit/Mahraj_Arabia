@@ -1,13 +1,12 @@
 /**
- * Lexical adapter for the custom Blog CMS.
+ * Lexical adapter for the Blog CMS.
  *
- * Reads and writes the existing stored document shape
- * (`content.root.children`). The public site renders that JSON with the
- * standalone renderer in `src/components/blog/lexical-article.tsx`.
- * This module does not convert to Tiptap.
+ * Reads and writes the stored document shape (`content.root.children`).
+ * The public site renders that JSON via `lexical-article.tsx`.
+ * The admin TipTap editor converts through `lexicalToHtml` / `htmlToLexical`.
  *
- * Unknown nodes are kept as opaque `raw` blocks so existing production
- * articles are not rewritten just because the custom editor opened them.
+ * Unknown nodes are kept as opaque `raw` blocks so existing articles are
+ * not rewritten just because the editor opened them.
  */
 
 export const FORMAT_BOLD = 1;
@@ -169,6 +168,195 @@ export function blocksToLexical(blocks: EditorBlock[]): LexicalDoc {
       indent: 0,
       version: 1,
     },
+  };
+}
+
+export function lexicalToHtml(
+  value: unknown,
+  mediaById: Record<string, InlineMedia> = {}
+): string {
+  const blocks = lexicalToBlocks(value, mediaById);
+  const html = blocks.map(blockToHtml).filter(Boolean).join("");
+  return html || "<p></p>";
+}
+
+export function htmlToLexical(html: string): LexicalDoc {
+  if (typeof DOMParser === "undefined") {
+    const text = html.replace(/<[^>]+>/g, "").trim();
+    return blocksToLexical([
+      { id: newBlockId(), type: "paragraph", spans: [{ text }] },
+    ]);
+  }
+
+  const document = new DOMParser().parseFromString(
+    `<div id="root">${html}</div>`,
+    "text/html"
+  );
+  const root = document.getElementById("root");
+  if (!root) return emptyLexicalDoc();
+
+  const blocks: EditorBlock[] = [];
+  for (const child of Array.from(root.childNodes)) {
+    const block = htmlNodeToBlock(child);
+    if (block) blocks.push(block);
+  }
+
+  return blocksToLexical(blocks.length > 0 ? blocks : [emptyParagraph()]);
+}
+
+function blockToHtml(block: EditorBlock): string {
+  if (block.type === "paragraph") {
+    return `<p>${spansToHtml(block.spans) || "<br>"}</p>`;
+  }
+  if (block.type === "heading") {
+    const tag = block.level === 3 ? "h3" : "h2";
+    return `<${tag}>${spansToHtml(block.spans)}</${tag}>`;
+  }
+  if (block.type === "list") {
+    const tag = block.ordered ? "ol" : "ul";
+    const items = block.items
+      .map((item) => `<li>${spansToHtml(item) || "<br>"}</li>`)
+      .join("");
+    return `<${tag}>${items}</${tag}>`;
+  }
+  if (block.type === "quote") {
+    return `<blockquote><p>${spansToHtml(block.spans) || "<br>"}</p></blockquote>`;
+  }
+  if (block.type === "code") {
+    return `<pre><code>${escapeHtml(block.text)}</code></pre>`;
+  }
+  if (block.type === "hr") {
+    return "<hr>";
+  }
+  if (block.type === "image") {
+    const src = escapeHtml(block.url || "");
+    if (!src) return "";
+    const alt = escapeHtml(block.alt || "");
+    const mediaId = escapeHtml(block.mediaId || "");
+    const caption = escapeHtml(block.caption || "");
+    const attrs = [
+      `src="${src}"`,
+      `alt="${alt}"`,
+      mediaId ? `data-media-id="${mediaId}"` : "",
+      caption ? `data-caption="${caption}"` : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    return `<img ${attrs}>`;
+  }
+  return "";
+}
+
+function htmlNodeToBlock(node: Node): EditorBlock | null {
+  if (node.nodeType === 3) {
+    const text = (node.textContent ?? "").trim();
+    if (!text) return null;
+    return { id: newBlockId(), type: "paragraph", spans: [{ text }] };
+  }
+  if (node.nodeType !== 1) return null;
+
+  const element = node as HTMLElement;
+  const tag = element.tagName.toLowerCase();
+
+  if (tag === "p") {
+    return {
+      id: newBlockId(),
+      type: "paragraph",
+      spans: htmlToSpans(element.innerHTML),
+    };
+  }
+  if (tag === "h2" || tag === "h3") {
+    return {
+      id: newBlockId(),
+      type: "heading",
+      level: tag === "h3" ? 3 : 2,
+      spans: htmlToSpans(element.innerHTML),
+    };
+  }
+  if (tag === "h1" || tag === "h4" || tag === "h5" || tag === "h6") {
+    return {
+      id: newBlockId(),
+      type: "heading",
+      level: 2,
+      spans: htmlToSpans(element.innerHTML),
+    };
+  }
+  if (tag === "ul" || tag === "ol") {
+    const items = Array.from(element.children)
+      .filter((child) => child.tagName.toLowerCase() === "li")
+      .map((li) => htmlToSpans((li as HTMLElement).innerHTML));
+    return {
+      id: newBlockId(),
+      type: "list",
+      ordered: tag === "ol",
+      items: items.length > 0 ? items : [[{ text: "" }]],
+    };
+  }
+  if (tag === "blockquote") {
+    return {
+      id: newBlockId(),
+      type: "quote",
+      spans: htmlToSpans(element.innerHTML),
+    };
+  }
+  if (tag === "pre") {
+    return {
+      id: newBlockId(),
+      type: "code",
+      text: element.textContent ?? "",
+    };
+  }
+  if (tag === "hr") {
+    return { id: newBlockId(), type: "hr" };
+  }
+  if (tag === "img") {
+    return {
+      id: newBlockId(),
+      type: "image",
+      mediaId: element.getAttribute("data-media-id")?.trim() || "",
+      url: element.getAttribute("src")?.trim() || "",
+      alt: element.getAttribute("alt")?.trim() || "",
+      caption: element.getAttribute("data-caption")?.trim() || "",
+    };
+  }
+  if (tag === "figure") {
+    const img = element.querySelector("img");
+    if (!img) return null;
+    const caption =
+      element.querySelector("figcaption")?.textContent?.trim() ||
+      img.getAttribute("data-caption")?.trim() ||
+      "";
+    return {
+      id: newBlockId(),
+      type: "image",
+      mediaId: img.getAttribute("data-media-id")?.trim() || "",
+      url: img.getAttribute("src")?.trim() || "",
+      alt: img.getAttribute("alt")?.trim() || "",
+      caption,
+    };
+  }
+  if (tag === "div") {
+    const nested: EditorBlock[] = [];
+    for (const child of Array.from(element.childNodes)) {
+      const block = htmlNodeToBlock(child);
+      if (block) nested.push(block);
+    }
+    if (nested.length === 1) return nested[0];
+    if (nested.length > 1) {
+      return {
+        id: newBlockId(),
+        type: "paragraph",
+        spans: htmlToSpans(element.innerHTML),
+      };
+    }
+  }
+
+  const text = element.textContent?.trim();
+  if (!text) return null;
+  return {
+    id: newBlockId(),
+    type: "paragraph",
+    spans: htmlToSpans(element.innerHTML),
   };
 }
 
@@ -342,22 +530,28 @@ function nodeToBlock(
 
   if (type === "upload") {
     const mediaId = mediaIdFromValue(node.value);
-    if (!mediaId) return rawBlock(node);
-    const media = mediaById[mediaId];
+    const media = mediaId ? mediaById[mediaId] : undefined;
     const populated = isRecord(node.value) ? node.value : null;
     const fields = isRecord(node.fields) ? node.fields : null;
     const caption =
-      fields && typeof fields.caption === "string" ? fields.caption : "";
+      fields && typeof fields.caption === "string"
+        ? fields.caption
+        : populated && typeof populated.caption === "string"
+          ? populated.caption
+          : "";
+    const url =
+      media?.url ||
+      (populated && typeof populated.url === "string" ? populated.url : undefined);
+    if (!mediaId && !url) return rawBlock(node);
     return {
       id: newBlockId(),
       type: "image",
-      mediaId,
-      url:
-        media?.url ||
-        (populated && typeof populated.url === "string" ? populated.url : undefined),
+      mediaId: mediaId || "",
+      url,
       alt:
         media?.alt ||
-        (populated && typeof populated.alt === "string" ? populated.alt : undefined),
+        (populated && typeof populated.alt === "string" ? populated.alt : undefined) ||
+        (fields && typeof fields.alt === "string" ? fields.alt : undefined),
       caption,
       filename:
         media?.filename ||
@@ -458,12 +652,20 @@ function blockToNode(block: EditorBlock): LexicalNode | null {
     };
   }
   if (block.type === "image") {
-    if (!block.mediaId) return null;
+    if (!block.mediaId && !block.url) return null;
     return {
       type: "upload",
       version: 3,
       relationTo: "media",
-      value: block.mediaId,
+      value: {
+        id: block.mediaId || "",
+        url: block.url || "",
+        alt: block.alt || "",
+        filename: block.filename || "",
+        width: block.width ?? null,
+        height: block.height ?? null,
+        caption: block.caption?.trim() || "",
+      },
       fields: {
         caption: block.caption?.trim() || "",
         alt: block.alt?.trim() || "",
@@ -595,22 +797,26 @@ function readNodeText(node: LexicalNode): string {
   return asNodes(node.children).map(readNodeText).join("");
 }
 
+function isMediaId(value: string) {
+  return /^[a-f0-9]{24}$/i.test(value) || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
 function mediaIdFromValue(value: unknown): string {
-  if (typeof value === "string" && /^[a-f0-9]{24}$/i.test(value)) return value;
+  if (typeof value === "string" && isMediaId(value)) return value;
   if (value && typeof value === "object" && "toHexString" in value) {
     const hex = (value as { toHexString: () => string }).toHexString();
-    if (typeof hex === "string" && /^[a-f0-9]{24}$/i.test(hex)) return hex;
+    if (typeof hex === "string" && isMediaId(hex)) return hex;
   }
   if (isRecord(value)) {
     const id = value.id ?? value._id;
-    if (typeof id === "string" && /^[a-f0-9]{24}$/i.test(id)) return id;
+    if (typeof id === "string" && isMediaId(id)) return id;
     if (id && typeof id === "object") {
       if ("toHexString" in id) {
         const hex = (id as { toHexString: () => string }).toHexString();
-        if (typeof hex === "string" && /^[a-f0-9]{24}$/i.test(hex)) return hex;
+        if (typeof hex === "string" && isMediaId(hex)) return hex;
       }
       const next = String(id);
-      if (/^[a-f0-9]{24}$/i.test(next)) return next;
+      if (isMediaId(next)) return next;
     }
   }
   return "";

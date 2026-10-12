@@ -98,7 +98,7 @@ export default async function ServiceDetailPage({
         <TechnicalFaqForm
           formIdPrefix={`service-${service.slug}`}
           faqs={service.faqs}
-          faqIntro="Planning your project."
+          faqIntro={service.faqIntro || "Planning your project."}
         />
       ) : null}
     </>

@@ -13,7 +13,7 @@ export type ContactChannel = {
 };
 
 export const contactHero = {
-  image: "/images/heroes/contact-hero.jpg",
+  image: "/images/heroes/contact-hero.png",
   deviceImage: null,
   title: "Let’s discuss your requirement.",
 };
