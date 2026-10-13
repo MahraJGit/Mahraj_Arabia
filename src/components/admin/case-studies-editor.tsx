@@ -253,8 +253,11 @@ export function CaseStudiesEditor({
                         error={errors[`caseStudies.${index}.imageUrl`]}
                       >
                         <CoverUpload
+                          compact
                           value={cover}
                           error={errors[`caseStudies.${index}.imageUrl`]}
+                          label="Upload case study image"
+                          hint="JPG, PNG or WebP · Max 3MB"
                           onChange={(nextCover) => {
                             const next = value.map((entry) => ({ ...entry }));
                             next[index] = {

@@ -1,4 +1,4 @@
-# Mahraj Flooring CMS — QA Content Guide
+# Mahraj Arabia CMS — QA Content Guide
 
 This guide explains how to create Blog and Services content in the custom CMS.
 
@@ -90,7 +90,7 @@ Main Services are **organizers only**. They create the column titles in the head
 1. Open **Main Services (Mega Menu) → Create New**
 2. Use the **Mega menu preview** at the top — it shows live column order
 3. Fill:
-   - **Title** — e.g. `Sports Flooring` (this is the column heading)
+   - **Title** — e.g. `Steel Structures` (this is the column heading)
    - **Slug** — auto
    - **Menu position** — use **Move earlier / Move later**, or numbers like 10, 20, 30
    - **Show in mega menu** — leave checked to show the column

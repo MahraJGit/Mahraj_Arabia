@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { submitEnquiryAction } from "@/actions/enquiry";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,15 +26,6 @@ import { cn } from "@/lib/utils";
 const labelClass =
   "text-[0.6875rem] font-semibold uppercase tracking-[0.14em] text-body";
 
-const emptyValues: EnquiryValues = {
-  name: "",
-  company: "",
-  email: "",
-  phone: "",
-  solution: quoteSolutions[0] ?? "",
-  brief: "",
-};
-
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
@@ -43,21 +35,45 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
+function resolveDefaultSolution(preferred?: string) {
+  if (preferred && quoteSolutions.includes(preferred)) return preferred;
+  if (preferred) {
+    const match = quoteSolutions.find(
+      (item) => item.toLowerCase() === preferred.toLowerCase()
+    );
+    if (match) return match;
+  }
+  return quoteSolutions[0] ?? "";
+}
+
 export function EnquiryForm({
   idPrefix = "enquiry",
   submitLabel = "Submit",
   className,
   requirePhone = true,
+  defaultSolution,
 }: {
   idPrefix?: string;
   submitLabel?: string;
   className?: string;
   requirePhone?: boolean;
+  defaultSolution?: string;
 }) {
+  const emptyValues: EnquiryValues = {
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    solution: resolveDefaultSolution(defaultSolution),
+    brief: "",
+  };
+
   const [values, setValues] = useState<EnquiryValues>(emptyValues);
   const [errors, setErrors] = useState<EnquiryErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [touched, setTouched] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   function update<K extends keyof EnquiryValues>(key: K, value: EnquiryValues[K]) {
     setValues((prev) => {
@@ -69,15 +85,30 @@ export function EnquiryForm({
     });
   }
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setTouched(true);
+    setSubmitError(null);
     const nextErrors = validateEnquiry(values, { requirePhone });
     setErrors(nextErrors);
     if (hasErrors(nextErrors)) return;
 
-    // No API yet — keep the success state for UX until backend is wired.
-    setSubmitted(true);
+    setPending(true);
+    try {
+      const result = await submitEnquiryAction(values);
+      if (!result.ok) {
+        if (result.fieldErrors) setErrors(result.fieldErrors);
+        setSubmitError(result.error);
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setSubmitError(
+        "We could not send your request right now. Please try again or contact us by phone."
+      );
+    } finally {
+      setPending(false);
+    }
   }
 
   if (submitted) {
@@ -97,6 +128,7 @@ export function EnquiryForm({
             setValues(emptyValues);
             setErrors({});
             setTouched(false);
+            setSubmitError(null);
           }}
         >
           Send another request
@@ -222,8 +254,20 @@ export function EnquiryForm({
         <FieldError message={errors.brief} />
       </div>
 
-      <Button type="submit" variant="brand" size="xl" className="w-full">
-        {submitLabel}
+      {submitError ? (
+        <p className="text-sm text-destructive" role="alert">
+          {submitError}
+        </p>
+      ) : null}
+
+      <Button
+        type="submit"
+        variant="brand"
+        size="xl"
+        className="w-full"
+        disabled={pending}
+      >
+        {pending ? "Sending..." : submitLabel}
       </Button>
     </form>
   );

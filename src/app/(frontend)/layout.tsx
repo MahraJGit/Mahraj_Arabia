@@ -38,6 +38,10 @@ export const metadata: Metadata = {
     "portable site offices",
     "custom steel structures",
   ],
+  applicationName: site.name,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  publisher: site.name,
   robots: {
     index: true,
     follow: true,
@@ -45,18 +49,32 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: [{ url: "/brand/mahraj-mark.png", type: "image/png" }],
+    apple: [{ url: "/brand/mahraj-mark.png", type: "image/png" }],
+    shortcut: ["/brand/mahraj-mark.png"],
+  },
   openGraph: {
-    title: site.name,
+    title: `${site.name} | Modular, Portable & Steel Solutions in Riyadh`,
     description: site.description,
     url: site.url,
     siteName: site.name,
     locale: "en_SA",
     type: "website",
+    images: [
+      {
+        url: site.ogImage,
+        width: 512,
+        height: 512,
+        alt: site.name,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: site.name,
+    title: `${site.name} | Modular, Portable & Steel Solutions in Riyadh`,
     description: site.description,
+    images: [site.ogImage],
   },
 };
 

@@ -1,17 +1,19 @@
 export const site = {
-  name: "MahrajArabia",
+  name: "Mahraj Arabia",
   shortName: "Mahraj Arabia",
   tagline: "Modular spaces. Steel built.",
   description:
     "Modular, portable, fencing and steel solutions for construction, events and industrial sites across Saudi Arabia.",
-  url: "https://m-arabia.vercel.app",
+  url: "https://www.mahrajarabia.com",
+  ogImage: "/brand/mahraj-mark.png",
+  logo: "/brand/mahraj-arabia-logo.png",
   phone: "+966 56 602 1891",
   phoneHref: "tel:+966566021891",
   phones: [
     { label: "KSA", number: "+966 56 602 1891", href: "tel:+966566021891", whatsapp: "https://wa.me/966566021891" },
     { label: "UAE", number: "+971 50 882 2414", href: "tel:+971508822414", whatsapp: "https://wa.me/971508822414" },
   ],
-  email: "Waseem@mahraj.com",
+  email: "inquiry@mahrajarabia.com",
   salesEmail: "KSAevents@mahraj.com",
   emails: ["Waseem@mahraj.com", "KSAevents@mahraj.com"],
   whatsapp: "https://wa.me/966566021891",

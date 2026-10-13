@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { ImagePlus, Loader2, X } from "lucide-react";
+import { ImagePlus, Loader2, Replace, X } from "lucide-react";
 
 import { uploadCmsCover } from "@/actions/cms-media";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,7 @@ export function CoverUpload({
   label = "Upload cover image",
   hint = "Recommended 1920×800px · JPG, PNG or WebP · Max 3MB",
   previewClassName = "aspect-video w-full object-cover",
+  compact = false,
 }: {
   value: CoverValue | null;
   error?: string;
@@ -30,6 +31,7 @@ export function CoverUpload({
   label?: string;
   hint?: string;
   previewClassName?: string;
+  compact?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [pending, start] = useTransition();
@@ -61,24 +63,74 @@ export function CoverUpload({
   return (
     <div className="space-y-3">
       {value?.url ? (
-        <div className="relative overflow-hidden rounded-xl border border-border">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={value.url}
-            alt={value.alt || "Image"}
-            className={previewClassName}
-          />
-          <Button
-            type="button"
-            size="icon"
-            variant="secondary"
-            className="absolute end-2 top-2 size-8 shadow-sm"
-            onClick={() => onChange(null)}
-            aria-label="Remove image"
-          >
-            <X className="size-4" />
-          </Button>
-        </div>
+        compact ? (
+          <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/15 p-2.5">
+            <div className="relative size-20 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={value.url}
+                alt={value.alt || "Image"}
+                className="size-full object-cover"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-ink">
+                {value.filename || value.alt || "Uploaded image"}
+              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                {value.width && value.height
+                  ? `${value.width} × ${value.height}`
+                  : "Ready to use"}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="h-8 rounded-lg"
+                  disabled={pending}
+                  onClick={() => inputRef.current?.click()}
+                >
+                  {pending ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <Replace className="size-3.5" />
+                  )}
+                  Replace
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 rounded-lg text-muted-foreground hover:text-destructive"
+                  onClick={() => onChange(null)}
+                >
+                  <X className="size-3.5" />
+                  Remove
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="relative max-w-md overflow-hidden rounded-xl border border-border">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={value.url}
+              alt={value.alt || "Image"}
+              className={previewClassName}
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="secondary"
+              className="absolute end-2 top-2 size-8 shadow-sm"
+              onClick={() => onChange(null)}
+              aria-label="Remove image"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+        )
       ) : (
         <button
           type="button"
@@ -90,15 +142,21 @@ export function CoverUpload({
             pick(event.dataTransfer.files?.[0] ?? null);
           }}
           className={cn(
-            "flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted/20 px-4 py-10 text-center transition-colors hover:border-brand/60 hover:bg-brand/5",
+            "flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border bg-muted/20 text-center transition-colors hover:border-brand/60 hover:bg-brand/5",
+            compact ? "px-4 py-5" : "px-4 py-10",
             pending && "opacity-70"
           )}
         >
           {pending ? (
-            <Loader2 className="size-7 animate-spin text-brand" />
+            <Loader2 className={cn("animate-spin text-brand", compact ? "size-5" : "size-7")} />
           ) : (
-            <span className="flex size-11 items-center justify-center rounded-full bg-brand/10 text-brand">
-              <ImagePlus className="size-5" />
+            <span
+              className={cn(
+                "flex items-center justify-center rounded-full bg-brand/10 text-brand",
+                compact ? "size-9" : "size-11"
+              )}
+            >
+              <ImagePlus className={compact ? "size-4" : "size-5"} />
             </span>
           )}
           <div>

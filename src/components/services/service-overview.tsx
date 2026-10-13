@@ -210,13 +210,15 @@ export function ServiceCaseStudies({ service }: { service: ServiceDetailView }) 
               ) : null}
             </div>
             <div className="p-5">
-              <h3 className="text-xl font-semibold tracking-tight text-ink">
+              <h3 className="text-xl font-normal tracking-tight text-ink">
                 {item.title}
               </h3>
               {item.price || item.meta ? (
                 <div className="mt-3 flex items-end justify-between gap-3 text-sm">
                   {item.price ? (
-                    <p className="font-semibold text-ink">{item.price}</p>
+                    <Button asChild variant="brand" size="sm">
+                      <Link href="/contact#quote-form">Request a Quote</Link>
+                    </Button>
                   ) : null}
                   {item.meta ? (
                     <p className="text-xs text-body">{item.meta}</p>

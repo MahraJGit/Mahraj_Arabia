@@ -6,6 +6,8 @@ export function JsonLd() {
     "@type": "Organization",
     name: site.name,
     url: site.url,
+    logo: `${site.url}${site.logo}`,
+    image: `${site.url}${site.ogImage}`,
     email: site.email,
     telephone: site.phone,
     address: {
@@ -26,6 +28,7 @@ export function JsonLd() {
     publisher: {
       "@type": "Organization",
       name: site.name,
+      logo: `${site.url}${site.logo}`,
     },
   };
 
