@@ -8,6 +8,7 @@ import {
   type LexicalNode,
   isLexicalDoc,
 } from "@/lib/cms/lexical";
+import { sanitizeHtmlBlock } from "@/lib/cms/sanitize-html";
 import { mediaIdFromValue, type PublicMedia } from "@/lib/public/media";
 import { buildHeadingIds, type LexicalContent } from "@/lib/public/rich-text";
 
@@ -31,6 +32,8 @@ const SUPPORTED = new Set([
   "linebreak",
   "tab",
   "upload",
+  "htmlBlock",
+  "html-block",
 ]);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -84,6 +87,8 @@ function hasBlockChild(nodes: LexicalNode[]) {
       type === "list" ||
       type === "code" ||
       type === "upload" ||
+      type === "htmlBlock" ||
+      type === "html-block" ||
       type === "horizontalrule" ||
       type === "hr"
     );
@@ -217,6 +222,19 @@ function renderBlock(
 
   if (type === "horizontalrule" || type === "hr") {
     return <hr />;
+  }
+
+  if (type === "htmlBlock" || type === "html-block") {
+    const html = sanitizeHtmlBlock(String(node.html ?? ""));
+    if (!html.trim()) {
+      return <span data-lexical-unknown="htmlBlock" hidden />;
+    }
+    return (
+      <div
+        className="my-6 overflow-x-auto"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    );
   }
 
   if (type === "upload") {

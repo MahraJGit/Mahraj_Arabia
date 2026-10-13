@@ -9,6 +9,12 @@
  * not rewritten just because the editor opened them.
  */
 
+import {
+  decodeHtmlBlockAttr,
+  encodeHtmlBlockAttr,
+  sanitizeHtmlBlock,
+} from "@/lib/cms/sanitize-html";
+
 export const FORMAT_BOLD = 1;
 export const FORMAT_ITALIC = 2;
 export const FORMAT_UNDERLINE = 8;
@@ -30,6 +36,7 @@ export type EditorBlock =
   | { id: string; type: "quote"; spans: InlineSpan[] }
   | { id: string; type: "code"; text: string }
   | { id: string; type: "hr" }
+  | { id: string; type: "htmlBlock"; html: string }
   | {
       id: string;
       type: "image";
@@ -244,6 +251,11 @@ function blockToHtml(block: EditorBlock): string {
       .join(" ");
     return `<img ${attrs}>`;
   }
+  if (block.type === "htmlBlock") {
+    const html = sanitizeHtmlBlock(block.html || "");
+    if (!html.trim()) return "";
+    return `<div data-html-block="true" data-html="${encodeHtmlBlockAttr(html)}"></div>`;
+  }
   return "";
 }
 
@@ -335,6 +347,20 @@ function htmlNodeToBlock(node: Node): EditorBlock | null {
       caption,
     };
   }
+  if (tag === "div" && element.getAttribute("data-html-block") === "true") {
+    const html = sanitizeHtmlBlock(
+      decodeHtmlBlockAttr(element.getAttribute("data-html")) || element.innerHTML
+    );
+    if (!html.trim()) return null;
+    return { id: newBlockId(), type: "htmlBlock", html };
+  }
+  if (tag === "table") {
+    return {
+      id: newBlockId(),
+      type: "htmlBlock",
+      html: sanitizeHtmlBlock(element.outerHTML),
+    };
+  }
   if (tag === "div") {
     const nested: EditorBlock[] = [];
     for (const child of Array.from(element.childNodes)) {
@@ -362,7 +388,19 @@ function htmlNodeToBlock(node: Node): EditorBlock | null {
 
 export function lexicalHasVisibleText(value: unknown): boolean {
   if (!isLexicalDoc(value)) return false;
-  return readNodeText({ type: "root", children: value.root.children }).trim().length > 0;
+  if (readNodeText({ type: "root", children: value.root.children }).trim()) {
+    return true;
+  }
+  return value.root.children.some((node) => {
+    const type = String(node.type ?? "");
+    if (type === "htmlBlock" || type === "html-block") {
+      return sanitizeHtmlBlock(String(node.html ?? "")).trim().length > 0;
+    }
+    if (type === "upload" || type === "horizontalrule" || type === "hr") {
+      return true;
+    }
+    return false;
+  });
 }
 
 export function collectUploadIds(value: unknown): string[] {
@@ -528,6 +566,12 @@ function nodeToBlock(
     return { id: newBlockId(), type: "hr" };
   }
 
+  if (type === "htmlBlock" || type === "html-block") {
+    const html = sanitizeHtmlBlock(String(node.html ?? ""));
+    if (!html.trim()) return null;
+    return { id: newBlockId(), type: "htmlBlock", html };
+  }
+
   if (type === "upload") {
     const mediaId = mediaIdFromValue(node.value);
     const media = mediaId ? mediaById[mediaId] : undefined;
@@ -639,6 +683,15 @@ function blockToNode(block: EditorBlock): LexicalNode | null {
   if (block.type === "raw") return block.node;
   if (block.type === "hr") {
     return { type: "horizontalrule", version: 1 };
+  }
+  if (block.type === "htmlBlock") {
+    const html = sanitizeHtmlBlock(block.html || "");
+    if (!html.trim()) return null;
+    return {
+      type: "htmlBlock",
+      html,
+      version: 1,
+    };
   }
   if (block.type === "code") {
     return {

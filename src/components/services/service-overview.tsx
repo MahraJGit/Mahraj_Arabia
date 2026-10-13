@@ -210,7 +210,7 @@ export function ServiceCaseStudies({ service }: { service: ServiceDetailView }) 
               ) : null}
             </div>
             <div className="p-5">
-              <h3 className="text-xl font-normal tracking-tight text-ink">
+              <h3 className="font-sans text-base font-normal tracking-normal text-ink">
                 {item.title}
               </h3>
               {item.price || item.meta ? (

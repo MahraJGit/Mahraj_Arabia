@@ -10,6 +10,7 @@ import StarterKit from "@tiptap/starter-kit";
 import {
   Bold,
   Code,
+  CodeXml,
   Heading2,
   Heading3,
   ImagePlus,
@@ -23,6 +24,8 @@ import {
   Underline as UnderlineIcon,
 } from "lucide-react";
 
+import { HtmlBlock } from "@/components/admin/html-block-extension";
+import { HtmlBlockDialog } from "@/components/admin/html-block-dialog";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,6 +78,7 @@ export function LexicalEditor({
   error?: string;
 }) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [htmlBlockOpen, setHtmlBlockOpen] = useState(false);
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("https://");
   const skipEmit = useRef(true);
@@ -113,6 +117,7 @@ export function LexicalEditor({
           class: "rounded-md",
         },
       }),
+      HtmlBlock,
       Placeholder.configure({
         placeholder: "Start writing your article…",
       }),
@@ -133,6 +138,9 @@ export function LexicalEditor({
           "[&_img]:my-4 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-md",
           "[&_a]:text-brand [&_a]:underline [&_a]:underline-offset-4",
           "[&_hr]:my-8 [&_hr]:border-border",
+          "[&_table]:my-4 [&_table]:w-full [&_table]:border-collapse",
+          "[&_td]:border [&_td]:border-border [&_td]:px-2.5 [&_td]:py-2",
+          "[&_th]:border [&_th]:border-border [&_th]:bg-brand [&_th]:px-2.5 [&_th]:py-2 [&_th]:text-start [&_th]:text-white",
           "[&_.is-empty:first-child::before]:pointer-events-none [&_.is-empty:first-child::before]:float-left [&_.is-empty:first-child::before]:h-0 [&_.is-empty:first-child::before]:text-muted-foreground [&_.is-empty:first-child::before]:content-[attr(data-placeholder)]"
         ),
       },
@@ -273,6 +281,12 @@ export function LexicalEditor({
             active={editor?.isActive("codeBlock")}
             onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
           />
+          <ToolbarButton
+            icon={CodeXml}
+            label="HTML block"
+            active={editor?.isActive("htmlBlock")}
+            onClick={() => setHtmlBlockOpen(true)}
+          />
           <ToolbarDivider />
           <ToolbarButton
             icon={ImagePlus}
@@ -335,13 +349,21 @@ export function LexicalEditor({
         </div>
       ) : null}
 
+      <HtmlBlockDialog
+        open={htmlBlockOpen}
+        onOpenChange={setHtmlBlockOpen}
+        onInsert={(html) => {
+          editor?.chain().focus().insertHtmlBlock(html).run();
+        }}
+      />
+
       {error ? (
         <p className="mt-2 text-xs text-destructive" role="alert">
           {error}
         </p>
       ) : (
         <p className="mt-2 text-xs text-muted-foreground">
-          Select text to format it. Use the toolbar for headings, lists, links, and images.
+          Select text to format it. Use HTML for tables or custom markup, and the toolbar for headings, lists, links, and images.
         </p>
       )}
     </TooltipProvider>

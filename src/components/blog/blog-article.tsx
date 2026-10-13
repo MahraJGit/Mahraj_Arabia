@@ -32,7 +32,10 @@ export function BlogArticleBody({
         "[&_hr]:my-10 [&_hr]:border-border",
         "[&_strong]:font-semibold [&_strong]:text-ink",
         "[&_pre]:mt-6 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-ink [&_pre]:p-4 [&_pre]:text-sm [&_pre]:text-white",
-        "[&_figcaption]:mt-2 [&_figcaption]:text-sm [&_figcaption]:text-body"
+        "[&_figcaption]:mt-2 [&_figcaption]:text-sm [&_figcaption]:text-body",
+        "[&_table]:my-6 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm",
+        "[&_th]:border [&_th]:border-border [&_th]:bg-brand [&_th]:px-3 [&_th]:py-2.5 [&_th]:text-start [&_th]:font-medium [&_th]:text-white",
+        "[&_td]:border [&_td]:border-border [&_td]:px-3 [&_td]:py-2.5 [&_td]:text-ink"
       )}
     >
       <LexicalArticle data={data} mediaById={mediaById} />
