@@ -21,7 +21,7 @@ export function CoverUpload({
   error,
   onChange,
   label = "Upload cover image",
-  hint = "1920×800px · JPG, PNG or WebP · Max 3MB",
+  hint = "Recommended 1920×800px · JPG, PNG or WebP · Max 3MB",
   previewClassName = "aspect-video w-full object-cover",
 }: {
   value: CoverValue | null;

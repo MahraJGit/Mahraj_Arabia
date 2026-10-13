@@ -12,7 +12,6 @@ import { getSupabaseAdminClient } from "@/lib/supabase/server";
 
 const MAX_BYTES = 3 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp"]);
-const TARGET = { width: 1920, height: 1080 };
 
 export type UploadedCover = {
   id: string;
@@ -55,11 +54,6 @@ export async function uploadCmsCover(
 
   const width = meta.width ?? 0;
   const height = meta.height ?? 0;
-  if (width !== TARGET.width || height !== TARGET.height) {
-    return {
-      error: `Cover image must be exactly ${TARGET.width}×${TARGET.height}px (16:9).`,
-    };
-  }
 
   const ext =
     file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
