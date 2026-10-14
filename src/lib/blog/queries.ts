@@ -83,6 +83,13 @@ export type PostRecord = {
   faqs?: { question: string; answer: string }[];
   category: string;
   author: string;
+  authorRole: string;
+  authorImage: string;
+  authorImageUrl: string;
+  authorImageAlt: string;
+  authorImageFilename: string;
+  authorImageWidth: number | null;
+  authorImageHeight: number | null;
   publishedAt: string;
   featured: boolean;
   status: PublishStatus;

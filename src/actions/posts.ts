@@ -62,10 +62,15 @@ export async function savePost(
   const existing = id && isUuid(id) ? await getBlogPost(id) : null;
   if (id && !existing) return { error: "This post could not be found." };
 
+  const publishedAtInput = data.publishedAt?.trim() || "";
   const publishedAt =
     data._status === "published"
-      ? existing?.publishedAt || new Date().toISOString()
-      : existing?.publishedAt || null;
+      ? publishedAtInput
+        ? new Date(publishedAtInput).toISOString()
+        : existing?.publishedAt || new Date().toISOString()
+      : publishedAtInput
+        ? new Date(publishedAtInput).toISOString()
+        : existing?.publishedAt || null;
 
   const write = {
     title: data.title,
@@ -80,6 +85,13 @@ export async function savePost(
     coverImageHeight: data.coverImageHeight ?? null,
     categoryId: data.category && isContentId(data.category) ? data.category : null,
     author: data.author || "",
+    authorRole: data.authorRole || "",
+    authorImageId: data.authorImageId || null,
+    authorImageUrl: data.authorImageUrl || "",
+    authorImageAlt: data.authorImageAlt || data.author || "",
+    authorImageFilename: data.authorImageFilename || "",
+    authorImageWidth: data.authorImageWidth ?? null,
+    authorImageHeight: data.authorImageHeight ?? null,
     featured: Boolean(data.featured),
     status: data._status,
     tags: data.tags,

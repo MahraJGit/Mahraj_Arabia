@@ -15,6 +15,8 @@ type FeaturedArticle = {
   imageAlt?: string;
   date: string;
   author: string;
+  authorRole?: string;
+  authorImage?: string;
   href: string;
 };
 
@@ -95,7 +97,26 @@ export function FeaturedBlogsCarousel({
           </Link>
           <p className="mt-4 text-base leading-relaxed text-body">{current.excerpt}</p>
           {current.author ? (
-            <p className="mt-5 text-sm font-semibold text-ink">{current.author}</p>
+            <div className="mt-5 flex items-center gap-3">
+              {current.authorImage && isValidImageSrc(current.authorImage) ? (
+                <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-muted">
+                  <Image
+                    src={current.authorImage}
+                    alt={current.author}
+                    fill
+                    className="object-cover"
+                    sizes="40px"
+                    unoptimized={isManagedAsset(current.authorImage)}
+                  />
+                </div>
+              ) : null}
+              <div>
+                <p className="text-sm font-semibold text-ink">{current.author}</p>
+                {current.authorRole ? (
+                  <p className="text-xs text-body">{current.authorRole}</p>
+                ) : null}
+              </div>
+            </div>
           ) : null}
           <Button asChild variant="brand" size="xl" className="mt-5">
             <Link href={current.href}>Read More</Link>

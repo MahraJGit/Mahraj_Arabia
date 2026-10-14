@@ -56,16 +56,6 @@ export function RegionalOffices() {
               KSA
             </span>
           </div>
-
-          <div className="absolute end-[24%] top-[58%] flex flex-col items-center">
-            <span className="relative flex size-8 items-center justify-center">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-400/30" />
-              <span className="relative inline-flex size-3 rounded-full bg-sky-500 ring-4 ring-sky-400/25" />
-            </span>
-            <span className="mt-1 rounded bg-white/90 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-ink">
-              UAE
-            </span>
-          </div>
         </div>
 
         <div

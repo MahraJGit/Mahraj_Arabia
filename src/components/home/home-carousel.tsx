@@ -31,7 +31,9 @@ export function HomeCarousel({
   const scrollerRef = useRef<HTMLDivElement>(null);
   const slides = Children.toArray(children);
   const count = slides.length;
-  const loopSlides = count > 0 ? [...slides, ...slides, ...slides] : [];
+  // Infinite clone only when there is more than one slide; otherwise duplicates show on screen.
+  const loop = count > 1;
+  const loopSlides = loop ? [...slides, ...slides, ...slides] : slides;
 
   function getMetrics() {
     const root = scrollerRef.current;
@@ -55,6 +57,7 @@ export function HomeCarousel({
   }
 
   function normalize() {
+    if (!loop) return;
     const metrics = getMetrics();
     if (!metrics || metrics.itemSize <= 0) return;
 
@@ -68,12 +71,13 @@ export function HomeCarousel({
   }
 
   useLayoutEffect(() => {
-    jumpTo(count);
-  }, [count]);
+    if (loop) jumpTo(count);
+    else jumpTo(0);
+  }, [count, loop]);
 
   useEffect(() => {
     const root = scrollerRef.current;
-    if (!root) return;
+    if (!root || !loop) return;
 
     let settleTimer = 0;
 
@@ -101,7 +105,7 @@ export function HomeCarousel({
       root.removeEventListener("scrollend", normalize);
       window.removeEventListener("resize", onResize);
     };
-  }, [count]);
+  }, [count, loop]);
 
   function scroll(direction: 1 | -1) {
     const metrics = getMetrics();
@@ -114,7 +118,7 @@ export function HomeCarousel({
   }
 
   const controls =
-    controlStyle === "squares" ? (
+    count <= 1 ? null : controlStyle === "squares" ? (
       <div className="flex items-center gap-2">
         <button
           type="button"

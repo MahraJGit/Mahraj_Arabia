@@ -61,6 +61,15 @@ export function asBlogPostRecord(row: BlogPostRow, categoryTitle = "") {
     seoTitle: metaTitle(row),
     seoDescription: metaDescription(row),
     author: String(row.author ?? ""),
+    authorRole: String(row.author_role ?? ""),
+    authorImage: String(row.author_image_id ?? ""),
+    authorImageUrl: String(row.author_image_url ?? ""),
+    authorImageAlt: String(row.author_image_alt ?? ""),
+    authorImageFilename: String(row.author_image_filename ?? ""),
+    authorImageWidth:
+      typeof row.author_image_width === "number" ? row.author_image_width : null,
+    authorImageHeight:
+      typeof row.author_image_height === "number" ? row.author_image_height : null,
     featured: Boolean(row.featured),
     inlineMedia: {} as Record<string, never>,
   };
@@ -92,6 +101,13 @@ function toWriteRow(input: BlogPostWrite) {
     seo_description: input.metaDescription || "",
     featured: Boolean(input.featured),
     author: input.author || "",
+    author_role: input.authorRole || "",
+    author_image_id: input.authorImageId,
+    author_image_url: input.authorImageUrl || "",
+    author_image_alt: input.authorImageAlt || "",
+    author_image_filename: input.authorImageFilename || "",
+    author_image_width: input.authorImageWidth,
+    author_image_height: input.authorImageHeight,
   };
 }
 

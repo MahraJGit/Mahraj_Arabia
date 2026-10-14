@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-
 import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
@@ -31,14 +28,11 @@ export function AboutIndustries() {
             key={industry.title}
             className={cn("min-w-0", cardGridItemClass, industrySpanClass[industry.size])}
           >
-            <Link
-              href="/industries"
-              className="group relative flex size-full overflow-hidden focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand/50"
-            >
+            <div className="relative flex size-full overflow-hidden">
               <Media
                 src={industry.image}
                 alt={industry.title}
-                className="absolute inset-0 size-full transition-transform duration-500 group-hover:scale-105"
+                className="absolute inset-0 size-full"
                 sizes="(min-width: 1024px) 45vw, (min-width: 640px) 48vw, 90vw"
               />
 
@@ -47,20 +41,12 @@ export function AboutIndustries() {
                 className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent"
               />
 
-              <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-4">
-                <span className="min-w-0">
-                  <span className="block truncate font-heading text-sm font-semibold text-white sm:text-base">
-                    {industry.title}
-                  </span>
-                  <span className="mt-1 block text-xs text-white/80">
-                    Explore settings
-                  </span>
-                </span>
-                <span className="flex size-7 shrink-0 items-center justify-center bg-white text-brand transition-colors group-hover:bg-brand group-hover:text-white">
-                  <ArrowRight className="size-3.5" />
+              <span className="absolute inset-x-0 bottom-0 p-4">
+                <span className="block truncate font-heading text-sm font-semibold text-white sm:text-base">
+                  {industry.title}
                 </span>
               </span>
-            </Link>
+            </div>
           </StaggerItem>
         ))}
       </Stagger>

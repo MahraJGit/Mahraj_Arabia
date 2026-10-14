@@ -143,9 +143,27 @@ export function BlogPostCard({ post }: { post: BlogCard }) {
           <p className="mt-3 line-clamp-2 flex-1 text-sm leading-relaxed text-body">
             {post.excerpt}
           </p>
-          <div className="mt-5 flex flex-wrap gap-3 text-[0.6875rem] text-body">
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+            {post.author ? (
+              <div className="flex min-w-0 items-center gap-2.5">
+                {post.authorImage ? (
+                  <Media
+                    src={post.authorImage}
+                    alt={post.author}
+                    className="size-8 shrink-0 rounded-full"
+                    sizes="32px"
+                  />
+                ) : null}
+                <div className="min-w-0">
+                  <p className="truncate text-xs font-semibold text-ink">{post.author}</p>
+                  {post.authorRole ? (
+                    <p className="truncate text-[0.6875rem] text-body">{post.authorRole}</p>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
             {post.date ? (
-              <span className="inline-flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1.5 text-[0.6875rem] text-body">
                 <CalendarDays className="size-3.5 shrink-0" aria-hidden />
                 {post.date}
               </span>

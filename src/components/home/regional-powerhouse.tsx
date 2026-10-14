@@ -1,9 +1,8 @@
-import { MapPin } from "lucide-react";
-
 import { HomeCarousel } from "@/components/home/home-carousel";
-import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
+import { currentLocation } from "@/content/contact";
 import { regions, trustPartnerLogos } from "@/content/home";
+import { site } from "@/content/site";
 
 export function RegionalPowerhouse() {
   return (
@@ -47,23 +46,31 @@ export function RegionalPowerhouse() {
                 <h3 className="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-body">
                   Regional Footprint
                 </h3>
-                <div className="relative overflow-hidden rounded-md border border-border">
-                  <Media
-                    src="/images/profile/steel-plant-yard.jpg"
-                    alt="Mahraj Arabia steel and project infrastructure"
-                    className="aspect-[16/10]"
-                    sizes="(min-width: 1024px) 45vw, 90vw"
+                <div className="overflow-hidden rounded-md border border-border">
+                  <iframe
+                    title="Mahraj Arabia Riyadh office location"
+                    src={currentLocation.embedUrl}
+                    className="aspect-[16/10] w-full border-0"
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
                   />
-                  <div
-                    aria-hidden
-                    className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent"
-                  />
-                  <div className="absolute inset-0 flex items-end justify-center p-4 pb-6">
-                    <p className="flex flex-col items-center gap-2 rounded-md border border-white/20 bg-background/95 px-6 py-4 text-center text-sm font-semibold shadow-sm">
-                      <MapPin className="size-5 text-brand" />
-                      Serving projects across Saudi Arabia
-                    </p>
-                  </div>
+                  <a
+                    href={site.address.mapsHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between gap-3 border-t border-border bg-background px-4 py-3 text-sm transition-colors hover:bg-muted/40"
+                  >
+                    <span>
+                      <span className="font-semibold text-ink">{currentLocation.title}</span>
+                      <span className="mt-0.5 block text-xs text-body">
+                        {site.address.line1}, {site.address.line2}
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-brand">
+                      Directions
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>

@@ -92,6 +92,13 @@ export type BlogPostRow = {
   cover_image_height: number | null;
   category_id: string | null;
   author: string;
+  author_role: string;
+  author_image_id: string | null;
+  author_image_url: string;
+  author_image_alt: string;
+  author_image_filename: string;
+  author_image_width: number | null;
+  author_image_height: number | null;
   featured: boolean;
   status: PublishStatus;
   tags: string[] | null;
@@ -115,6 +122,13 @@ export type BlogPostWrite = CoverImageFields & {
   content: unknown;
   categoryId: string | null;
   author: string;
+  authorRole: string;
+  authorImageId: string | null;
+  authorImageUrl: string;
+  authorImageAlt: string;
+  authorImageFilename: string;
+  authorImageWidth: number | null;
+  authorImageHeight: number | null;
   featured: boolean;
   status: PublishStatus;
   tags: string[];
@@ -155,6 +169,7 @@ export type ServiceRow = {
   case_studies?: unknown;
   sort_order: number;
   show_in_mega_menu: boolean;
+  featured: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -181,4 +196,5 @@ export type ServiceWrite = CoverImageFields & {
   caseStudies: ServiceCaseStudyItem[];
   sortOrder: number;
   showInMegaMenu: boolean;
+  featured: boolean;
 };

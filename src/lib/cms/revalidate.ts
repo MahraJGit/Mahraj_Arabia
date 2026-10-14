@@ -8,6 +8,8 @@ export async function revalidateServicePaths(slug?: string | null) {
 }
 
 export async function revalidateBlogPaths(slug?: string | null) {
+  revalidatePath("/", "layout");
+  revalidatePath("/");
   revalidatePath("/blog");
   if (slug) revalidatePath(`/blog/${slug}`);
 }

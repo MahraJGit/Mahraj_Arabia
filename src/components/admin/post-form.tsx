@@ -31,6 +31,13 @@ import { slugify } from "@/lib/cms/slug";
 import type { CategoryOption, PostRecord } from "@/lib/blog/queries";
 import type { PostInput } from "@/lib/validation/post";
 
+function toDateInputValue(value?: string | null) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString().slice(0, 10);
+}
+
 function emptyPost(): PostInput {
   return {
     title: "",
@@ -45,6 +52,14 @@ function emptyPost(): PostInput {
     coverImageHeight: null,
     category: "",
     author: "",
+    authorRole: "",
+    authorImageId: "",
+    authorImageUrl: "",
+    authorImageAlt: "",
+    authorImageFilename: "",
+    authorImageWidth: null,
+    authorImageHeight: null,
+    publishedAt: "",
     featured: false,
     tags: [],
     metaTitle: "",
@@ -71,6 +86,14 @@ function fromRecord(post: PostRecord): PostInput {
     coverImageHeight: post.coverHeight,
     category: post.category,
     author: post.author || "",
+    authorRole: post.authorRole || "",
+    authorImageId: post.authorImage || "",
+    authorImageUrl: post.authorImageUrl || "",
+    authorImageAlt: post.authorImageAlt || "",
+    authorImageFilename: post.authorImageFilename || "",
+    authorImageWidth: post.authorImageWidth ?? null,
+    authorImageHeight: post.authorImageHeight ?? null,
+    publishedAt: toDateInputValue(post.publishedAt),
     featured: Boolean(post.featured),
     tags: Array.isArray((post as { tags?: string[] }).tags)
       ? ((post as { tags?: string[] }).tags ?? [])
@@ -168,6 +191,15 @@ export function PostForm({
     update("coverImageHeight", next?.height ?? null);
   }
 
+  function setAuthorImage(next: CoverValue | null) {
+    update("authorImageId", next?.id ?? "");
+    update("authorImageUrl", next?.url ?? "");
+    update("authorImageAlt", next?.alt ?? values.author ?? "Author photo");
+    update("authorImageFilename", next?.filename ?? "");
+    update("authorImageWidth", next?.width ?? null);
+    update("authorImageHeight", next?.height ?? null);
+  }
+
   function submit(status: "draft" | "published") {
     const payload: PostInput = {
       ...values,
@@ -192,6 +224,17 @@ export function PostForm({
         filename: values.coverImageFilename || "",
         width: values.coverImageWidth ?? null,
         height: values.coverImageHeight ?? null,
+      }
+    : null;
+
+  const authorImage: CoverValue | null = values.authorImageUrl
+    ? {
+        id: values.authorImageId || "",
+        url: values.authorImageUrl,
+        alt: values.authorImageAlt || values.author || "Author photo",
+        filename: values.authorImageFilename || "",
+        width: values.authorImageWidth ?? null,
+        height: values.authorImageHeight ?? null,
       }
     : null;
 
@@ -238,6 +281,7 @@ export function PostForm({
           <Field
             label="Excerpt"
             htmlFor="excerpt"
+            hint="Short summary shown on blog cards and the article header. Required to publish."
             error={errors.excerpt}
             meta={<CharCount value={values.excerpt ?? ""} max={300} />}
           >
@@ -284,6 +328,15 @@ export function PostForm({
           </SidebarBlock>
 
           <SidebarBlock title="Author">
+            <CoverUpload
+              value={authorImage}
+              error={errors.authorImageUrl}
+              onChange={setAuthorImage}
+              label="Upload author photo"
+              hint="Square photo · JPG, PNG or WebP · Max 3MB"
+              previewClassName="aspect-square w-full max-w-[9rem] object-cover"
+              compact
+            />
             <Field label="Author name" htmlFor="author" error={errors.author}>
               <Input
                 id="author"
@@ -291,6 +344,20 @@ export function PostForm({
                 placeholder="Mahraj Arabia Team"
                 className="rounded-xl"
                 onChange={(event) => update("author", event.target.value)}
+              />
+            </Field>
+            <Field
+              label="What the author does"
+              htmlFor="authorRole"
+              hint="Role or short bio line shown under the name."
+              error={errors.authorRole}
+            >
+              <Input
+                id="authorRole"
+                value={values.authorRole ?? ""}
+                placeholder="Project consultant, Mahraj Arabia"
+                className="rounded-xl"
+                onChange={(event) => update("authorRole", event.target.value)}
               />
             </Field>
             <label className="flex items-start gap-2.5 rounded-xl border border-border px-3 py-2.5 text-sm">
@@ -303,7 +370,7 @@ export function PostForm({
               <span>
                 <span className="font-medium text-ink">Featured blog</span>
                 <span className="mt-0.5 block text-xs text-muted-foreground">
-                  Show this post in the featured carousel on /blog.
+                  Show this post on the home page and in the featured carousel on /blog.
                 </span>
               </span>
             </label>
@@ -334,6 +401,20 @@ export function PostForm({
               <option value="draft">Draft</option>
               <option value="published">Published</option>
             </FormSelect>
+            <Field
+              label="Published date"
+              htmlFor="publishedAt"
+              hint="Required to publish. Shown on the blog."
+              error={errors.publishedAt}
+            >
+              <Input
+                id="publishedAt"
+                type="date"
+                value={values.publishedAt ?? ""}
+                className="rounded-xl"
+                onChange={(event) => update("publishedAt", event.target.value)}
+              />
+            </Field>
             <p className="text-xs text-muted-foreground">
               Draft stays private. Published appears on the website.
             </p>

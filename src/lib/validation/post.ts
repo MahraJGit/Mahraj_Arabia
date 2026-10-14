@@ -57,6 +57,14 @@ export const postInputSchema = z.object({
   coverImageId: z.string().trim().optional().or(z.literal("")),
   category: z.string().trim().optional().or(z.literal("")),
   author: z.string().trim().max(80).optional().or(z.literal("")),
+  authorRole: z.string().trim().max(120).optional().or(z.literal("")),
+  authorImageUrl: z.string().trim().optional().or(z.literal("")),
+  authorImageAlt: z.string().trim().optional().or(z.literal("")),
+  authorImageFilename: z.string().trim().optional().or(z.literal("")),
+  authorImageWidth: z.number().nullable().optional(),
+  authorImageHeight: z.number().nullable().optional(),
+  authorImageId: z.string().trim().optional().or(z.literal("")),
+  publishedAt: z.string().trim().optional().or(z.literal("")),
   featured: z.boolean().default(false),
   tags: z.array(z.string().trim().min(1)).max(8, "Add up to 8 tags.").default([]),
   metaTitle: z.string().trim().max(120).optional().or(z.literal("")),
@@ -81,6 +89,17 @@ export const postDraftSchema = postInputSchema.superRefine((value, ctx) => {
     });
   }
 
+  if (value.publishedAt?.trim()) {
+    const parsed = Date.parse(value.publishedAt);
+    if (Number.isNaN(parsed)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["publishedAt"],
+        message: "Enter a valid published date.",
+      });
+    }
+  }
+
   if (value._status !== "published") return;
 
   if (!value.excerpt?.trim()) {
@@ -88,6 +107,34 @@ export const postDraftSchema = postInputSchema.superRefine((value, ctx) => {
       code: z.ZodIssueCode.custom,
       path: ["excerpt"],
       message: "A short summary is required before publishing.",
+    });
+  }
+  if (!value.author?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["author"],
+      message: "Author name is required before publishing.",
+    });
+  }
+  if (!value.authorRole?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["authorRole"],
+      message: "Add what the author does before publishing.",
+    });
+  }
+  if (!value.authorImageUrl?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["authorImageUrl"],
+      message: "Upload an author photo before publishing.",
+    });
+  }
+  if (!value.publishedAt?.trim()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["publishedAt"],
+      message: "Published date is required before publishing.",
     });
   }
   if (!value.coverImageUrl?.trim()) {

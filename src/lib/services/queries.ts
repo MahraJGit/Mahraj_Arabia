@@ -77,6 +77,7 @@ export type ServiceRecord = {
   relatedServices: string[];
   sortOrder: number;
   showInMegaMenu: boolean;
+  featured: boolean;
   detailReady: boolean;
   heroTitle: string;
   heroDescription: string;

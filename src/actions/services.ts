@@ -90,6 +90,7 @@ export async function saveService(
     caseStudies: data.caseStudies,
     sortOrder,
     showInMegaMenu: data.showInMegaMenu,
+    featured: Boolean(data.featured),
   };
 
   let savedId = id;
@@ -234,6 +235,7 @@ export async function duplicateService(id: string): Promise<ActionResult> {
     caseStudies: doc.caseStudies || [],
     sortOrder: await nextCmsServiceSortOrder(doc.parent),
     showInMegaMenu: doc.showInMegaMenu,
+    featured: false,
   });
 
   if (!created.id) return { error: "Could not duplicate this service." };

@@ -109,6 +109,7 @@ export function asServiceRecord(row: ServiceRow, familyTitle = "") {
     caseStudies: asCaseStudies(row.case_studies),
     sortOrder: Number(row.sort_order ?? 10),
     showInMegaMenu: row.show_in_mega_menu !== false,
+    featured: Boolean(row.featured),
     updatedAt: String(row.updated_at ?? ""),
     // admin list compatibility
     image: String(row.cover_image_id ?? ""),
@@ -172,6 +173,7 @@ function toWriteRow(input: ServiceWrite) {
     case_studies: input.caseStudies,
     sort_order: input.sortOrder,
     show_in_mega_menu: input.showInMegaMenu,
+    featured: Boolean(input.featured),
   };
 }
 
@@ -367,13 +369,20 @@ export async function listCmsServiceOptions(excludeId?: string) {
   }));
 }
 
-export async function listPublishedCmsServices(limit = 200) {
-  const { data, error } = await client()
+export async function listPublishedCmsServices(
+  limit = 200,
+  options?: { featuredOnly?: boolean }
+) {
+  let query = client()
     .from("services")
     .select("*")
     .eq("status", "published")
     .order("sort_order", { ascending: true })
     .limit(limit);
+
+  if (options?.featuredOnly) query = query.eq("featured", true);
+
+  const { data, error } = await query;
   if (error) throw new Error(error.message);
 
   const rows = (data ?? []) as ServiceRow[];

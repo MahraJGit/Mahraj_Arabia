@@ -94,6 +94,7 @@ const serviceBase = z.object({
   caseStudies: z.array(caseStudySchema).max(6, "Add up to 6 case studies.").default([]),
   sortOrder: z.coerce.number().int().min(0).max(9999).default(10),
   showInMegaMenu: z.boolean().default(true),
+  featured: z.boolean().default(false),
   _status: z.enum(["draft", "published"]),
 });
 

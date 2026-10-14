@@ -62,6 +62,7 @@ function emptyService(): ServiceInput {
     caseStudies: [],
     sortOrder: 10,
     showInMegaMenu: true,
+    featured: false,
     _status: "draft",
   };
 }
@@ -114,6 +115,7 @@ function fromRecord(service: ServiceRecord): ServiceInput {
     caseStudies: Array.isArray(service.caseStudies) ? service.caseStudies : [],
     sortOrder: service.sortOrder,
     showInMegaMenu: service.showInMegaMenu,
+    featured: Boolean(service.featured),
     _status: service.status,
   };
 }
@@ -355,18 +357,31 @@ export function ServiceForm({
 
           <SidebarBlock>
             <label className="flex items-start gap-3 text-sm">
-            <Checkbox
-              checked={values.showInMegaMenu}
+              <Checkbox
+                checked={values.showInMegaMenu}
                 onChange={(event) => update("showInMegaMenu", event.target.checked)}
                 className="mt-0.5"
-            />
-            <span>
+              />
+              <span>
                 <strong className="block font-medium text-ink">Show in Services menu</strong>
                 <span className="text-xs text-muted-foreground">
                   Lists this service under its family in the site header.
                 </span>
-            </span>
-          </label>
+              </span>
+            </label>
+            <label className="mt-4 flex items-start gap-3 text-sm">
+              <Checkbox
+                checked={Boolean(values.featured)}
+                onChange={(event) => update("featured", event.target.checked)}
+                className="mt-0.5"
+              />
+              <span>
+                <strong className="block font-medium text-ink">Featured on homepage</strong>
+                <span className="text-xs text-muted-foreground">
+                  Show this service in the solutions section on the home page.
+                </span>
+              </span>
+            </label>
           </SidebarBlock>
 
           <SidebarBlock title="Tags">

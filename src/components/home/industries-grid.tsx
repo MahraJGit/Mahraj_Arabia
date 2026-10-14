@@ -1,9 +1,6 @@
-import Link from "next/link";
-
 import { Stagger, StaggerItem } from "@/components/motion/reveal";
 import { Section } from "@/components/layout/section";
 import { Eyebrow } from "@/components/layout/section-heading";
-import { Button } from "@/components/ui/button";
 import { homeIndustriesCompact } from "@/content/home";
 
 export function IndustriesGrid() {
@@ -30,12 +27,6 @@ export function IndustriesGrid() {
           </StaggerItem>
         ))}
       </Stagger>
-
-      <div className="mt-10 flex justify-center">
-        <Button asChild variant="brandOutline" size="xl">
-          <Link href="/industries">Explore Industry Solutions</Link>
-        </Button>
-      </div>
     </Section>
   );
 }

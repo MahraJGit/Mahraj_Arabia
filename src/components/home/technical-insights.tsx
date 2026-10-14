@@ -5,27 +5,19 @@ import { Media } from "@/components/media";
 import { Section } from "@/components/layout/section";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
-import { blogHighlights } from "@/content/home";
-import { getPosts } from "@/lib/public/blog";
+import { getFeaturedPosts } from "@/lib/public/blog";
 
 export async function TechnicalInsights() {
-  const { docs } = await getPosts({ limit: 6 });
-  const posts =
-    docs.length > 0
-      ? docs.map((post) => ({
-          key: post.id,
-          title: post.title,
-          image: post.image,
-          imageAlt: post.imageAlt || post.title,
-          href: post.href,
-        }))
-      : blogHighlights.map((post) => ({
-          key: post.slug,
-          title: post.title,
-          image: post.image,
-          imageAlt: post.title,
-          href: `/blog/${post.slug}`,
-        }));
+  const docs = await getFeaturedPosts(6, { fallbackToLatest: false });
+  const posts = docs.map((post) => ({
+    key: post.id,
+    title: post.title,
+    image: post.image,
+    imageAlt: post.imageAlt || post.title,
+    href: post.href,
+  }));
+
+  if (posts.length === 0) return null;
 
   return (
     <Section id="blogs">

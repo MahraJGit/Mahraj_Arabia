@@ -15,6 +15,8 @@ export type BlogCard = {
   imageAlt: string;
   date: string;
   author: string;
+  authorRole: string;
+  authorImage: string;
   category: string;
   categorySlug: string;
   href: string;
@@ -39,6 +41,8 @@ export type PublicPost = {
   faqs: { question: string; answer: string }[];
   category: { id: string; title: string; slug: string } | null;
   author: string;
+  authorRole: string;
+  authorImage: { url: string; alt: string } | null;
   publishedAt: string | null;
   featured: boolean;
   inlineMedia: Record<string, never>;
@@ -77,6 +81,10 @@ export function toBlogCard(
     category?: string | { title?: string; slug?: string } | null;
     publishedAt?: string | null;
     author?: string;
+    authorRole?: string;
+    authorImageUrl?: string;
+    authorImageAlt?: string;
+    authorImage?: string | { url?: string; alt?: string } | null;
     tags?: string[];
   },
   _size?: string
@@ -105,6 +113,11 @@ export function toBlogCard(
       post.title,
     date: formatDate(post.publishedAt),
     author: post.author || "",
+    authorRole: post.authorRole || "",
+    authorImage:
+      post.authorImageUrl ||
+      (typeof post.authorImage === "object" && post.authorImage?.url) ||
+      "",
     category: categoryTitle,
     categorySlug,
     href: `/blog/${post.slug}`,
@@ -156,7 +169,7 @@ export async function getPosts({
   }
 }
 
-export async function getFeaturedPosts(limit = 3) {
+export async function getFeaturedPosts(limit = 3, options?: { fallbackToLatest?: boolean }) {
   if (!isSupabaseContentEnabled()) return [];
 
   try {
@@ -168,6 +181,8 @@ export async function getFeaturedPosts(limit = 3) {
     if (featured.rows.length > 0) {
       return featured.rows.map((row) => toBlogCard(row));
     }
+
+    if (options?.fallbackToLatest === false) return [];
 
     // No featured flag set — show latest published posts instead of static demos.
     const latest = await listPublishedBlogPosts({ page: 1, limit });
@@ -229,6 +244,10 @@ export async function getPostBySlug(slug: string): Promise<PublicPost | null> {
           }
         : null,
       author: post.author,
+      authorRole: post.authorRole || "",
+      authorImage: post.authorImageUrl
+        ? { url: post.authorImageUrl, alt: post.authorImageAlt || post.author }
+        : null,
       publishedAt: post.publishedAt || null,
       featured: post.featured,
       inlineMedia: {},

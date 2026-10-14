@@ -121,6 +121,16 @@ export async function getServices(limit = 100): Promise<ServiceCard[]> {
   }
 }
 
+export async function getFeaturedServices(limit = 6): Promise<ServiceCard[]> {
+  if (!isSupabaseContentEnabled()) return [];
+  try {
+    const docs = await listPublishedCmsServices(limit, { featuredOnly: true });
+    return docs.map((doc) => toCard(doc));
+  } catch {
+    return [];
+  }
+}
+
 export async function getServiceGroups(): Promise<ServiceGroup[]> {
   if (!isSupabaseContentEnabled()) return getArabiaServiceGroups();
   try {
