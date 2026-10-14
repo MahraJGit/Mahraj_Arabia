@@ -8,6 +8,11 @@ import { Field } from "@/components/admin/field";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { usePendingSaveRecovery } from "@/hooks/use-pending-save";
+import {
+  friendlyActionError,
+  runAdminAction,
+} from "@/lib/admin/stale-action";
 import { slugify } from "@/lib/cms/slug";
 import type { CategoryRecord } from "@/lib/blog/queries";
 import type { CategoryInput } from "@/lib/validation/category";
@@ -65,6 +70,7 @@ export function CategoryForm({
   const [dirty, setDirty] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const generated = useMemo(() => slugify(values.title), [values.title]);
+  const pendingKey = `category:${category?.id ?? "new"}`;
 
   useEffect(() => {
     const onLeave = (event: BeforeUnloadEvent) => {
@@ -74,6 +80,56 @@ export function CategoryForm({
     window.addEventListener("beforeunload", onLeave);
     return () => window.removeEventListener("beforeunload", onLeave);
   }, [dirty]);
+
+  async function persist(payload: CategoryInput) {
+    setError(null);
+    setErrors({});
+    const outcome = await runAdminAction(
+      () => saveCategory(category?.id ?? null, payload),
+      { pendingKey, payload }
+    );
+    if (!outcome.ok) {
+      if (outcome.recovering) return;
+      setError(
+        friendlyActionError(outcome.error, "Could not save this category.")
+      );
+      return;
+    }
+    const result = outcome.data;
+    if (result.fieldErrors) {
+      setErrors(result.fieldErrors);
+      return;
+    }
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    setDirty(false);
+    if (result.href) router.push(result.href);
+  }
+
+  usePendingSaveRecovery(pendingKey, {
+    restore: (pending) => {
+      if (pending.payload && typeof pending.payload === "object") {
+        const next = pending.payload as CategoryInput;
+        setValues(next);
+        setImagePreview({
+          url: next.imageUrl ?? "",
+          alt: next.imageAlt ?? "",
+          filename: next.imageFilename ?? "",
+          width: next.imageWidth ?? null,
+          height: next.imageHeight ?? null,
+        });
+        setDirty(true);
+      }
+    },
+    retry: async (pending) => {
+      if (!pending.payload || typeof pending.payload !== "object") return;
+      start(async () => {
+        await persist(pending.payload as CategoryInput);
+      });
+    },
+  });
 
   function update<K extends keyof CategoryInput>(key: K, value: CategoryInput[K]) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -91,19 +147,7 @@ export function CategoryForm({
       imageHeight: imagePreview.height,
     };
     start(async () => {
-      setError(null);
-      setErrors({});
-      const result = await saveCategory(category?.id ?? null, payload);
-      if (result.fieldErrors) {
-        setErrors(result.fieldErrors);
-        return;
-      }
-      if (result.error) {
-        setError(result.error);
-        return;
-      }
-      setDirty(false);
-      if (result.href) router.push(result.href);
+      await persist(payload);
     });
   }
 

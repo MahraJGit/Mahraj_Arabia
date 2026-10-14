@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 import { listCategoryOptions, listPosts } from "@/lib/blog/queries";
 import { cn } from "@/lib/utils";
 

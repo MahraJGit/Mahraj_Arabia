@@ -24,6 +24,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { usePendingSaveRecovery } from "@/hooks/use-pending-save";
+import {
+  friendlyActionError,
+  runAdminAction,
+} from "@/lib/admin/stale-action";
 import { emptyLexicalDoc } from "@/lib/cms/lexical";
 import { slugify } from "@/lib/cms/slug";
 import type { ServiceRecord } from "@/lib/services/queries";
@@ -134,6 +139,7 @@ export function ServiceForm({
   const published = service?.status === "published";
   const generated = useMemo(() => slugify(values.title), [values.title]);
   const slug = slugLocked ? values.slug : generated;
+  const pendingKey = `service:${service?.id ?? "new"}`;
 
   useEffect(() => {
     const onLeave = (event: BeforeUnloadEvent) => {
@@ -143,6 +149,47 @@ export function ServiceForm({
     window.addEventListener("beforeunload", onLeave);
     return () => window.removeEventListener("beforeunload", onLeave);
   }, [dirty]);
+
+  async function persist(payload: ServiceInput) {
+    setError(null);
+    setErrors({});
+    const outcome = await runAdminAction(
+      () => saveService(service?.id ?? null, payload),
+      {
+        pendingKey,
+        payload,
+        status: payload._status,
+      }
+    );
+    if (!outcome.ok) {
+      if (outcome.recovering) return;
+      setError(friendlyActionError(outcome.error, "Could not save this service."));
+      return;
+    }
+    const result = outcome.data;
+    if (result?.error) setError(result.error);
+    if (result?.fieldErrors) setErrors(result.fieldErrors);
+    if (result?.href) {
+      setDirty(false);
+      router.push(result.href);
+      router.refresh();
+    }
+  }
+
+  usePendingSaveRecovery(pendingKey, {
+    restore: (pending) => {
+      if (pending.payload && typeof pending.payload === "object") {
+        setValues(pending.payload as ServiceInput);
+        setDirty(true);
+      }
+    },
+    retry: async (pending) => {
+      if (!pending.payload || typeof pending.payload !== "object") return;
+      start(async () => {
+        await persist(pending.payload as ServiceInput);
+      });
+    },
+  });
 
   function update<K extends keyof ServiceInput>(key: K, value: ServiceInput[K]) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -165,16 +212,7 @@ export function ServiceForm({
       _status: status,
     };
     start(async () => {
-      setError(null);
-      setErrors({});
-      const result = await saveService(service?.id ?? null, payload);
-      if (result?.error) setError(result.error);
-      if (result?.fieldErrors) setErrors(result.fieldErrors);
-      if (result?.href) {
-        setDirty(false);
-        router.push(result.href);
-        router.refresh();
-      }
+      await persist(payload);
     });
   }
 

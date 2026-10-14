@@ -1,6 +1,6 @@
 import { AdminPageHeader } from "@/components/admin/page-chrome";
 import { ProfileAccount } from "@/components/admin/profile-account";
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 
 export default async function ProfilePage() {
   const user = await requireUser();

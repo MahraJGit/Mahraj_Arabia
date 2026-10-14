@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
     // throws before the action runs and crashes the admin page.
     serverActions: {
       bodySizeLimit: "10mb",
+      allowedOrigins: [
+        "www.mahrajarabia.com",
+        "mahrajarabia.com",
+        "m-arabia.vercel.app",
+        "localhost:3000",
+      ],
     },
   },
   images: {

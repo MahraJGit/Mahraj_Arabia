@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 import { isDemoMode } from "@/lib/auth/demo";
 import { demoWriteBlockedMessage } from "@/lib/cms/demo-data";
 import { createSession } from "@/lib/auth/session";

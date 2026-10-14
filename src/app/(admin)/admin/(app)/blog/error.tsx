@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { AdminErrorState } from "@/components/admin/admin-error-state";
 
 export default function ErrorState({
   error,
@@ -10,14 +10,10 @@ export default function ErrorState({
   reset: () => void;
 }) {
   return (
-    <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-6" role="alert">
-      <h2 className="font-heading text-lg font-semibold">Could not load blog posts</h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        {error.message || "Something went wrong while reading the database."}
-      </p>
-      <Button type="button" variant="outline" className="mt-4" onClick={reset}>
-        Try again
-      </Button>
-    </div>
+    <AdminErrorState
+      title="Could not load blog posts"
+      error={error}
+      reset={reset}
+    />
   );
 }

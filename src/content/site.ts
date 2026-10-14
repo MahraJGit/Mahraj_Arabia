@@ -5,7 +5,7 @@ export const site = {
   description:
     "Modular, portable, fencing and steel solutions for construction, events and industrial sites across Saudi Arabia.",
   url: "https://www.mahrajarabia.com",
-  ogImage: "/brand/mahraj-mark.png",
+  ogImage: "/brand/og-image.png",
   logo: "/brand/mahraj-arabia-logo.png",
   phone: "+966 56 602 1891",
   phoneHref: "tel:+966566021891",

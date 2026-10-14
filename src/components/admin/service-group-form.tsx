@@ -10,8 +10,23 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { usePendingSaveRecovery } from "@/hooks/use-pending-save";
+import {
+  friendlyActionError,
+  runAdminAction,
+} from "@/lib/admin/stale-action";
 import { slugify } from "@/lib/cms/slug";
 import type { ServiceGroupRecord } from "@/lib/services/queries";
+
+type GroupDraft = {
+  title: string;
+  slug: string;
+  slugLocked: boolean;
+  menuDescription: string;
+  sortOrder: string;
+  showInMegaMenu: boolean;
+  status: "draft" | "published";
+};
 
 export function ServiceGroupForm({
   group,
@@ -45,30 +60,80 @@ export function ServiceGroupForm({
 
   const generated = useMemo(() => slugify(title), [title]);
   const published = group?.status === "published";
+  const pendingKey = `service-group:${group?.id ?? "new"}`;
 
   function markDirty() {
     setDirty(true);
   }
 
-  function submit(status: "draft" | "published") {
+  function toFormData(draft: GroupDraft) {
     const formData = new FormData();
-    formData.set("title", title);
-    formData.set("slug", slugLocked ? slug : generated);
-    formData.set("menuDescription", menuDescription);
-    formData.set("sortOrder", sortOrder);
-    if (showInMegaMenu) formData.set("showInMegaMenu", "on");
-    formData.set("_status", status);
+    formData.set("title", draft.title);
+    formData.set(
+      "slug",
+      draft.slugLocked ? draft.slug : slugify(draft.title)
+    );
+    formData.set("menuDescription", draft.menuDescription);
+    formData.set("sortOrder", draft.sortOrder);
+    if (draft.showInMegaMenu) formData.set("showInMegaMenu", "on");
+    formData.set("_status", draft.status);
+    return formData;
+  }
+
+  async function persist(draft: GroupDraft) {
+    setError(null);
+    setErrors({});
+    const outcome = await runAdminAction(
+      () => saveServiceGroup(group?.id ?? null, toFormData(draft)),
+      { pendingKey, payload: draft, status: draft.status }
+    );
+    if (!outcome.ok) {
+      if (outcome.recovering) return;
+      setError(friendlyActionError(outcome.error, "Could not save this group."));
+      return;
+    }
+    const result = outcome.data;
+    if (result?.fieldErrors) setErrors(result.fieldErrors);
+    if (result?.error) setError(result.error);
+    if (result?.href) {
+      setDirty(false);
+      router.push(result.href);
+      router.refresh();
+    }
+  }
+
+  usePendingSaveRecovery(pendingKey, {
+    restore: (pending) => {
+      if (!pending.payload || typeof pending.payload !== "object") return;
+      const draft = pending.payload as GroupDraft;
+      setTitle(draft.title);
+      setSlug(draft.slug);
+      setSlugLocked(draft.slugLocked);
+      setMenuDescription(draft.menuDescription);
+      setSortOrder(draft.sortOrder);
+      setShowInMegaMenu(draft.showInMegaMenu);
+      setDirty(true);
+    },
+    retry: async (pending) => {
+      if (!pending.payload || typeof pending.payload !== "object") return;
+      start(async () => {
+        await persist(pending.payload as GroupDraft);
+      });
+    },
+  });
+
+  function submit(status: "draft" | "published") {
+    const draft: GroupDraft = {
+      title,
+      slug,
+      slugLocked,
+      menuDescription,
+      sortOrder,
+      showInMegaMenu,
+      status,
+    };
     start(async () => {
-      setError(null);
-      setErrors({});
-      const result = await saveServiceGroup(group?.id ?? null, formData);
-      if (result?.fieldErrors) setErrors(result.fieldErrors);
-      if (result?.error) setError(result.error);
-      if (result?.href) {
-        setDirty(false);
-        router.push(result.href);
-        router.refresh();
-      }
+      await persist(draft);
     });
   }
 

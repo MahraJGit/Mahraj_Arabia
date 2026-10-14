@@ -64,9 +64,10 @@ export const metadata: Metadata = {
     images: [
       {
         url: site.ogImage,
-        width: 512,
-        height: 512,
+        width: 1200,
+        height: 630,
         alt: site.name,
+        type: "image/png",
       },
     ],
   },
@@ -74,7 +75,14 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${site.name} | Modular, Portable & Steel Solutions in Riyadh`,
     description: site.description,
-    images: [site.ogImage],
+    images: [
+      {
+        url: site.ogImage,
+        width: 1200,
+        height: 630,
+        alt: site.name,
+      },
+    ],
   },
 };
 

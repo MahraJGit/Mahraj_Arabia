@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { SavedBanner } from "@/components/admin/field";
 import { AdminPageHeader } from "@/components/admin/page-chrome";
 import { ServiceForm } from "@/components/admin/service-form";
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 import { getService, listGroupOptions } from "@/lib/services/queries";
 
 export default async function EditServicePage({

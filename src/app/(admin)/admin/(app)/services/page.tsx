@@ -7,7 +7,7 @@ import { AdminPageHeader, EmptyState } from "@/components/admin/page-chrome";
 import { ServiceFilters } from "@/components/admin/service-filters";
 import { ServiceTable } from "@/components/admin/service-table";
 import { Button } from "@/components/ui/button";
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 import { listGroupOptions, listServices } from "@/lib/services/queries";
 
 export default async function ServicesPage({

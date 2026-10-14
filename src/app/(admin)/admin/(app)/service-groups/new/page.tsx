@@ -1,6 +1,6 @@
 import { AdminPageHeader } from "@/components/admin/page-chrome";
 import { ServiceGroupForm } from "@/components/admin/service-group-form";
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 import { nextSortOrder } from "@/lib/services/queries";
 
 export default async function NewServiceGroupPage() {

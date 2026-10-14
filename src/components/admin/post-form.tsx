@@ -21,6 +21,11 @@ import { TagsInput } from "@/components/admin/tags-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { usePendingSaveRecovery } from "@/hooks/use-pending-save";
+import {
+  friendlyActionError,
+  runAdminAction,
+} from "@/lib/admin/stale-action";
 import { emptyLexicalDoc } from "@/lib/cms/lexical";
 import { slugify } from "@/lib/cms/slug";
 import type { CategoryOption, PostRecord } from "@/lib/blog/queries";
@@ -101,6 +106,7 @@ export function PostForm({
   const published = post?.status === "published";
   const generated = useMemo(() => slugify(values.title), [values.title]);
   const slug = slugLocked ? values.slug : generated;
+  const pendingKey = `post:${post?.id ?? "new"}`;
 
   useEffect(() => {
     const onLeave = (event: BeforeUnloadEvent) => {
@@ -110,6 +116,43 @@ export function PostForm({
     window.addEventListener("beforeunload", onLeave);
     return () => window.removeEventListener("beforeunload", onLeave);
   }, [dirty]);
+
+  async function persist(payload: PostInput) {
+    setError(null);
+    setErrors({});
+    const outcome = await runAdminAction(
+      () => savePost(post?.id ?? null, payload),
+      { pendingKey, payload, status: payload._status }
+    );
+    if (!outcome.ok) {
+      if (outcome.recovering) return;
+      setError(friendlyActionError(outcome.error, "Could not save this post."));
+      return;
+    }
+    const result = outcome.data;
+    if (result?.error) setError(result.error);
+    if (result?.fieldErrors) setErrors(result.fieldErrors);
+    if (result?.href) {
+      setDirty(false);
+      router.push(result.href);
+      router.refresh();
+    }
+  }
+
+  usePendingSaveRecovery(pendingKey, {
+    restore: (pending) => {
+      if (pending.payload && typeof pending.payload === "object") {
+        setValues(pending.payload as PostInput);
+        setDirty(true);
+      }
+    },
+    retry: async (pending) => {
+      if (!pending.payload || typeof pending.payload !== "object") return;
+      start(async () => {
+        await persist(pending.payload as PostInput);
+      });
+    },
+  });
 
   function update<K extends keyof PostInput>(key: K, value: PostInput[K]) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -132,16 +175,7 @@ export function PostForm({
       _status: status,
     };
     start(async () => {
-      setError(null);
-      setErrors({});
-      const result = await savePost(post?.id ?? null, payload);
-      if (result?.error) setError(result.error);
-      if (result?.fieldErrors) setErrors(result.fieldErrors);
-      if (result?.href) {
-        setDirty(false);
-        router.push(result.href);
-        router.refresh();
-      }
+      await persist(payload);
     });
   }
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AdminPageHeader } from "@/components/admin/page-chrome";
 import { SavedBanner } from "@/components/admin/field";
 import { PostForm } from "@/components/admin/post-form";
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 import { getPost, listCategoryOptions } from "@/lib/blog/queries";
 
 export default async function EditPostPage({

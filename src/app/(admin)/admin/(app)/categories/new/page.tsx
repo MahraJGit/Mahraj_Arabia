@@ -1,6 +1,6 @@
 import { AdminPageHeader } from "@/components/admin/page-chrome";
 import { CategoryForm } from "@/components/admin/category-form";
-import { requireUser } from "@/actions/auth";
+import { requireUser } from "@/lib/auth/require-user";
 
 export default async function NewCategoryPage() {
   await requireUser();
