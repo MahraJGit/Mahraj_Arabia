@@ -65,15 +65,15 @@ export function Hero() {
       <Container className="relative z-10 flex w-full flex-1 flex-col justify-center py-20 lg:py-24">
         <FadeIn className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">
-            Built for Saudi projects
+            Smart spaces for every project
           </p>
           <h1 className="mt-3 font-heading text-3xl font-semibold leading-[1.12] text-white sm:text-4xl lg:text-[2.75rem]">
-            Modular spaces.{" "}
-            <span className="text-brand">Steel built.</span>
+            Modular Porta Cabins
+            <span className="mt-1 block text-brand">Built Around Your Needs</span>
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-white/90">
-            Modular, portable and steel solutions for construction, events, and
-            industrial sites across Saudi Arabia.
+            From site offices to staff facilities, our porta cabins provide useful
+            spaces for daily work across Saudi Arabia.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Button asChild variant="brand" size="xl">
