@@ -46,6 +46,12 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    google: "Oh8b9pGayDL5jHGQAcKAFjAwqM4RfA8CBwUjkc2Rxxc",
+    other: {
+      "msvalidate.01": "299FAE1AF622D46FAD10E7C7AA2E8DC4",
+    },
+  },
   alternates: {
     canonical: "/",
   },
