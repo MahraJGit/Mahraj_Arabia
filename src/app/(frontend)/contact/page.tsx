@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { ContactHero } from "@/components/contact/contact-hero";
-import { CurrentLocation } from "@/components/contact/current-location";
 import { GetInTouch } from "@/components/contact/get-in-touch";
 import { RegionalOffices } from "@/components/contact/regional-offices";
 import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
@@ -19,7 +18,6 @@ export default function ContactPage() {
     <>
       <ContactHero />
       <GetInTouch />
-      <CurrentLocation />
       <RegionalOffices />
       <TechnicalFaqForm
         formIdPrefix="contact"
