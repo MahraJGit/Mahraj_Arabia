@@ -35,7 +35,7 @@ export function ExploreServices({
             <Media
               src={item.image}
               alt={item.imageAlt}
-              className="aspect-16/10"
+              className="aspect-[16/10]"
               sizes="(min-width: 768px) 30vw, 90vw"
             />
             <div className="p-5">

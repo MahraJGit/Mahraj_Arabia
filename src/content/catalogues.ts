@@ -77,7 +77,7 @@ export const cataloguePage = {
       "Browse porta cabins, modular offices and site facilities planned around programme, access and utilities.",
     image: "/images/profile/porta-cabin-site-office.jpg",
     author: "By Mahraj Arabia Team",
-    authorAvatar: "/images/avatar.jpg",
+    authorAvatar: "/brand/mahraj-mark.png",
   },
 
   explore: {

@@ -53,7 +53,7 @@ export function RegionalOffices() {
               <span className="relative inline-flex size-3 rounded-full bg-brand ring-4 ring-brand/25" />
             </span>
             <span className="mt-1 rounded bg-white/90 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-[0.12em] text-ink">
-              KSA
+              UAE
             </span>
           </div>
         </div>

@@ -13,8 +13,8 @@ export function JsonLd() {
     address: {
       "@type": "PostalAddress",
       streetAddress: `${site.address.line1}, ${site.address.line2}`,
-      addressLocality: "Riyadh",
-      addressCountry: "SA",
+      addressLocality: "Dubai",
+      addressCountry: "AE",
     },
     sameAs: site.social.map((item) => item.href),
   };

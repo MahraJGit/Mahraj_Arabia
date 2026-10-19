@@ -10,6 +10,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { site } from "@/content/site";
+
 export type LegalSection = {
   id: string;
   title: string;
@@ -316,7 +318,7 @@ export const termsDocument: LegalDocument = {
         "Additional Email: KSAevents@mahraj.com",
         "Saudi Arabia: +966 56 602 1891",
         "UAE: +971 50 882 2414",
-        "Address: Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia",
+        `Address: ${site.address.line1}, ${site.address.line2}, ${site.address.line3}`,
       ],
     },
   ],
@@ -558,7 +560,7 @@ export const privacyDocument: LegalDocument = {
         "Additional Email: KSAevents@mahraj.com",
         "Saudi Arabia: +966 56 602 1891",
         "UAE: +971 50 882 2414",
-        "Address: Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia",
+        `Address: ${site.address.line1}, ${site.address.line2}, ${site.address.line3}`,
       ],
     },
   ],

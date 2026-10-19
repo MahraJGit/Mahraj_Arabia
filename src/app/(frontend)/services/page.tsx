@@ -8,7 +8,6 @@ import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { Section } from "@/components/layout/section";
 import { Media } from "@/components/media";
 import { getServiceGroups } from "@/lib/public/services";
-import { cardGridClass, cardGridItemClass } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Our Solutions",
@@ -49,27 +48,31 @@ export default async function ServicesPage() {
                 </p>
               </div>
 
-              <Stagger className={`${cardGridClass} sm:grid-cols-2 lg:grid-cols-3`}>
+              <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {group.children.map((service, index) => (
-                  <StaggerItem key={service.slug} className={cardGridItemClass}>
-                    <Link href={service.href} className="group flex h-full flex-col">
+                  <StaggerItem key={service.slug} className="h-full">
+                    <Link
+                      href={service.href}
+                      className="group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-background shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-brand/40 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+                    >
                       <Media
                         src={service.image}
                         alt={service.imageAlt}
-                        className="aspect-[16/10]"
+                        className="bg-surface-alt"
                         sizes="(min-width: 1280px) 26vw, (min-width: 640px) 45vw, 90vw"
+                        fit="natural"
                       />
-                      <div className="flex flex-1 flex-col px-5 py-6">
+                      <div className="flex flex-1 flex-col p-6 sm:p-7">
                         <span className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
                           {String(index + 1).padStart(2, "0")}
                         </span>
-                        <h3 className="mt-3 text-xl font-semibold leading-snug tracking-tight">
+                        <h3 className="mt-4 text-xl font-semibold leading-snug tracking-tight">
                           {service.title}
                         </h3>
-                        <p className="mt-3 flex-1 text-sm leading-relaxed text-body">
+                        <p className="mt-4 flex-1 text-sm leading-relaxed text-body">
                           {service.excerpt}
                         </p>
-                        <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-brand">
+                        <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink transition-colors group-hover:text-brand">
                           Explore solution
                           <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
                         </span>

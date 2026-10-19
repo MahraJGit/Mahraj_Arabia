@@ -11,6 +11,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { site } from "@/content/site";
+
 export const aboutHero = {
   image: "/images/heroes/about-hero.png",
   title: "Modular spaces. Steel built.",
@@ -179,8 +181,7 @@ export const aboutFaqs = [
   },
   {
     question: "Where are you based?",
-    answer:
-      "Our office is at Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia. Call or WhatsApp +966 56 602 1891 or +971 50 882 2414.",
+    answer: `Our office is at ${site.address.line1}, ${site.address.line2}, ${site.address.line3}. Call or WhatsApp +966 56 602 1891 or +971 50 882 2414.`,
   },
   {
     question: "What should we prepare before discussing a project?",

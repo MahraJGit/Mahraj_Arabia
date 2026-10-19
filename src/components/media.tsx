@@ -19,12 +19,14 @@ export function Media({
   className,
   sizes = "100vw",
   priority = false,
+  fit = "cover",
 }: {
   src: string;
   alt: string;
   className?: string;
   sizes?: string;
   priority?: boolean;
+  fit?: "cover" | "natural";
 }) {
   const trimmed = src?.trim() ?? "";
   const managed = Boolean(trimmed) && isManagedAsset(trimmed);
@@ -38,12 +40,28 @@ export function Media({
         aria-label={alt}
         className={cn(
           "relative flex items-center justify-center overflow-hidden bg-gradient-to-br from-neutral-200 via-neutral-300 to-neutral-400",
+          fit === "natural" && "aspect-[16/10]",
           className
         )}
       >
         <span className="px-4 text-center text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-neutral-600">
           {alt}
         </span>
+      </div>
+    );
+  }
+
+  if (fit === "natural") {
+    return (
+      <div className={cn("bg-surface-alt", className)}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={trimmed}
+          alt={alt}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
+          className="block h-auto w-full"
+        />
       </div>
     );
   }

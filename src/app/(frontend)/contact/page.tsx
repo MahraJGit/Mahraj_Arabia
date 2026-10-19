@@ -6,11 +6,12 @@ import { RegionalOffices } from "@/components/contact/regional-offices";
 import { TechnicalFaqForm } from "@/components/home/technical-faq-form";
 import { ProfileClosingCta } from "@/components/layout/profile-closing-cta";
 import { contactFaqs, contactFaqIntro } from "@/content/contact";
+import { site } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
   description:
-    "Call or WhatsApp KSA +966 56 602 1891 or UAE +971 50 882 2414. Visit Building 5207, Street 392, Al Malqa District, Riyadh 13525, Saudi Arabia.",
+    `Call or WhatsApp KSA +966 56 602 1891 or UAE +971 50 882 2414. Visit ${site.address.line1}, ${site.address.line2}, ${site.address.line3}.`,
 };
 
 export default function ContactPage() {

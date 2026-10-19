@@ -30,8 +30,9 @@ export async function SolutionCategories() {
                 <Media
                   src={service.image}
                   alt={service.imageAlt}
-                  className="aspect-[4/3]"
+                  className="bg-surface-alt"
                   sizes="(min-width: 1280px) 15vw, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                  fit="natural"
                 />
                 <div className="flex flex-1 flex-col p-5">
                   <h3 className="text-base font-semibold leading-snug">
