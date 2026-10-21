@@ -12,9 +12,10 @@ export function JsonLd() {
     telephone: site.phone,
     address: {
       "@type": "PostalAddress",
-      streetAddress: `${site.address.line1}, ${site.address.line2}`,
-      addressLocality: "Dubai",
-      addressCountry: "AE",
+      streetAddress: `${site.address.line1}, Al Malqa District`,
+      addressLocality: "Riyadh",
+      postalCode: "13525",
+      addressCountry: "SA",
     },
     sameAs: site.social.map((item) => item.href),
   };

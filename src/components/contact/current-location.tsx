@@ -15,7 +15,7 @@ export function CurrentLocation() {
 
       <div className="mt-10 overflow-hidden border border-border">
         <iframe
-          title="Mahraj Arabia Dubai office location"
+          title="Mahraj Arabia Riyadh office location"
           src={currentLocation.embedUrl}
           className="aspect-[16/7] w-full border-0 sm:aspect-[16/6]"
           loading="lazy"

@@ -49,6 +49,7 @@ export type ServiceListItem = {
   sortOrder: number;
   detailReady: boolean;
   showInMegaMenu: boolean;
+  featured: boolean;
   status: PublishStatus;
   updatedAt: string;
 };
@@ -137,6 +138,7 @@ export type ListQuery = {
   status?: "all" | PublishStatus;
   menu?: "all" | "visible" | "hidden";
   group?: string;
+  featured?: "all" | "featured" | "not-featured";
   ready?: "all" | "ready" | "soon";
   sort?: ServiceSort;
   page?: number;
@@ -256,6 +258,7 @@ export async function listServices(query: ListQuery = {}) {
       q: query.q,
       status: query.status === "draft" || query.status === "published" ? query.status : "all",
       group: query.group,
+      featured: query.featured,
       menu: query.menu,
       sort: query.sort,
       page: query.page,
@@ -281,6 +284,8 @@ export async function listServices(query: ListQuery = {}) {
     items = items.filter((item) => item.status === query.status);
   }
   if (query.group) items = items.filter((item) => item.parentId === query.group);
+  if (query.featured === "featured") items = items.filter((item) => item.featured);
+  if (query.featured === "not-featured") items = items.filter((item) => !item.featured);
   if (query.sort === "name") {
     items = [...items].sort((a, b) => a.title.localeCompare(b.title));
   } else if (query.sort === "updated") {

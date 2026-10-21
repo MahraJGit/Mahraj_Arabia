@@ -29,16 +29,20 @@ export default async function BlogPage({
   const q = first(params.q);
   const status = first(params.status);
   const category = first(params.category);
+  const featured = first(params.featured);
   const sort = first(params.sort);
   const page = Number(first(params.page) ?? "1") || 1;
   const saved = first(params.saved);
   const statusFilter = status === "draft" || status === "published" ? status : "all";
+  const featuredFilter =
+    featured === "featured" || featured === "standard" ? featured : "all";
 
   const [result, categories] = await Promise.all([
     listPosts({
       q,
       status: statusFilter,
       category,
+      featured: featuredFilter,
       sort: sort === "title" || sort === "updated" ? sort : "published",
       page,
       limit: 25,
@@ -46,8 +50,10 @@ export default async function BlogPage({
     listCategoryOptions(),
   ]);
 
-  const filtered = Boolean(q || status || category || (sort && sort !== "published"));
-  const query = { q, status, category, sort };
+  const filtered = Boolean(
+    q || status || category || featuredFilter !== "all" || (sort && sort !== "published")
+  );
+  const query = { q, status, category, featured: featuredFilter, sort };
 
   return (
     <>
@@ -88,10 +94,11 @@ export default async function BlogPage({
 
       <div className="mb-4">
         <BlogFilters
-          key={[q, status, category, sort].join("|")}
+          key={[q, status, category, featured, sort].join("|")}
           q={q}
           status={statusFilter}
           category={category || "all"}
+          featured={featuredFilter}
           sort={sort}
           categories={categories}
           filtered={filtered}
@@ -346,12 +353,14 @@ function listingHref(
     q?: string;
     status?: string;
     category?: string;
+    featured?: string;
     sort?: string;
   },
   patch: {
     q?: string;
     status?: string;
     category?: string;
+    featured?: string;
     sort?: string;
     page?: string;
   }
@@ -361,6 +370,9 @@ function listingHref(
   if (next.q) params.set("q", next.q);
   if (next.status === "draft" || next.status === "published") params.set("status", next.status);
   if (next.category) params.set("category", next.category);
+  if (next.featured === "featured" || next.featured === "standard") {
+    params.set("featured", next.featured);
+  }
   if (next.sort === "title" || next.sort === "updated") params.set("sort", next.sort);
   if (next.page && next.page !== "1") params.set("page", next.page);
   const qs = params.toString();

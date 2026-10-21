@@ -181,6 +181,7 @@ export async function listCmsServices(filters?: {
   q?: string;
   status?: "all" | PublishStatus;
   group?: string;
+  featured?: "all" | "featured" | "not-featured";
   menu?: "all" | "visible" | "hidden";
   sort?: "position" | "name" | "updated";
   page?: number;
@@ -192,6 +193,8 @@ export async function listCmsServices(filters?: {
     query = query.eq("status", filters.status);
   }
   if (filters?.group) query = query.eq("family_id", filters.group);
+  if (filters?.featured === "featured") query = query.eq("featured", true);
+  if (filters?.featured === "not-featured") query = query.eq("featured", false);
   if (filters?.menu === "visible") query = query.eq("show_in_mega_menu", true);
   if (filters?.menu === "hidden") query = query.eq("show_in_mega_menu", false);
 
@@ -238,6 +241,7 @@ export async function listCmsServices(filters?: {
         sortOrder: record.sortOrder,
         detailReady: true,
         showInMegaMenu: record.showInMegaMenu,
+        featured: record.featured,
         status: record.status,
         updatedAt: record.updatedAt,
       };

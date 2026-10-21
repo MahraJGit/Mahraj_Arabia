@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getFeaturedServices } from "@/lib/public/services";
 
 export async function SolutionCategories() {
-  const services = await getFeaturedServices(6);
+  const services = await getFeaturedServices(9);
 
   return (
     <Section id="solutions" tone="alt">

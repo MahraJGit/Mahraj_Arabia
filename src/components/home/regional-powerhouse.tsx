@@ -48,7 +48,7 @@ export function RegionalPowerhouse() {
                 </h3>
                 <div className="overflow-hidden rounded-md border border-border">
                   <iframe
-                    title="Mahraj Arabia Dubai office location"
+                    title="Mahraj Arabia Riyadh office location"
                     src={currentLocation.embedUrl}
                     className="aspect-[16/10] w-full border-0"
                     loading="lazy"

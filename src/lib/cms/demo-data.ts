@@ -85,6 +85,7 @@ export function getDemoServicesList() {
     sortOrder: index,
     detailReady: service.detailReady,
     showInMegaMenu: true,
+    featured: false,
     status: "published" as PublishStatus,
     updatedAt: now,
   }));

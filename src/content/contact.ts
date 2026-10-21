@@ -66,16 +66,16 @@ export const contactChannels: ContactChannel[] = [
 ];
 
 export const currentLocation = {
-  title: "Dubai Office",
+  title: "Riyadh Office",
   embedUrl: `https://www.google.com/maps?q=${encodeURIComponent(
     `${site.address.line1}, ${site.address.line2}, ${site.address.line3}`
   )}&output=embed`,
 };
 
 export const regionalOfficesIntro = {
-  title: "Visit our Dubai office",
+  title: "Visit our Riyadh office",
   description:
-    "Meet us in Business Bay, or send your brief on WhatsApp for a faster start.",
+    "Meet us in Al Malqa District, or send your brief on WhatsApp for a faster start.",
 };
 
 export type RegionalOffice = {
@@ -92,8 +92,8 @@ export type RegionalOffice = {
 
 export const regionalOffices: RegionalOffice[] = [
   {
-    slug: "dubai",
-    title: "Dubai Office",
+    slug: "riyadh",
+    title: "Riyadh Office",
     tone: "brand",
     address: `${site.address.line1}, ${site.address.line2}, ${site.address.line3}`,
     phone: site.phone,

@@ -19,12 +19,14 @@ export function ServiceFilters({
   q = "",
   status = "all",
   group = "all",
+  featured = "all",
   groups,
   filtered,
 }: {
   q?: string;
   status?: string;
   group?: string;
+  featured?: string;
   groups: { id: string; title: string }[];
   filtered: boolean;
 }) {
@@ -33,6 +35,9 @@ export function ServiceFilters({
     status === "draft" || status === "published" ? status : "all"
   );
   const [groupValue, setGroupValue] = useState(group || "all");
+  const [featuredValue, setFeaturedValue] = useState(
+    featured === "featured" || featured === "not-featured" ? featured : "all"
+  );
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,9 +46,13 @@ export function ServiceFilters({
     const query = String(data.get("q") ?? "").trim();
     const nextStatus = String(data.get("status") ?? "");
     const nextGroup = String(data.get("group") ?? "");
+    const nextFeatured = String(data.get("featured") ?? "");
     if (query) params.set("q", query);
     if (nextStatus === "draft" || nextStatus === "published") params.set("status", nextStatus);
     if (nextGroup && nextGroup !== "all") params.set("group", nextGroup);
+    if (nextFeatured === "featured" || nextFeatured === "not-featured") {
+      params.set("featured", nextFeatured);
+    }
     const qs = params.toString();
     router.push(qs ? `/admin/services?${qs}` : "/admin/services");
   }
@@ -65,6 +74,7 @@ export function ServiceFilters({
       </div>
       <input type="hidden" name="group" value={groupValue} />
       <input type="hidden" name="status" value={statusValue} />
+      <input type="hidden" name="featured" value={featuredValue} />
       <Select value={groupValue} onValueChange={setGroupValue}>
         <SelectTrigger className="w-full sm:w-48" aria-label="Family">
           <SelectValue placeholder="All families" />
@@ -86,6 +96,16 @@ export function ServiceFilters({
           <SelectItem value="all">All statuses</SelectItem>
           <SelectItem value="published">Published</SelectItem>
           <SelectItem value="draft">Draft</SelectItem>
+        </SelectContent>
+      </Select>
+      <Select value={featuredValue} onValueChange={setFeaturedValue}>
+        <SelectTrigger className="w-full sm:w-40" aria-label="Featured">
+          <SelectValue placeholder="All services" />
+        </SelectTrigger>
+        <SelectContent position="popper">
+          <SelectItem value="all">All services</SelectItem>
+          <SelectItem value="featured">Featured</SelectItem>
+          <SelectItem value="not-featured">Not featured</SelectItem>
         </SelectContent>
       </Select>
       <div className="flex gap-2">

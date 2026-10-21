@@ -19,6 +19,7 @@ export function BlogFilters({
   q = "",
   status = "all",
   category = "all",
+  featured = "all",
   sort = "published",
   categories,
   filtered,
@@ -26,12 +27,16 @@ export function BlogFilters({
   q?: string;
   status?: string;
   category?: string;
+  featured?: string;
   sort?: string;
   categories: { id: string; title: string }[];
   filtered: boolean;
 }) {
   const router = useRouter();
   const [categoryValue, setCategoryValue] = useState(category || "all");
+  const [featuredValue, setFeaturedValue] = useState(
+    featured === "featured" || featured === "standard" ? featured : "all"
+  );
   const [sortValue, setSortValue] = useState(
     sort === "title" || sort === "updated" ? sort : "published"
   );
@@ -43,10 +48,14 @@ export function BlogFilters({
     const query = String(data.get("q") ?? "").trim();
     const nextStatus = String(data.get("status") ?? "");
     const nextCategory = String(data.get("category") ?? "");
+    const nextFeatured = String(data.get("featured") ?? "");
     const nextSort = String(data.get("sort") ?? "");
     if (query) params.set("q", query);
     if (nextStatus === "draft" || nextStatus === "published") params.set("status", nextStatus);
     if (nextCategory && nextCategory !== "all") params.set("category", nextCategory);
+    if (nextFeatured === "featured" || nextFeatured === "standard") {
+      params.set("featured", nextFeatured);
+    }
     if (nextSort === "title" || nextSort === "updated") params.set("sort", nextSort);
     const qs = params.toString();
     router.push(qs ? `/admin/blog?${qs}` : "/admin/blog");
@@ -69,6 +78,7 @@ export function BlogFilters({
       </div>
       <input type="hidden" name="status" value={status} />
       <input type="hidden" name="category" value={categoryValue} />
+      <input type="hidden" name="featured" value={featuredValue} />
       <input type="hidden" name="sort" value={sortValue} />
       <Select value={categoryValue} onValueChange={setCategoryValue}>
         <SelectTrigger className="w-full sm:w-44" aria-label="Category">
@@ -81,6 +91,16 @@ export function BlogFilters({
               {item.title}
             </SelectItem>
           ))}
+        </SelectContent>
+      </Select>
+      <Select value={featuredValue} onValueChange={setFeaturedValue}>
+        <SelectTrigger className="w-full sm:w-40" aria-label="Featured">
+          <SelectValue placeholder="All posts" />
+        </SelectTrigger>
+        <SelectContent position="popper">
+          <SelectItem value="all">All posts</SelectItem>
+          <SelectItem value="featured">Featured</SelectItem>
+          <SelectItem value="standard">Not featured</SelectItem>
         </SelectContent>
       </Select>
       <Select value={sortValue} onValueChange={setSortValue}>

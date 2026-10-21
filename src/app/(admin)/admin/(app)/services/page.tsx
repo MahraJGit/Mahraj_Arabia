@@ -20,17 +20,22 @@ export default async function ServicesPage({
   const q = first(params.q);
   const status = first(params.status);
   const group = first(params.group);
+  const featured = first(params.featured);
   const page = Number(first(params.page) ?? "1") || 1;
   const saved = first(params.saved);
   const statusFilter = status === "draft" || status === "published" ? status : "all";
-  const filtered = Boolean(q || status || group);
-  const ordering = Boolean(group) && !q && statusFilter === "all";
+  const featuredFilter =
+    featured === "featured" || featured === "not-featured" ? featured : "all";
+  const filtered = Boolean(q || status || group || featuredFilter !== "all");
+  const ordering =
+    Boolean(group) && !q && statusFilter === "all" && featuredFilter === "all";
 
   const [result, groups] = await Promise.all([
     listServices({
       q,
       status: statusFilter,
       group,
+      featured: featuredFilter,
       sort: "position",
       page: ordering ? 1 : page,
       limit: ordering ? 200 : 25,
@@ -58,10 +63,11 @@ export default async function ServicesPage({
       <MenuGuide focus="services" />
       <div className="mb-4">
         <ServiceFilters
-          key={[q, status, group].join("|")}
+          key={[q, status, group, featured].join("|")}
           q={q}
           status={statusFilter}
           group={group || "all"}
+          featured={featuredFilter}
           groups={groups}
           filtered={filtered}
         />
@@ -113,7 +119,7 @@ export default async function ServicesPage({
           <ServicesPagination
             page={result.page}
             pageCount={result.pageCount}
-            hrefFor={(next) => listingHref({ q, status, group }, next)}
+            hrefFor={(next) => listingHref({ q, status, group, featured }, next)}
           />
         </>
       )}
@@ -161,13 +167,16 @@ function ServicesPagination({
 }
 
 function listingHref(
-  current: { q?: string; status?: string; group?: string },
+  current: { q?: string; status?: string; group?: string; featured?: string },
   page: number
 ) {
   const params = new URLSearchParams();
   if (current.q) params.set("q", current.q);
   if (current.status === "draft" || current.status === "published") params.set("status", current.status);
   if (current.group) params.set("group", current.group);
+  if (current.featured === "featured" || current.featured === "not-featured") {
+    params.set("featured", current.featured);
+  }
   if (page > 1) params.set("page", String(page));
   const qs = params.toString();
   return qs ? `/admin/services?${qs}` : "/admin/services";

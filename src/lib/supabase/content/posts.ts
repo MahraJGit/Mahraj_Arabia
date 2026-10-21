@@ -115,6 +115,7 @@ export async function listBlogPosts(filters?: {
   q?: string;
   status?: "all" | PublishStatus;
   category?: string;
+  featured?: "all" | "featured" | "standard";
   sort?: "published" | "updated" | "title";
   page?: number;
   limit?: number;
@@ -125,6 +126,8 @@ export async function listBlogPosts(filters?: {
     query = query.eq("status", filters.status);
   }
   if (filters?.category) query = query.eq("category_id", filters.category);
+  if (filters?.featured === "featured") query = query.eq("featured", true);
+  if (filters?.featured === "standard") query = query.eq("featured", false);
 
   if (filters?.sort === "title") query = query.order("title", { ascending: true });
   else if (filters?.sort === "updated") query = query.order("updated_at", { ascending: false });

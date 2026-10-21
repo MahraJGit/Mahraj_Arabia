@@ -18,11 +18,11 @@ export const site = {
   emails: ["Waseem@mahraj.com", "KSAevents@mahraj.com"],
   whatsapp: "https://wa.me/966566021891",
   address: {
-    line1: "2204 B2B Tower",
-    line2: "Marasi Drive Street, Business Bay",
-    line3: "Dubai, UAE",
+    line1: "Building 5207, Street 392",
+    line2: "Al Malqa District, Riyadh 13525",
+    line3: "Saudi Arabia",
     mapsHref:
-      "https://www.google.com/maps/search/?api=1&query=2204+B2B+Tower%2C+Marasi+Drive+Street%2C+Business+Bay%2C+Dubai%2C+UAE",
+      "https://www.google.com/maps/search/?api=1&query=Building+5207%2C+Street+392%2C+Al+Malqa+District%2C+Riyadh+13525%2C+Saudi+Arabia",
   },
   social: [
     { label: "Instagram", href: "https://www.instagram.com/mahrajarabia/" },

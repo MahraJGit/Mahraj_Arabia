@@ -112,6 +112,7 @@ export async function listPosts(query: ListQuery = {}) {
       q: query.q,
       status: query.status === "draft" || query.status === "published" ? query.status : "all",
       category: query.category,
+      featured: query.featured,
       sort: query.sort,
       page: query.page,
       limit: query.limit,
@@ -145,6 +146,11 @@ export async function listPosts(query: ListQuery = {}) {
   }
   if (query.category) {
     items = items.filter((item) => getDemoPost(item.id)?.category === query.category);
+  }
+  if (query.featured === "featured") {
+    items = items.filter((item) => item.featured);
+  } else if (query.featured === "standard") {
+    items = items.filter((item) => !item.featured);
   }
   if (query.sort === "title") {
     items = [...items].sort((a, b) => a.title.localeCompare(b.title));
